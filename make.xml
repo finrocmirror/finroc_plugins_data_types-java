@@ -1,0 +1,5 @@
+<targets>
+  <finrocjavaplugin name="data_types" libs="finroc_plugin_blackboard.jar" plugin-class="org.finroc.plugin.datatype.DataTypePlugin">
+    <sources>**.java</sources>
+  </finrocjavaplugin>
+</targets>
