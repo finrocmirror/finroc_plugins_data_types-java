@@ -25,7 +25,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.finroc.core.portdatabase.DataType;
+import org.finroc.core.portdatabase.DataTypeRegister;
+
 public class StringList extends ArrayList<String> {
+
+    static DataType TYPE = DataTypeRegister.getInstance().getDataType(StringList.class);
 
     /** UID */
     private static final long serialVersionUID = -8572604096904164788L;

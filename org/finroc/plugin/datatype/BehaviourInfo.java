@@ -38,6 +38,8 @@ import org.finroc.core.portdatabase.DataTypeRegister;
 @JavaOnly
 public interface BehaviourInfo extends PortData {
 
+    static DataType TYPE = DataTypeRegister.getInstance().getDataType(BehaviourInfo.class);
+
     /**
      * @return Number of entries
      */

@@ -468,16 +468,7 @@ public class MCA {
     }
 
     /** tGeometryType */
-    public static final int
-    eGT_POINT = 0,
-                eGT_POINT_3D = 1,
-                               eGT_LINE = 2,
-                                          eGT_LINE_SEGMENT = 3,
-                                                             eGT_CIRCLE = 4,
-                                                                          eGT_RECTANGLE = 5,
-                                                                                          eGT_TEXT = 6,
-                                                                                                     eGT_TRIANGLE = 7,
-                                                                                                                    eGT_DIMENSION = 8;
+    public static final int eGT_POINT = 0, eGT_POINT_3D = 1, eGT_LINE = 2, eGT_LINE_SEGMENT = 3, eGT_CIRCLE = 4, eGT_RECTANGLE = 5, eGT_TEXT = 6, eGT_TRIANGLE = 7, eGT_ARROW = 8, eGT_DIMENSION = 9;
 
     public static class tPose2D extends Struct {
         public final static int sizeof32 = 24;
