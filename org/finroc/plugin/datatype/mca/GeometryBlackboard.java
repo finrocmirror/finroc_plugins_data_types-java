@@ -30,11 +30,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 import org.finroc.core.portdatabase.DataType;
-import org.finroc.gui.commons.fastdraw.Paintable;
 import org.finroc.jc.jni.StructBase;
 import org.finroc.jc.stream.FixedBuffer;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
+import org.finroc.plugin.datatype.Paintable;
 import org.finroc.plugin.datatype.Vector2D;
 
 public class GeometryBlackboard extends BlackboardBuffer implements Paintable {
