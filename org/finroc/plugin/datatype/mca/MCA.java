@@ -364,7 +364,7 @@ public class MCA {
         public static final Signed32S _type = new Signed32S(0, 0);
         public final Signed32 type = new Signed32(_type);
         public static final InnerStruct _color = new InnerStruct(4, 4);
-        public final tRGB24 color = new tRGB24(this, 4, 4);
+        public final tRGB32 color = new tRGB32(this, 4, 4);
         public static final InnerStruct _pose = new InnerStruct(8, 8);
         public final tPose2D pose = new tPose2D(this, 8, 8);
         public static final Unsigned16S _dimension = new Unsigned16S(32, 32);
@@ -399,6 +399,38 @@ public class MCA {
         public final Unsigned8 g = new Unsigned8(_g);
         public static final Unsigned8S _b = new Unsigned8S(2, 2);
         public final Unsigned8 b = new Unsigned8(_b);
+    }
+
+    public static class tRGB32 extends Struct {
+        public final static int sizeof32 = 4;
+        public final static int sizeof64 = 4;
+        public final static int sizeof   = JNIInfo.is64BitPlatform() ? sizeof64 : sizeof32;
+        public int getSize32() {
+            return sizeof32;
+        }
+        public int getSize64() {
+            return sizeof64;
+        }
+        public int getSize()   {
+            return sizeof;
+        }
+
+        public tRGB32() {}
+        public tRGB32(FixedBuffer dbb) {
+            super(dbb);
+        }
+        public tRGB32(StructBase parentStruct, int offset32, int offset64) {
+            super(parentStruct, offset32, offset64);
+        }
+
+        public static final Unsigned8S _r = new Unsigned8S(0, 0);
+        public final Unsigned8 r = new Unsigned8(_r);
+        public static final Unsigned8S _g = new Unsigned8S(1, 1);
+        public final Unsigned8 g = new Unsigned8(_g);
+        public static final Unsigned8S _b = new Unsigned8S(2, 2);
+        public final Unsigned8 b = new Unsigned8(_b);
+        public static final Unsigned8S _a = new Unsigned8S(3, 3);
+        public final Unsigned8 a = new Unsigned8(_a);
     }
 
     public static class tCircle extends Struct {
@@ -904,5 +936,47 @@ public class MCA {
         public final Float64 y = new Float64(_y);
         public static final Float64S _z = new Float64S(18, 18);
         public final Float64 z = new Float64(_z);
+    }
+
+    public static class tArrow extends Struct {
+        public final static int sizeof32 = 76;
+        public final static int sizeof64 = 76;
+        public final static int sizeof   = JNIInfo.is64BitPlatform() ? sizeof64 : sizeof32;
+        public int getSize32() {
+            return sizeof32;
+        }
+        public int getSize64() {
+            return sizeof64;
+        }
+        public int getSize()   {
+            return sizeof;
+        }
+
+        public tArrow() {}
+        public tArrow(FixedBuffer dbb) {
+            super(dbb);
+        }
+        public tArrow(StructBase parentStruct, int offset32, int offset64) {
+            super(parentStruct, offset32, offset64);
+        }
+
+        public static final InnerStruct _start = new InnerStruct(20, 20);
+        public final tVec2T_double start = new tVec2T_double(this, 20, 20);
+        public static final InnerStruct _end = new InnerStruct(36, 36);
+        public final tVec2T_double end = new tVec2T_double(this, 36, 36);
+        public static final Bool8S _head_at_start = new Bool8S(52, 52);
+        public final Bool8 head_at_start = new Bool8(_head_at_start);
+        public static final Bool8S _head_at_end = new Bool8S(53, 53);
+        public final Bool8 head_at_end = new Bool8(_head_at_end);
+        public static final Bool8S _filled = new Bool8S(54, 54);
+        public final Bool8 filled = new Bool8(_filled);
+        public static final Float64S _head_opening_angle = new Float64S(56, 56);
+        public final Float64 head_opening_angle = new Float64(_head_opening_angle);
+        public static final Float64S _head_length = new Float64S(64, 64);
+        public final Float64 head_length = new Float64(_head_length);
+        public static final Bool8S _head_length_relative = new Bool8S(72, 72);
+        public final Bool8 head_length_relative = new Bool8(_head_length_relative);
+        public static final InnerStruct _point = new InnerStruct(4, 4);
+        public final tVec2T_double point = new tVec2T_double(this, 4, 4);
     }
 }
