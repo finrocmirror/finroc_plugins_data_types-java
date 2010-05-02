@@ -211,12 +211,13 @@ public class GeometryBlackboard extends BlackboardBuffer implements Paintable {
 
                     for (int i = 0; i < shapeCount; i++) {
                         r.text.setRelAddress(pos);
-                        pos += r.text.getSize();
 
                         double x = r.text.position.x.get();
                         double y = -r.text.position.y.get();
                         String text = buf.getString(pos + MCA.tText._text_0.getOffset()).toString();
                         float size = r.text.size.get();
+
+                        pos += r.text.getSize(); // increment here - because of text reading before
 
                         Font tmp = g.getFont();
                         g.setFont(tmp.deriveFont(size));
