@@ -36,10 +36,10 @@ import org.finroc.jc.jni.StructBase;
 import org.finroc.jc.stream.FixedBuffer;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.plugin.datatype.Paintable;
+import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.plugin.datatype.Vector2D;
 
-public class GeometryBlackboard extends BlackboardBuffer implements Paintable {
+public class GeometryBlackboard extends BlackboardBuffer implements PaintablePortData {
 
     public static DataType TYPE = BlackboardPlugin.registerBlackboardType(GeometryBlackboard.class, "Geometry Entries");
     public static DataType MTYPE = TYPE.getRelatedType();
