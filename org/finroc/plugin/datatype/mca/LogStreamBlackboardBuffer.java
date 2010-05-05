@@ -3,7 +3,6 @@ package org.finroc.plugin.datatype.mca;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.finroc.core.buffer.CoreInput;
 import org.finroc.core.portdatabase.DataType;
@@ -58,7 +57,7 @@ public class LogStreamBlackboardBuffer extends BlackboardBuffer implements Conta
 
             long time = (sec * 1000L) + (usec / 1000L);
             date.setTime(time);
-            contents.add(format.format(time) + ": " + s.trim());
+            contents.add(0, format.format(time) + ": " + s.trim());
         }
     }
 }
