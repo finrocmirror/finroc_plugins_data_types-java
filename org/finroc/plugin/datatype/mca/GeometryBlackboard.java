@@ -77,6 +77,10 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
     @Override
     public void paint(Graphics2D g) {
 
+        if (this.getSize() <= 0 || this.getElements() <= 0) {
+            return;
+        }
+
         // init graphics object
         AffineTransform at = g.getTransform();
 
