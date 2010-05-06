@@ -1,11 +1,13 @@
 package org.finroc.plugin.datatype.mca;
 
+import java.io.EOFException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.finroc.core.buffer.CoreInput;
 import org.finroc.core.portdatabase.DataType;
+import org.finroc.jc.stream.FixedBuffer;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.ContainsStrings;
@@ -25,6 +27,11 @@ public class LogStreamBlackboardBuffer extends BlackboardBuffer implements Conta
     //public static final DateFormat format = DateFormat.getTimeInstance();
     public static final DateFormat format = DateFormat.getTimeInstance();
     public final Date date = new Date();
+
+    // Helper variables for deserializing
+    public final StringBuilder sbuf = new StringBuilder();
+    public int lastPos, curPos, wrapPos;
+    public final FixedBuffer hdr = new FixedBuffer(12);
 
     @Override
     public CharSequence getString(int index) {
@@ -47,17 +54,54 @@ public class LogStreamBlackboardBuffer extends BlackboardBuffer implements Conta
 
         // deserialize
         contents.clear();
-        int pos = getElementSize();
-        while (pos + 12 < getSize() && getBuffer().getByte(pos + 12) != 0) {
-            long sec = MCA.tTime._tv_sec.getRel(getBuffer(), pos);
-            long usec = MCA.tTime._tv_usec.getRel(getBuffer(), pos);
-            pos += 12;
-            String s = getBuffer().getString(pos);
-            pos += s.length() + 1;
+        try {
+            wrapPos = getElementSize();
+            lastPos = getBuffer().getInt(0) + wrapPos;
+            curPos = lastPos;
 
-            long time = (sec * 1000L) + (usec / 1000L);
-            date.setTime(time);
-            contents.add(0, format.format(time) + ": " + s.trim());
+            while (true) {
+                if (readNextByte() != 0) { // end of string
+                    break;
+                }
+                sbuf.setLength(0);
+                byte c = 0;
+                while ((c = readNextByte()) != 0) {
+                    sbuf.append((char)c);
+                }
+                sbuf.reverse();
+                if (sbuf.length() <= 0) {
+                    break; // ok, we're done
+                }
+
+                // copy header
+                hdr.putByte(11, c);
+                for (int i = 10; i >= 0; i--) {
+                    hdr.putByte(i, readNextByte());
+                }
+
+                // read tTime
+                long sec = MCA.tTime._tv_sec.getRel(hdr, 0);
+                long usec = MCA.tTime._tv_usec.getRel(hdr, 0);
+                long time = (sec * 1000L) + (usec / 1000L);
+                date.setTime(time);
+                contents.add(format.format(time) + ": " + sbuf.toString().trim());
+            }
+
+        } catch (EOFException e) {
+            // normal when buffer was wrapped around
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    public byte readNextByte() throws EOFException {
+        curPos--;
+        if (curPos < wrapPos) {
+            curPos = getSize() - 1;
+        }
+        if (curPos == lastPos) {
+            throw new EOFException();
+        }
+        return getBuffer().getByte(curPos);
     }
 }
