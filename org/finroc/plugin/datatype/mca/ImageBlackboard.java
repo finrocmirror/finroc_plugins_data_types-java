@@ -50,7 +50,7 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
     private int lastType = -1;
 
     /** The size of tImageInfo plus alignment padding (see tImage.h) */
-    private static final int cImageInfoSizeWithPadding = MCA.tImage.sizeof;
+    private static final int cImageInfoSizeWithPadding = MCA.cImageInfoSizeWithPadding;
 
     @Override
     public Blittable getBlittable() {

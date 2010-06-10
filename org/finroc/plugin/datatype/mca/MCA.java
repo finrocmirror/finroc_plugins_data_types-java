@@ -709,8 +709,8 @@ public class MCA {
     }
 
     public static class tImageInfo extends Struct {
-        public final static int sizeof32 = 44;
-        public final static int sizeof64 = 44;
+        public final static int sizeof32 = 48;
+        public final static int sizeof64 = 48;
         public final static int sizeof   = JNIInfo.is64BitPlatform() ? sizeof64 : sizeof32;
         public int getSize32() {
             return sizeof32;
@@ -745,6 +745,8 @@ public class MCA {
         public static final Unsigned32S _extra_data_offset = new Unsigned32S(24, 24);
         public final Unsigned32 extra_data_offset = new Unsigned32(_extra_data_offset);
         public static final InnerStruct _region_of_interest = new InnerStruct(28, 28);
+        public static final Bool8S _region_of_interest_valid = new Bool8S(44, 44);
+        public final Bool8 region_of_interest_valid = new Bool8(_region_of_interest_valid);
     }
 
     public static class tImage extends Struct {
@@ -780,31 +782,11 @@ public class MCA {
     }
 
     /** tImageFormat */
-    public static final int
-    eIMAGE_FORMAT_MONO8 = 0,
-                          eIMAGE_FORMAT_MONO16 = 1,
-                                                 eIMAGE_FORMAT_MONO32_FLOAT = 2,
-                                                                              eIMAGE_FORMAT_RGB565 = 3,
-                                                                                                     eIMAGE_FORMAT_RGB24 = 4,
-                                                                                                                           eIMAGE_FORMAT_BGR24 = 5,
-                                                                                                                                                 eIMAGE_FORMAT_RGB32 = 6,
-                                                                                                                                                                       eIMAGE_FORMAT_BGR32 = 7,
-                                                                                                                                                                                             eIMAGE_FORMAT_YUV420P = 8,
-                                                                                                                                                                                                                     eIMAGE_FORMAT_YUV411 = 9,
-                                                                                                                                                                                                                                            eIMAGE_FORMAT_YUV422 = 10,
-                                                                                                                                                                                                                                                                   eIMAGE_FORMAT_UYVY422 = 11,
-                                                                                                                                                                                                                                                                                           eIMAGE_FORMAT_YUV444 = 12,
-                                                                                                                                                                                                                                                                                                                  eIMAGE_FORMAT_BAYER_RGGB = 13,
-                                                                                                                                                                                                                                                                                                                                             eIMAGE_FORMAT_BAYER_GBRG = 14,
-                                                                                                                                                                                                                                                                                                                                                                        eIMAGE_FORMAT_BAYER_GRBG = 15,
-                                                                                                                                                                                                                                                                                                                                                                                                   eIMAGE_FORMAT_BAYER_BGGR = 16,
-                                                                                                                                                                                                                                                                                                                                                                                                                              eIMAGE_FORMAT_HSV = 17,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                  eIMAGE_FORMAT_HLS = 18,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                      eIMAGE_FORMAT_HI240 = 19,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            eIMAGE_FORMAT_DIMENSION = 20;
+    public static final int eIMAGE_FORMAT_MONO8 = 0, eIMAGE_FORMAT_MONO16 = 1, eIMAGE_FORMAT_MONO32_FLOAT = 2, eIMAGE_FORMAT_RGB565 = 3, eIMAGE_FORMAT_RGB24 = 4, eIMAGE_FORMAT_BGR24 = 5, eIMAGE_FORMAT_RGB32 = 6, eIMAGE_FORMAT_BGR32 = 7, eIMAGE_FORMAT_YUV420P = 8, eIMAGE_FORMAT_YUV411 = 9,
+            eIMAGE_FORMAT_YUV422 = 10, eIMAGE_FORMAT_UYVY422 = 11, eIMAGE_FORMAT_YUV444 = 12, eIMAGE_FORMAT_BAYER_RGGB = 13, eIMAGE_FORMAT_BAYER_GBRG = 14, eIMAGE_FORMAT_BAYER_GRBG = 15, eIMAGE_FORMAT_BAYER_BGGR = 16, eIMAGE_FORMAT_HSV = 17, eIMAGE_FORMAT_HLS = 18, eIMAGE_FORMAT_HI240 = 19, eIMAGE_FORMAT_DIMENSION = 20;
 
     /** cImageInfoSizeWithPadding */
-    public static final int cImageInfoSizeWithPadding = 44;
+    public static final int cImageInfoSizeWithPadding = 48;
 
     public static class tBlackboardInfo extends Struct {
         public final static int sizeof32 = 24;
