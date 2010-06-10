@@ -55,6 +55,7 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
     @Override
     public Blittable getBlittable() {
         synchronized (info) {
+            info.setBuffer(getBuffer());
             int type = info.format.get();
             if (type == lastType) {
                 blitter.reinit();
@@ -152,7 +153,7 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
             int r = _r < 0 ? 0 : (_r > 255 ? 255 : _r);
             int g = _g < 0 ? 0 : (_g > 255 ? 255 : _g);
             int b = _b < 0 ? 0 : (_b > 255 ? 255 : _b);
-            return (r << 16) | (g << 8) | b;
+            return toInt((byte)r, (byte)g, (byte)b);
         }
     }
 
