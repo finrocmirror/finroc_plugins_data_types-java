@@ -34,8 +34,10 @@ import java.awt.geom.Rectangle2D;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.jc.jni.StructBase;
 import org.finroc.jc.stream.FixedBuffer;
+import org.finroc.log.LogLevel;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
+import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.plugin.datatype.Vector2D;
 
@@ -321,7 +323,7 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
                     break;
 
                 default:
-                    System.out.println("warning: Unknown entry type " + type + " in Geometry blackboard... skipping the rest");
+                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning: Unknown entry type " + type + " in Geometry blackboard... skipping the rest");
                     // reset graphics object
                     g.setTransform(at);
                     return;
@@ -332,7 +334,7 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "GeometryBlackboard", e);
         }
     }
 }

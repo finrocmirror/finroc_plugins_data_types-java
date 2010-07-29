@@ -8,9 +8,11 @@ import java.util.Date;
 import org.finroc.core.buffer.CoreInput;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.jc.stream.FixedBuffer;
+import org.finroc.log.LogLevel;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.ContainsStrings;
+import org.finroc.plugin.datatype.DataTypePlugin;
 
 /**
  * @author max
@@ -90,7 +92,7 @@ public class LogStreamBlackboardBuffer extends BlackboardBuffer implements Conta
         } catch (EOFException e) {
             // normal when buffer was wrapped around
         } catch (Exception e) {
-            e.printStackTrace();
+            log(LogLevel.LL_ERROR, DataTypePlugin.logDomain, e);
         }
     }
 

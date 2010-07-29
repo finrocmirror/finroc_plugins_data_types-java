@@ -25,6 +25,8 @@ import org.finroc.core.plugin.Plugin;
 import org.finroc.core.plugin.PluginManager;
 import org.finroc.core.plugin.Plugins;
 //import org.finroc.plugin.datatype.mca.MCA;
+import org.finroc.jc.annotation.JavaOnly;
+import org.finroc.log.LogDomain;
 import org.finroc.plugin.datatype.mca.MCA;
 
 /**
@@ -39,4 +41,7 @@ public class DataTypePlugin implements Plugin {
         Plugins.loadAllDataTypesInPackage(MCA.class);
     }
 
+    /** Log domain for this class */
+    @JavaOnly
+    public static final LogDomain logDomain = Plugins.logDomain.getSubDomain("data_types");
 }

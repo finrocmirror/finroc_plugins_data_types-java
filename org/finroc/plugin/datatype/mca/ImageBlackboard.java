@@ -25,9 +25,11 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.finroc.core.portdatabase.DataType;
+import org.finroc.log.LogLevel;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.Blittable;
+import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.HasBlittable;
 
 /**
@@ -92,7 +94,7 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
                 blitter = new YUV420P();
                 break;
             default:
-                System.out.println("warning (ImageBlackboard): Image format " + type + " not supported yet");
+                DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning (ImageBlackboard): Image format " + type + " not supported yet");
                 return Blittable.Empty.instance;
             }
 
