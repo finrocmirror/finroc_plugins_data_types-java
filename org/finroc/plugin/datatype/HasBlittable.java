@@ -23,6 +23,7 @@ package org.finroc.plugin.datatype;
 
 import org.finroc.core.buffer.CoreInput;
 import org.finroc.core.buffer.CoreOutput;
+import org.finroc.core.port.std.EmptyPortDataImpl;
 import org.finroc.core.port.std.PortData;
 import org.finroc.core.port.std.PortDataImpl;
 import org.finroc.core.portdatabase.DataType;
@@ -45,7 +46,7 @@ public interface HasBlittable extends PortData {
     /**
      * Empty Blittable
      */
-    public class Empty extends PortDataImpl implements HasBlittable {
+    public class Empty extends EmptyPortDataImpl implements HasBlittable {
 
         static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "DummyBlittable");
 
@@ -53,11 +54,5 @@ public interface HasBlittable extends PortData {
         public Blittable getBlittable() {
             return org.finroc.plugin.datatype.Blittable.Empty.instance;
         }
-
-        @Override
-        public void deserialize(CoreInput is) {}
-
-        @Override
-        public void serialize(CoreOutput os) {}
     }
 }

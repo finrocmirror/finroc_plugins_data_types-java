@@ -22,10 +22,8 @@ package org.finroc.plugin.datatype;
 
 import java.awt.Graphics2D;
 
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
+import org.finroc.core.port.std.EmptyPortDataImpl;
 import org.finroc.core.port.std.PortData;
-import org.finroc.core.port.std.PortDataImpl;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.core.portdatabase.DataTypeRegister;
 
@@ -43,18 +41,11 @@ public interface PaintablePortData extends Paintable, PortData {
     /**
      * Empty Paintable
      */
-    public class Empty extends PortDataImpl implements PaintablePortData {
+    public class Empty extends EmptyPortDataImpl implements PaintablePortData {
 
         static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "DummyPaintable");
 
         @Override
         public void paint(Graphics2D g) {}
-
-        @Override
-        public void deserialize(CoreInput is) {}
-
-        @Override
-        public void serialize(CoreOutput os) {}
-
     }
 }

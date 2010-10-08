@@ -22,10 +22,8 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
 import org.finroc.core.datatype.Unit;
-import org.finroc.core.port.std.PortDataImpl;
+import org.finroc.core.port.std.EmptyPortDataImpl;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.core.portdatabase.DataTypeRegister;
 
@@ -68,7 +66,7 @@ public interface Function extends HasFunctionRepresentation {
     /**
      * Empty Function
      */
-    public class Empty extends PortDataImpl implements Function {
+    public class Empty extends EmptyPortDataImpl implements Function {
 
         static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "EmptyFunction");
 
@@ -102,14 +100,6 @@ public interface Function extends HasFunctionRepresentation {
         @Override
         public Unit getYUnit() {
             return Unit.NO_UNIT;
-        }
-
-        @Override
-        public void deserialize(CoreInput is) {
-        }
-
-        @Override
-        public void serialize(CoreOutput os) {
         }
     }
 }

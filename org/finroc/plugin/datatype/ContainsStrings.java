@@ -22,10 +22,8 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
+import org.finroc.core.port.std.EmptyPortDataImpl;
 import org.finroc.core.port.std.PortData;
-import org.finroc.core.port.std.PortDataImpl;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.core.portdatabase.DataTypeRegister;
 
@@ -60,7 +58,7 @@ public interface ContainsStrings extends PortData {
      * Empty String List
      */
     @JavaOnly
-    public class Empty extends PortDataImpl implements ContainsStrings {
+    public class Empty extends EmptyPortDataImpl implements ContainsStrings {
 
         static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "EmptyStrings");
 
@@ -76,14 +74,6 @@ public interface ContainsStrings extends PortData {
         @Override
         public int stringCount() {
             return 0;
-        }
-
-        @Override
-        public void deserialize(CoreInput is) {
-        }
-
-        @Override
-        public void serialize(CoreOutput os) {
         }
     }
 

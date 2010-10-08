@@ -22,10 +22,8 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
+import org.finroc.core.port.std.EmptyPortDataImpl;
 import org.finroc.core.port.std.PortData;
-import org.finroc.core.port.std.PortDataImpl;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.core.portdatabase.DataTypeRegister;
 
@@ -46,21 +44,13 @@ public interface HasFunctionRepresentation extends PortData {
      * Empty Function
      */
     @JavaOnly
-    public class Empty extends PortDataImpl implements HasFunctionRepresentation {
+    public class Empty extends EmptyPortDataImpl implements HasFunctionRepresentation {
 
         static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "HasEmptyFunction");
 
         @Override
         public Function asFunction() {
             return Function.Empty.instance;
-        }
-
-        @Override
-        public void deserialize(CoreInput is) {
-        }
-
-        @Override
-        public void serialize(CoreOutput os) {
         }
     }
 }

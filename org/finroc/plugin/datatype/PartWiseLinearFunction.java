@@ -230,4 +230,14 @@ public class PartWiseLinearFunction extends PortDataImpl implements Function {
     public void serialize(CoreOutput os) {
         throw new RuntimeException("Currently unsupported");
     }
+
+    @Override
+    public String serialize() {
+        throw new RuntimeException("Currently unsupported");
+    }
+
+    @Override
+    public void deserialize(String s) {
+        throw new RuntimeException("Currently unsupported");
+    }
 }

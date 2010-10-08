@@ -22,10 +22,8 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
+import org.finroc.core.port.std.EmptyPortDataImpl;
 import org.finroc.core.port.std.PortData;
-import org.finroc.core.port.std.PortDataImpl;
 import org.finroc.core.portdatabase.Copyable;
 import org.finroc.core.portdatabase.DataType;
 import org.finroc.core.portdatabase.DataTypeRegister;
@@ -80,7 +78,7 @@ public interface BehaviourInfo extends PortData {
      * Dummy/Empty behaviour info
      */
     @JavaOnly
-    public static class Empty extends PortDataImpl implements BehaviourInfo {
+    public static class Empty extends EmptyPortDataImpl implements BehaviourInfo {
 
         static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "EmptyBehaviour");
 
@@ -96,20 +94,12 @@ public interface BehaviourInfo extends PortData {
 
         @Override
         public void setSize(int size) {}
-
-        @Override
-        public void deserialize(CoreInput is) {
-        }
-
-        @Override
-        public void serialize(CoreOutput os) {
-        }
     }
 
     @JavaOnly
     public static class Util {
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings( { "rawtypes", "unchecked" })
         public static void copy(BehaviourInfo src, BehaviourInfo dest) {
             if (src.getClass() == dest.getClass() && src instanceof Copyable) {
                 try {
