@@ -373,10 +373,10 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
             // ungerade Zahl am Anfang?
             imageData.position(lineOffset + (srcX / 2) * 4);
             if (srcX % 2 != 0) {
-                u  = imageData.get();
-                y1 = imageData.get();
-                v  = imageData.get();
-                y2 = imageData.get();
+                y1  = imageData.get();
+                u = imageData.get();
+                y2  = imageData.get();
+                v = imageData.get();
                 destBuffer[destOffset] = yuvToRGB(y2, u, v);
                 destOffset++;
                 width--;
@@ -386,10 +386,10 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
             boolean singlePixelEnd = (width % 2 != 0);
             width = (width / 2) * 2;
             for (int x = 0; x < width; x += 2) {
-                u  = imageData.get();
-                y1 = imageData.get();
-                v  = imageData.get();
-                y2 = imageData.get();
+                y1  = imageData.get();
+                u = imageData.get();
+                y2  = imageData.get();
+                v = imageData.get();
                 destBuffer[destOffset] = yuvToRGB(y1, u, v);
                 destBuffer[destOffset+1] = yuvToRGB(y2, u, v);
                 destOffset += 2;
@@ -397,10 +397,10 @@ public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
 
             // ungerade Zahl am Ende?
             if (singlePixelEnd) {
-                u  = imageData.get();
-                y1 = imageData.get();
-                v  = imageData.get();
-                y2 = imageData.get();
+                y1  = imageData.get();
+                u = imageData.get();
+                y2  = imageData.get();
+                v = imageData.get();
                 destBuffer[destOffset] = yuvToRGB(y1, u, v);
             }
         }
