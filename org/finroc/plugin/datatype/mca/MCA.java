@@ -369,6 +369,8 @@ public class MCA {
         public final tPose2D pose = new tPose2D(this, 8, 8);
         public static final Unsigned16S _dimension = new Unsigned16S(32, 32);
         public final Unsigned16 dimension = new Unsigned16(_dimension);
+        public static final Bool8S _filled = new Bool8S(34, 34);
+        public final Bool8 filled = new Bool8(_filled);
     }
 
     public static class tRGB24 extends Struct {
@@ -434,8 +436,8 @@ public class MCA {
     }
 
     public static class tCircle extends Struct {
-        public final static int sizeof32 = 48;
-        public final static int sizeof64 = 48;
+        public final static int sizeof32 = 44;
+        public final static int sizeof64 = 44;
         public final static int sizeof   = JNIInfo.is64BitPlatform() ? sizeof64 : sizeof32;
         public int getSize32() {
             return sizeof32;
@@ -457,19 +459,17 @@ public class MCA {
 
         public static final Float64S _radius = new Float64S(20, 20);
         public final Float64 radius = new Float64(_radius);
-        public static final Bool8S _filled = new Bool8S(28, 28);
-        public final Bool8 filled = new Bool8(_filled);
-        public static final Float64S _rad_start = new Float64S(32, 32);
+        public static final Float64S _rad_start = new Float64S(28, 28);
         public final Float64 rad_start = new Float64(_rad_start);
-        public static final Float64S _rad_length = new Float64S(40, 40);
+        public static final Float64S _rad_length = new Float64S(36, 36);
         public final Float64 rad_length = new Float64(_rad_length);
         public static final InnerStruct _point = new InnerStruct(4, 4);
         public final tVec2T_double point = new tVec2T_double(this, 4, 4);
     }
 
     public static class tRectangle extends Struct {
-        public final static int sizeof32 = 56;
-        public final static int sizeof64 = 56;
+        public final static int sizeof32 = 52;
+        public final static int sizeof64 = 52;
         public final static int sizeof   = JNIInfo.is64BitPlatform() ? sizeof64 : sizeof32;
         public int getSize32() {
             return sizeof32;
@@ -493,14 +493,13 @@ public class MCA {
         public final tVec2T_double dir1 = new tVec2T_double(this, 20, 20);
         public static final InnerStruct _dir2 = new InnerStruct(36, 36);
         public final tVec2T_double dir2 = new tVec2T_double(this, 36, 36);
-        public static final Bool8S _filled = new Bool8S(52, 52);
-        public final Bool8 filled = new Bool8(_filled);
         public static final InnerStruct _point = new InnerStruct(4, 4);
         public final tVec2T_double point = new tVec2T_double(this, 4, 4);
     }
 
     /** tGeometryType */
-    public static final int eGT_POINT = 0, eGT_POINT_3D = 1, eGT_LINE = 2, eGT_LINE_SEGMENT = 3, eGT_CIRCLE = 4, eGT_RECTANGLE = 5, eGT_TEXT = 6, eGT_TRIANGLE = 7, eGT_ARROW = 8, eGT_DIMENSION = 9;
+    public static final int eGT_POINT = 0, eGT_POINT_3D = 1, eGT_LINE = 2, eGT_LINE_SEGMENT = 3, eGT_CIRCLE = 4, eGT_RECTANGLE = 5, eGT_TEXT = 6, eGT_TRIANGLE = 7, eGT_ARROW = 8,
+                                        eGT_CUBE = 9, eGT_CYLINDER = 10, eGT_CIRCLE_3D = 11, eGT_RECTANGLE_3D = 12, eGT_DIMENSION = 13;
 
     public static class tPose2D extends Struct {
         public final static int sizeof32 = 24;
@@ -825,8 +824,8 @@ public class MCA {
     }
 
     public static class tTriangle extends Struct {
-        public final static int sizeof32 = 72;
-        public final static int sizeof64 = 72;
+        public final static int sizeof32 = 68;
+        public final static int sizeof64 = 68;
         public final static int sizeof   = JNIInfo.is64BitPlatform() ? sizeof64 : sizeof32;
         public int getSize32() {
             return sizeof32;
@@ -852,8 +851,6 @@ public class MCA {
         public final tVec2T_double point_2 = new tVec2T_double(this, 36, 36);
         public static final InnerStruct _point_3 = new InnerStruct(52, 52);
         public final tVec2T_double point_3 = new tVec2T_double(this, 52, 52);
-        public static final Bool8S _filled = new Bool8S(68, 68);
-        public final Bool8 filled = new Bool8(_filled);
         public static final InnerStruct _point = new InnerStruct(4, 4);
         public final tVec2T_double point = new tVec2T_double(this, 4, 4);
     }

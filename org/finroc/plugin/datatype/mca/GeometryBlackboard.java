@@ -115,6 +115,7 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
                 int alpha = r.header.color.a.get();
                 int shapeCount = r.header.dimension.get();
                 int type = r.header.type.get();
+                boolean filled = r.header.filled.get();
 
                 if (type == MCA.eGT_DIMENSION) {
                     return; // end signal
@@ -190,7 +191,7 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
                         g.rotate(rotation);
                         g.draw(r.rRect);
                         g.rotate(-rotation);
-                        if (r.rectangle.filled.get()) {
+                        if (filled) {
                             g.fill(r.rRect);
                         }
                     }
@@ -207,7 +208,7 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
 
                         r.rCircle.setFrame(x - radius, y - radius, 2 * radius, 2 * radius);
                         g.draw(r.rCircle);
-                        if (r.circle.filled.get()) {
+                        if (filled) {
                             g.fill(r.rCircle);
                         }
                     }
@@ -253,7 +254,7 @@ public class GeometryBlackboard extends BlackboardBuffer implements PaintablePor
                         r.y[2] = -(int)r.triangle.point_3.y.get();
 
                         g.drawPolygon(r.x, r.y, 3);
-                        if (r.triangle.filled.get()) {
+                        if (filled) {
                             g.fillPolygon(r.x, r.y, 3);
                         }
 
