@@ -22,11 +22,12 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.port.std.EmptyPortDataImpl;
-import org.finroc.core.port.std.PortData;
-import org.finroc.core.portdatabase.Copyable;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
+import org.finroc.serialization.Copyable;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializable;
+import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
@@ -34,9 +35,9 @@ import org.finroc.core.portdatabase.DataTypeRegister;
  * MCA Style behaviour info - see tBehaviourInfo.h
  */
 @JavaOnly
-public interface BehaviourInfo extends PortData {
+public interface BehaviourInfo extends RRLibSerializable {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(BehaviourInfo.class);
+    public final static DataType<BehaviourInfo> TYPE = new DataType<BehaviourInfo>(BehaviourInfo.class);
 
     /**
      * @return Number of entries
@@ -78,9 +79,9 @@ public interface BehaviourInfo extends PortData {
      * Dummy/Empty behaviour info
      */
     @JavaOnly
-    public static class Empty extends EmptyPortDataImpl implements BehaviourInfo {
+    public static class Empty extends RRLibSerializableImpl implements BehaviourInfo {
 
-        static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "EmptyBehaviour");
+        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyBehaviour");
 
         @Override
         public Entry getEntry(int index) {
@@ -94,6 +95,14 @@ public interface BehaviourInfo extends PortData {
 
         @Override
         public void setSize(int size) {}
+
+        @Override
+        public void serialize(OutputStreamBuffer os) {
+        }
+
+        @Override
+        public void deserialize(InputStreamBuffer is) {
+        }
     }
 
     @JavaOnly

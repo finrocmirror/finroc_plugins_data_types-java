@@ -22,9 +22,7 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.core.plugin.Plugin;
-import org.finroc.core.plugin.PluginManager;
 import org.finroc.core.plugin.Plugins;
-//import org.finroc.plugin.datatype.mca.MCA;
 import org.finroc.jc.annotation.JavaOnly;
 import org.finroc.log.LogDomain;
 import org.finroc.plugin.datatype.mca.MCA;
@@ -36,7 +34,7 @@ import org.finroc.plugin.datatype.mca.MCA;
 public class DataTypePlugin implements Plugin {
 
     @Override
-    public void init(PluginManager mgr) {
+    public void init(/*PluginManager mgr*/) {
         Plugins.loadAllDataTypesInPackage(BehaviourInfo.class);
         Plugins.loadAllDataTypesInPackage(MCA.class);
     }

@@ -21,13 +21,14 @@
  */
 package org.finroc.plugin.datatype;
 
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
-import org.finroc.core.port.cc.CCPortData;
-import org.finroc.core.port.cc.CCPortDataImpl;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
 import org.finroc.jc.annotation.JavaOnly;
+import org.finroc.serialization.Copyable;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializableImpl;
+import org.finroc.serialization.StringInputStream;
+import org.finroc.serialization.StringOutputStream;
 
 /**
  * @author max
@@ -35,25 +36,16 @@ import org.finroc.jc.annotation.JavaOnly;
  * tPose3D Java equivalent
  */
 @JavaOnly
-public class Pose3D extends CCPortDataImpl {
+public class Pose3D extends RRLibSerializableImpl implements Copyable<Pose3D> {
 
     /** Data Type */
-    public static DataType TYPE = DataTypeRegister.getInstance().getDataType(Pose3D.class);
+    public final static DataType<Pose3D> TYPE = new DataType<Pose3D>(Pose3D.class);
 
     /** values */
     public double x, y, z, roll, pitch, yaw;
 
-    public Pose3D() {
-        type = TYPE;
-    }
-
     @Override
-    public DataType getType() {
-        return TYPE;
-    }
-
-    @Override
-    public void serialize(CoreOutput os) {
+    public void serialize(OutputStreamBuffer os) {
         os.writeDouble(x);
         os.writeDouble(y);
         os.writeDouble(z);
@@ -63,7 +55,7 @@ public class Pose3D extends CCPortDataImpl {
     }
 
     @Override
-    public void deserialize(CoreInput is) {
+    public void deserialize(InputStreamBuffer is) {
         x = is.readDouble();
         y = is.readDouble();
         z = is.readDouble();
@@ -73,26 +65,13 @@ public class Pose3D extends CCPortDataImpl {
     }
 
     @Override
-    public void assign(CCPortData other) {
-        if (!(other instanceof Pose3D)) {
-            return;
-        }
-        Pose3D o = (Pose3D)other;
-        x = o.x;
-        y = o.y;
-        z = o.z;
-        roll = o.roll;
-        pitch = o.pitch;
-        yaw = o.yaw;
+    public void serialize(StringOutputStream os) {
+        os.append("(").append(x).append(", ").append(y).append(", ").append(z).append(", ").append(roll).append(", ").append(pitch).append(", ").append(yaw).append(")");
     }
 
     @Override
-    public String serialize() {
-        return "(" + x + ", " + y + ", " + z + ", " + roll + ", " + pitch + ", " + yaw + ")";
-    }
-
-    @Override
-    public void deserialize(String s) throws Exception {
+    public void deserialize(StringInputStream is) throws Exception {
+        String s = is.readAll();
         s = s.trim();
         if (s.startsWith("(") && s.endsWith(")")) {
             s = s.substring(1, s.length() - 1);
@@ -108,5 +87,15 @@ public class Pose3D extends CCPortDataImpl {
             }
         }
         throw new Exception("Cannot parse " + s);
+    }
+
+    @Override
+    public void copyFrom(Pose3D o) {
+        x = o.x;
+        y = o.y;
+        z = o.z;
+        roll = o.roll;
+        pitch = o.pitch;
+        yaw = o.yaw;
     }
 }

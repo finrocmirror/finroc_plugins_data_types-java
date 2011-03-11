@@ -21,22 +21,20 @@
  */
 package org.finroc.plugin.datatype;
 
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
-import org.finroc.core.port.std.EmptyPortDataImpl;
-import org.finroc.core.port.std.PortData;
-import org.finroc.core.port.std.PortDataImpl;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializable;
+import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
  *
  * Data Type that in some way can be rendered to an image buffer.
  */
-public interface HasBlittable extends PortData {
+public interface HasBlittable extends RRLibSerializable {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(HasBlittable.class);
+    public final static DataType<HasBlittable> TYPE = new DataType<HasBlittable>(HasBlittable.class);
 
     /**
      * @return Blittable object
@@ -46,13 +44,21 @@ public interface HasBlittable extends PortData {
     /**
      * Empty Blittable
      */
-    public class Empty extends EmptyPortDataImpl implements HasBlittable {
+    public class Empty extends RRLibSerializableImpl implements HasBlittable {
 
-        static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "DummyBlittable");
+        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "DummyBlittable");
 
         @Override
         public Blittable getBlittable() {
             return org.finroc.plugin.datatype.Blittable.Empty.instance;
+        }
+
+        @Override
+        public void serialize(OutputStreamBuffer os) {
+        }
+
+        @Override
+        public void deserialize(InputStreamBuffer is) {
         }
     }
 }

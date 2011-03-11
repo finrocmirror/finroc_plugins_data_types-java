@@ -5,14 +5,15 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.jc.stream.FixedBuffer;
 import org.finroc.log.LogLevel;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.ContainsStrings;
 import org.finroc.plugin.datatype.DataTypePlugin;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
+import org.finroc.serialization.FixedBuffer;
+import org.finroc.serialization.InputStreamBuffer;
 
 /**
  * @author max
@@ -21,8 +22,8 @@ import org.finroc.plugin.datatype.DataTypePlugin;
  */
 public class LogStreamBlackboardBuffer extends BlackboardBuffer implements ContainsStrings {
 
-    public static DataType TYPE = BlackboardPlugin.registerBlackboardType(LogStreamBlackboardBuffer.class, "Log Stream");
-    public static DataType MTYPE = TYPE.getRelatedType();
+    public final static DataType<LogStreamBlackboardBuffer> TYPE = new DataType<LogStreamBlackboardBuffer>(LogStreamBlackboardBuffer.class, "Log Stream");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     public ArrayList<String> contents = new ArrayList<String>();
 
@@ -51,7 +52,7 @@ public class LogStreamBlackboardBuffer extends BlackboardBuffer implements Conta
     }
 
     @Override
-    public void deserialize(CoreInput is) {
+    public void deserialize(InputStreamBuffer is) {
         super.deserialize(is);
 
         // deserialize
@@ -92,7 +93,7 @@ public class LogStreamBlackboardBuffer extends BlackboardBuffer implements Conta
         } catch (EOFException e) {
             // normal when buffer was wrapped around
         } catch (Exception e) {
-            log(LogLevel.LL_ERROR, DataTypePlugin.logDomain, e);
+            DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "LogStreamBlackboard", e);
         }
     }
 

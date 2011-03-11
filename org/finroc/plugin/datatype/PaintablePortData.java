@@ -22,30 +22,39 @@ package org.finroc.plugin.datatype;
 
 import java.awt.Graphics2D;
 
-import org.finroc.core.port.std.EmptyPortDataImpl;
-import org.finroc.core.port.std.PortData;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializable;
+import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
  *
  * Marks objects that are paintable through Graphics interface
  */
-public interface PaintablePortData extends Paintable, PortData {
+public interface PaintablePortData extends Paintable, RRLibSerializable {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(PaintablePortData.class);
+    public final static DataType<PaintablePortData> TYPE = new DataType<PaintablePortData>(PaintablePortData.class);
 
     public void paint(Graphics2D g);
 
     /**
      * Empty Paintable
      */
-    public class Empty extends EmptyPortDataImpl implements PaintablePortData {
+    public class Empty extends RRLibSerializableImpl implements PaintablePortData {
 
-        static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "DummyPaintable");
+        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "DummyPaintable");
 
         @Override
         public void paint(Graphics2D g) {}
+
+        @Override
+        public void serialize(OutputStreamBuffer os) {
+        }
+
+        @Override
+        public void deserialize(InputStreamBuffer is) {
+        }
     }
 }

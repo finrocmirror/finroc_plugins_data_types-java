@@ -24,13 +24,14 @@ package org.finroc.plugin.datatype.mca;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import org.finroc.core.portdatabase.DataType;
 import org.finroc.log.LogLevel;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.Blittable;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.HasBlittable;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
 
 /**
  * @author max
@@ -39,8 +40,9 @@ import org.finroc.plugin.datatype.HasBlittable;
  */
 public class ImageBlackboard extends BlackboardBuffer implements HasBlittable {
 
-    public static DataType TYPE = BlackboardPlugin.registerBlackboardType(ImageBlackboard.class, "2D Image");
-    public static DataType MTYPE = TYPE.getRelatedType();
+    public final static DataType<ImageBlackboard> TYPE = new DataType<ImageBlackboard>(ImageBlackboard.class, "2D Image");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+
 
     /** Structure to access image information */
     private final MCA.tImageInfo info = new MCA.tImageInfo();

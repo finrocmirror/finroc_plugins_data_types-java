@@ -22,10 +22,10 @@
 package org.finroc.plugin.datatype.mca;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.jc.stream.FixedBuffer;
 import org.finroc.jc.jni.JNIInfo;
 import org.finroc.jc.jni.Struct;
 import org.finroc.jc.jni.StructBase;
+import org.finroc.serialization.FixedBuffer;
 
 @JavaOnly
 public class MCA {

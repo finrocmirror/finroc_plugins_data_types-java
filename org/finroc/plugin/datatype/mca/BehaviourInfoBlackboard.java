@@ -24,12 +24,13 @@ package org.finroc.plugin.datatype.mca;
 import java.util.ArrayList;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.jc.stream.FixedBuffer;
 
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.BehaviourInfo;
-import org.finroc.core.portdatabase.DataType;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
+import org.finroc.serialization.FixedBuffer;
 
 /**
  * @author max
@@ -38,8 +39,8 @@ import org.finroc.core.portdatabase.DataType;
 @JavaOnly
 public class BehaviourInfoBlackboard extends BlackboardBuffer implements BehaviourInfo {
 
-    public static DataType TYPE = BlackboardPlugin.registerBlackboardType(BehaviourInfoBlackboard.class, "Behaviour Info");
-    public static DataType MTYPE = TYPE.getRelatedType();
+    public final static DataType<BehaviourInfoBlackboard> TYPE = new DataType<BehaviourInfoBlackboard>(BehaviourInfoBlackboard.class, "Behaviour Info");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     /** Struct wrapper instances for accessing behaviour info - they stay constant once added */
     public final ArrayList<Entry> entries = new ArrayList<Entry>();

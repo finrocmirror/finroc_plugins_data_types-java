@@ -31,20 +31,21 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import org.finroc.core.portdatabase.DataType;
 import org.finroc.jc.jni.StructBase;
-import org.finroc.jc.stream.FixedBuffer;
 import org.finroc.log.LogLevel;
 import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.plugin.datatype.Vector2D;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
+import org.finroc.serialization.FixedBuffer;
 
 public class GeometryBlackboard extends BlackboardBuffer implements PaintablePortData {
 
-    public static DataType TYPE = BlackboardPlugin.registerBlackboardType(GeometryBlackboard.class, "Geometry Entries");
-    public static DataType MTYPE = TYPE.getRelatedType();
+    public final static DataType<GeometryBlackboard> TYPE = new DataType<GeometryBlackboard>(GeometryBlackboard.class, "Geometry Entries");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     /** Temporary variables for rendering */
     private ThreadLocal<RenderingThreadLocals> renderLocals = new ThreadLocal<RenderingThreadLocals>();

@@ -22,10 +22,12 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.port.std.EmptyPortDataImpl;
-import org.finroc.core.port.std.PortData;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializable;
+import org.finroc.serialization.RRLibSerializableImpl;
+
 
 /**
  * @author max
@@ -33,9 +35,9 @@ import org.finroc.core.portdatabase.DataTypeRegister;
  * All objects that are representable as a function
  */
 @JavaOnly
-public interface HasFunctionRepresentation extends PortData {
+public interface HasFunctionRepresentation extends RRLibSerializable {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(HasFunctionRepresentation.class);
+    public final static DataType<HasFunctionRepresentation> TYPE = new DataType<HasFunctionRepresentation>(HasFunctionRepresentation.class);
 
     /** Function representation of object */
     public Function asFunction();
@@ -44,13 +46,21 @@ public interface HasFunctionRepresentation extends PortData {
      * Empty Function
      */
     @JavaOnly
-    public class Empty extends EmptyPortDataImpl implements HasFunctionRepresentation {
+    public class Empty extends RRLibSerializableImpl implements HasFunctionRepresentation {
 
-        static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "HasEmptyFunction");
+        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "HasEmptyFunction");
 
         @Override
         public Function asFunction() {
             return Function.Empty.instance;
+        }
+
+        @Override
+        public void serialize(OutputStreamBuffer os) {
+        }
+
+        @Override
+        public void deserialize(InputStreamBuffer is) {
         }
     }
 }

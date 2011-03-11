@@ -21,13 +21,14 @@
  */
 package org.finroc.plugin.datatype;
 
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
-import org.finroc.core.port.cc.CCPortData;
-import org.finroc.core.port.cc.CCPortDataImpl;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
 import org.finroc.jc.annotation.JavaOnly;
+import org.finroc.serialization.Copyable;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializableImpl;
+import org.finroc.serialization.StringInputStream;
+import org.finroc.serialization.StringOutputStream;
 
 /**
  * @author max
@@ -35,52 +36,37 @@ import org.finroc.jc.annotation.JavaOnly;
  * tTime Java equivalent
  */
 @JavaOnly
-public class Time extends CCPortDataImpl {
+public class Time extends RRLibSerializableImpl implements Copyable<Time> {
 
     /** Data Type */
-    public static DataType TYPE = DataTypeRegister.getInstance().getDataType(Time.class);
+    public final static DataType<Time> TYPE = new DataType<Time>(Time.class);
 
     /** values */
     public int sec, usec;
 
     public Time() {
-        type = TYPE;
     }
 
     @Override
-    public DataType getType() {
-        return TYPE;
-    }
-
-    @Override
-    public void serialize(CoreOutput os) {
+    public void serialize(OutputStreamBuffer os) {
         os.writeInt(sec);
         os.writeInt(usec);
     }
 
     @Override
-    public void deserialize(CoreInput is) {
+    public void deserialize(InputStreamBuffer is) {
         sec = is.readInt();
         usec = is.readInt();
     }
 
     @Override
-    public void assign(CCPortData other) {
-        if (!(other instanceof Time)) {
-            return;
-        }
-        Time o = (Time)other;
-        sec = o.sec;
-        usec = o.usec;
+    public void serialize(StringOutputStream os) {
+        os.append("(").append(sec).append(", ").append(usec).append(")");
     }
 
     @Override
-    public String serialize() {
-        return "(" + sec + ", " + usec + ")";
-    }
-
-    @Override
-    public void deserialize(String s) throws Exception {
+    public void deserialize(StringInputStream is) throws Exception {
+        String s = is.readAll();
         s = s.trim();
         if (s.startsWith("(") && s.endsWith(")")) {
             s = s.substring(1, s.length() - 1);
@@ -92,5 +78,11 @@ public class Time extends CCPortDataImpl {
             }
         }
         throw new Exception("Cannot parse " + s);
+    }
+
+    @Override
+    public void copyFrom(Time o) {
+        sec = o.sec;
+        usec = o.usec;
     }
 }

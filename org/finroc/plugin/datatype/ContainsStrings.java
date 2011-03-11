@@ -22,10 +22,11 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.core.port.std.EmptyPortDataImpl;
-import org.finroc.core.port.std.PortData;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializable;
+import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
@@ -33,9 +34,9 @@ import org.finroc.core.portdatabase.DataTypeRegister;
  * Class that contains Strings
  */
 @JavaOnly
-public interface ContainsStrings extends PortData {
+public interface ContainsStrings extends RRLibSerializable {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(ContainsStrings.class);
+    public final static DataType<ContainsStrings> TYPE = new DataType<ContainsStrings>(ContainsStrings.class);
 
     /**
      * @return Number of Strings this class contains
@@ -58,9 +59,9 @@ public interface ContainsStrings extends PortData {
      * Empty String List
      */
     @JavaOnly
-    public class Empty extends EmptyPortDataImpl implements ContainsStrings {
+    public class Empty extends RRLibSerializableImpl implements ContainsStrings {
 
-        static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "EmptyStrings");
+        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyStrings");
 
         @Override
         public CharSequence getString(int index) {
@@ -74,6 +75,14 @@ public interface ContainsStrings extends PortData {
         @Override
         public int stringCount() {
             return 0;
+        }
+
+        @Override
+        public void serialize(OutputStreamBuffer os) {
+        }
+
+        @Override
+        public void deserialize(InputStreamBuffer is) {
         }
     }
 

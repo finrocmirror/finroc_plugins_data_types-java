@@ -27,11 +27,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.finroc.jc.annotation.JavaOnly;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializableImpl;
 
-import org.finroc.core.buffer.CoreInput;
-import org.finroc.core.buffer.CoreOutput;
 import org.finroc.core.datatype.Unit;
-import org.finroc.core.port.std.PortDataImpl;
 
 
 /**
@@ -43,7 +43,7 @@ import org.finroc.core.port.std.PortDataImpl;
  * Reading is not thread-safe during writes.
  */
 @JavaOnly
-public class PartWiseLinearFunction extends PortDataImpl implements Function {
+public class PartWiseLinearFunction extends RRLibSerializableImpl implements Function {
 
     /** UID */
     private static final long serialVersionUID = 105;
@@ -222,22 +222,12 @@ public class PartWiseLinearFunction extends PortDataImpl implements Function {
     }
 
     @Override
-    public void deserialize(CoreInput is) {
+    public void deserialize(InputStreamBuffer is) {
         throw new RuntimeException("Currently unsupported");
     }
 
     @Override
-    public void serialize(CoreOutput os) {
-        throw new RuntimeException("Currently unsupported");
-    }
-
-    @Override
-    public String serialize() {
-        throw new RuntimeException("Currently unsupported");
-    }
-
-    @Override
-    public void deserialize(String s) {
+    public void serialize(OutputStreamBuffer os) {
         throw new RuntimeException("Currently unsupported");
     }
 }

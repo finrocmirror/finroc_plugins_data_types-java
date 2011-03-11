@@ -21,8 +21,7 @@
  */
 package org.finroc.plugin.datatype;
 
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
+import org.finroc.serialization.DataType;
 
 /**
  * @author max
@@ -31,7 +30,7 @@ import org.finroc.core.portdatabase.DataTypeRegister;
  */
 public class Vector2D {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(Vector2D.class);
+    public final static DataType<Vector2D> TYPE = new DataType<Vector2D>(Vector2D.class);
 
     private double x, y;
 

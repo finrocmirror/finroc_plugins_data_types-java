@@ -22,10 +22,11 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.RRLibSerializableImpl;
 import org.finroc.core.datatype.Unit;
-import org.finroc.core.port.std.EmptyPortDataImpl;
-import org.finroc.core.portdatabase.DataType;
-import org.finroc.core.portdatabase.DataTypeRegister;
 
 /**
  * @author max
@@ -35,7 +36,7 @@ import org.finroc.core.portdatabase.DataTypeRegister;
 @JavaOnly
 public interface Function extends HasFunctionRepresentation {
 
-    static DataType TYPE = DataTypeRegister.getInstance().getDataType(Function.class);
+    public final static DataType<Function> TYPE = new DataType<Function>(Function.class);
 
     /**
      * @return Lower bound of domain
@@ -66,9 +67,9 @@ public interface Function extends HasFunctionRepresentation {
     /**
      * Empty Function
      */
-    public class Empty extends EmptyPortDataImpl implements Function {
+    public class Empty extends RRLibSerializableImpl implements Function {
 
-        static DataType TYPE = DataTypeRegister.getInstance().getDataType(Empty.class, "EmptyFunction");
+        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyFunction");
 
         @Override
         public double getMaxX() {
@@ -100,6 +101,14 @@ public interface Function extends HasFunctionRepresentation {
         @Override
         public Unit getYUnit() {
             return Unit.NO_UNIT;
+        }
+
+        @Override
+        public void serialize(OutputStreamBuffer os) {
+        }
+
+        @Override
+        public void deserialize(InputStreamBuffer is) {
         }
     }
 }
