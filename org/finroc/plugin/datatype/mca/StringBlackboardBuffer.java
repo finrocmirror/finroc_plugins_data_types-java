@@ -22,11 +22,8 @@
 package org.finroc.plugin.datatype.mca;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.ContainsStrings;
 import org.finroc.serialization.DataType;
-import org.finroc.serialization.DataTypeBase;
 
 /**
  * @author max
@@ -34,10 +31,10 @@ import org.finroc.serialization.DataTypeBase;
  * String blackboard buffer
  */
 @JavaOnly
-public class StringBlackboardBuffer extends BlackboardBuffer implements ContainsStrings {
+public class StringBlackboardBuffer extends MCABlackboardBuffer implements ContainsStrings {
 
-    public final static DataType<StringBlackboardBuffer> TYPE = new DataType<StringBlackboardBuffer>(StringBlackboardBuffer.class, "Signed Char");
-    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public final static DataType<StringBlackboardBuffer> TYPE = new DataType<StringBlackboardBuffer>(StringBlackboardBuffer.class, "List<Signed Char>");
+    //public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     @Override
     public CharSequence getString(int index) {

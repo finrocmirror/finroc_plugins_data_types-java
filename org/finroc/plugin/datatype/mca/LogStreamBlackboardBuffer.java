@@ -6,12 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.finroc.log.LogLevel;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.ContainsStrings;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.serialization.DataType;
-import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.FixedBuffer;
 import org.finroc.serialization.InputStreamBuffer;
 
@@ -20,10 +17,10 @@ import org.finroc.serialization.InputStreamBuffer;
  *
  * MCA2 Log Stream Blackboard Buffer
  */
-public class LogStreamBlackboardBuffer extends BlackboardBuffer implements ContainsStrings {
+public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements ContainsStrings {
 
-    public final static DataType<LogStreamBlackboardBuffer> TYPE = new DataType<LogStreamBlackboardBuffer>(LogStreamBlackboardBuffer.class, "Log Stream");
-    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public final static DataType<LogStreamBlackboardBuffer> TYPE = new DataType<LogStreamBlackboardBuffer>(LogStreamBlackboardBuffer.class, "List<Log Stream>");
+    //public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     public ArrayList<String> contents = new ArrayList<String>();
 

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import org.finroc.jc.annotation.JavaOnly;
 
 import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.BehaviourInfo;
 import org.finroc.serialization.DataType;
 import org.finroc.serialization.DataTypeBase;
@@ -37,10 +36,10 @@ import org.finroc.serialization.FixedBuffer;
  *
  */
 @JavaOnly
-public class BehaviourInfoBlackboard extends BlackboardBuffer implements BehaviourInfo {
+public class BehaviourInfoBlackboard extends MCABlackboardBuffer implements BehaviourInfo {
 
-    public final static DataType<BehaviourInfoBlackboard> TYPE = new DataType<BehaviourInfoBlackboard>(BehaviourInfoBlackboard.class, "Behaviour Info");
-    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public final static DataType<BehaviourInfoBlackboard> TYPE = new DataType<BehaviourInfoBlackboard>(BehaviourInfoBlackboard.class, "List<Behaviour Info>");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE, "Blackboard<Behaviour Info>");
 
     /** Struct wrapper instances for accessing behaviour info - they stay constant once added */
     public final ArrayList<Entry> entries = new ArrayList<Entry>();

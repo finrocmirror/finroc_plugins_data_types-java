@@ -22,10 +22,7 @@
 package org.finroc.plugin.datatype.mca;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.serialization.DataType;
-import org.finroc.serialization.DataTypeBase;
 
 /**
  * @author max
@@ -33,10 +30,10 @@ import org.finroc.serialization.DataTypeBase;
  * String blackboard buffer
  */
 @JavaOnly
-public class FloatBlackboardBuffer extends BlackboardBuffer {
+public class FloatBlackboardBuffer extends MCABlackboardBuffer {
 
-    public final static DataType<FloatBlackboardBuffer> TYPE = new DataType<FloatBlackboardBuffer>(FloatBlackboardBuffer.class, "Float");
-    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public final static DataType<FloatBlackboardBuffer> TYPE = new DataType<FloatBlackboardBuffer>(FloatBlackboardBuffer.class, "List<Float>");
+    //public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     public int size() {
         return (getElements() * getElementSize()) / 4;
@@ -45,4 +42,5 @@ public class FloatBlackboardBuffer extends BlackboardBuffer {
     public float get(int index) {
         return getBuffer().getFloat(4 * index);
     }
+
 }
