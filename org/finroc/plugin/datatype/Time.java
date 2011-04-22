@@ -54,14 +54,14 @@ public class Time extends RRLibSerializableImpl implements Copyable<Time> {
 
     @Override
     public void serialize(OutputStreamBuffer os) {
-        os.writeInt(sec);
-        os.writeInt(usec);
+        os.writeLong(sec);
+        os.writeLong(usec);
     }
 
     @Override
     public void deserialize(InputStreamBuffer is) {
-        sec = is.readInt();
-        usec = is.readInt();
+        sec = (int)is.readLong();
+        usec = (int)is.readLong();
     }
 
     @Override
