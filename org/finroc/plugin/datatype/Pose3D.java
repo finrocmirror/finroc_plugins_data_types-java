@@ -21,6 +21,7 @@
  */
 package org.finroc.plugin.datatype;
 
+import org.finroc.core.portdatabase.FinrocTypeInfo;
 import org.finroc.jc.annotation.JavaOnly;
 import org.finroc.serialization.Copyable;
 import org.finroc.serialization.DataType;
@@ -40,6 +41,10 @@ public class Pose3D extends RRLibSerializableImpl implements Copyable<Pose3D> {
 
     /** Data Type */
     public final static DataType<Pose3D> TYPE = new DataType<Pose3D>(Pose3D.class);
+
+    static {
+        FinrocTypeInfo.get(TYPE).init(FinrocTypeInfo.Type.CC);
+    }
 
     /** values */
     public double x, y, z, roll, pitch, yaw;

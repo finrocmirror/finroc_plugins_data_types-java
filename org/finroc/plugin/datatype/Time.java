@@ -21,6 +21,7 @@
  */
 package org.finroc.plugin.datatype;
 
+import org.finroc.core.portdatabase.FinrocTypeInfo;
 import org.finroc.jc.annotation.JavaOnly;
 import org.finroc.serialization.Copyable;
 import org.finroc.serialization.DataType;
@@ -43,6 +44,10 @@ public class Time extends RRLibSerializableImpl implements Copyable<Time> {
 
     /** values */
     public int sec, usec;
+
+    static {
+        FinrocTypeInfo.get(TYPE).init(FinrocTypeInfo.Type.CC);
+    }
 
     public Time() {
     }
