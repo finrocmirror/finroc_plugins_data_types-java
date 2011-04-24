@@ -27,7 +27,7 @@ import org.finroc.serialization.DataType;
 /**
  * @author max
  *
- * String blackboard buffer
+ * Float blackboard buffer
  */
 @JavaOnly
 public class FloatBlackboardBuffer extends MCABlackboardBuffer {
