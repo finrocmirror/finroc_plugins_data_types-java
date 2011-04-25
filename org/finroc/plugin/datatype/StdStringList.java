@@ -21,87 +21,67 @@
  */
 package org.finroc.plugin.datatype;
 
+import java.util.ArrayList;
+
 import org.finroc.jc.annotation.JavaOnly;
 import org.finroc.serialization.DataType;
 import org.finroc.serialization.InputStreamBuffer;
 import org.finroc.serialization.OutputStreamBuffer;
-import org.finroc.serialization.RRLibSerializable;
 import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
  *
- * Class that contains Strings
+ * Class to interpret C++ std::string lists
  */
 @JavaOnly
-public interface StdStringList extends RRLibSerializable {
+public class StdStringList extends RRLibSerializableImpl implements ContainsStrings {
 
-    public final static DataType<StdStringList> TYPE = new DataType<StdStringList>(StdStringList.class);
+    public final static DataType<StdStringList> TYPE = new DataType<StdStringList>(StdStringList.class, "List<string>");
+
+    private final ArrayList<String> wrapped = new ArrayList<String>();
 
     /**
      * @return Number of Strings this class contains
      */
-    public int stringCount();
+    public int stringCount() {
+        return wrapped.size();
+    }
 
     /**
      * @param index Index of String
      * @return String at index
      */
-    public CharSequence getString(int index);
+    public CharSequence getString(int index) {
+        return wrapped.get(index);
+    }
 
     /**
      * @param index Index of String
      * @param newString String at this index
      */
-    public void setString(int index, CharSequence newString);
+    public void setString(int index, CharSequence newString) {
+        wrapped.set(index, newString.toString());
+    }
 
-    /**
-     * Empty String List
-     */
-    @JavaOnly
-    public class Empty extends RRLibSerializableImpl implements StdStringList {
 
-        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyStrings");
-
-        @Override
-        public CharSequence getString(int index) {
-            return null;
-        }
-
-        @Override
-        public void setString(int index, CharSequence newString) {
-        }
-
-        @Override
-        public int stringCount() {
-            return 0;
-        }
-
-        @Override
-        public void serialize(OutputStreamBuffer os) {
-        }
-
-        @Override
-        public void deserialize(InputStreamBuffer is) {
+    @Override
+    public void serialize(OutputStreamBuffer os) {
+        os.writeInt(wrapped.size());
+        os.writeBoolean(true);
+        for (int i = 0; i < wrapped.size(); i++) {
+            os.writeString(wrapped.get(i));
         }
     }
 
-    @JavaOnly
-    public static class Util {
-
-        /**
-         * Converts text lines to single string with each line ending with
-         * a line change
-         *
-         * @param cs ContainsStrings object to get String from
-         * @return Long String
-         */
-        public static CharSequence toSingleString(StdStringList cs) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0, n = cs.stringCount(); i < n; i++) {
-                sb.append(cs.getString(i)).append("\n");
-            }
-            return sb;
+    @Override
+    public void deserialize(InputStreamBuffer is) {
+        int size = is.readInt();
+        boolean constType = is.readBoolean();
+        assert(constType);
+        wrapped.clear();
+        for (int i = 0; i < size; i++) {
+            wrapped.add(is.readString());
         }
     }
 }
