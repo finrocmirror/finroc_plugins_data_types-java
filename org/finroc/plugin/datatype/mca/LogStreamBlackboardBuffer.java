@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.finroc.log.LogLevel;
+import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.ContainsStrings;
 import org.finroc.plugin.datatype.DataTypePlugin;
-import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.FixedBuffer;
 import org.finroc.serialization.InputStreamBuffer;
 
@@ -19,8 +20,8 @@ import org.finroc.serialization.InputStreamBuffer;
  */
 public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements ContainsStrings {
 
-    public final static DataType<LogStreamBlackboardBuffer> TYPE = new DataType<LogStreamBlackboardBuffer>(LogStreamBlackboardBuffer.class, "List<Log Stream>");
-    //public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public static class Elem extends BlackboardBuffer {}
+    public final static DataTypeBase TYPE = getMcaBlackboardType(LogStreamBlackboardBuffer.class, Elem.class, "Log Stream");
 
     public ArrayList<String> contents = new ArrayList<String>();
 
@@ -32,6 +33,10 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
     public final StringBuilder sbuf = new StringBuilder();
     public int lastPos, curPos, wrapPos;
     public final FixedBuffer hdr = new FixedBuffer(12);
+
+    public LogStreamBlackboardBuffer() {
+        super(TYPE);
+    }
 
     @Override
     public CharSequence getString(int index) {
@@ -55,8 +60,8 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
         // deserialize
         contents.clear();
         try {
-            wrapPos = getElementSize();
-            lastPos = getBuffer().getInt(0) + wrapPos;
+            wrapPos = getBuffer().getElementSize();
+            lastPos = getBuffer().getBuffer().getInt(0) + wrapPos;
             curPos = lastPos;
 
             while (true) {
@@ -97,11 +102,11 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
     public byte readNextByte() throws EOFException {
         curPos--;
         if (curPos < wrapPos) {
-            curPos = getSize() - 1;
+            curPos = getBuffer().getSize() - 1;
         }
         if (curPos == lastPos) {
             throw new EOFException();
         }
-        return getBuffer().getByte(curPos);
+        return getBuffer().getBuffer().getByte(curPos);
     }
 }

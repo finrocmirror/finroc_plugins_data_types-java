@@ -33,19 +33,24 @@ import java.awt.geom.Rectangle2D;
 
 import org.finroc.jc.jni.StructBase;
 import org.finroc.log.LogLevel;
+import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.plugin.datatype.Vector2D;
-import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.FixedBuffer;
 
 public class GeometryBlackboard extends MCABlackboardBuffer implements PaintablePortData {
 
-    public final static DataType<GeometryBlackboard> TYPE = new DataType<GeometryBlackboard>(GeometryBlackboard.class, "List<Geometry Entries>");
-    //public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public static class Elem extends BlackboardBuffer {}
+    public final static DataTypeBase TYPE = getMcaBlackboardType(GeometryBlackboard.class, Elem.class, "Geometry Entries");
 
     /** Temporary variables for rendering */
     private ThreadLocal<RenderingThreadLocals> renderLocals = new ThreadLocal<RenderingThreadLocals>();
+
+    public GeometryBlackboard() {
+        super(TYPE);
+    }
 
     /**
      * Contains static final Objects for rendering for a single thread.
@@ -77,7 +82,7 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
     @Override
     public void paint(Graphics2D g) {
 
-        if (this.getSize() <= 0 || this.getElements() <= 0) {
+        if (this.getBuffer().getSize() <= 0 || this.getBuffer().getElements() <= 0) {
             return;
         }
 
@@ -93,8 +98,8 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
         final RenderingThreadLocals r = rtl;
 
         // first byte indicates which area of blackboard to use
-        final FixedBuffer buf = getBuffer();
-        int pos = buf.getByte(0) == 0 ? 1 : getElementOffset(1) + 1;
+        final FixedBuffer buf = getBuffer().getBuffer();
+        int pos = buf.getByte(0) == 0 ? 1 : getBuffer().getElementOffset(1) + 1;
         r.setBuffer(buf);
 
         //dumpToFile("/home/max/geom.bb");

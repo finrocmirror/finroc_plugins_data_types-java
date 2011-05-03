@@ -22,9 +22,9 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.plugin.datatype.mca.FloatBlackboardBuffer;
 import org.finroc.serialization.DataType;
 import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.MemoryBuffer;
 import org.finroc.serialization.OutputStreamBuffer;
 
 /**
@@ -33,7 +33,7 @@ import org.finroc.serialization.OutputStreamBuffer;
  * Float list (as used in finroc blackboards)
  */
 @JavaOnly
-public class FloatList extends FloatBlackboardBuffer implements ContainsStrings {
+public class FloatList extends MemoryBuffer implements ContainsStrings {
 
     public final static DataType<FloatList> TYPE = new DataType<FloatList>(FloatList.class, "List<float>");
 
@@ -43,9 +43,20 @@ public class FloatList extends FloatBlackboardBuffer implements ContainsStrings 
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(get(i));
+            sb.append(getValue(i));
         }
         return sb.toString();
+    }
+
+    private float getValue(int i) {
+        return super.getBuffer().getFloat(i * 4);
+    }
+
+    /**
+     * @return Number of floats in buffer
+     */
+    public int size() {
+        return super.getSize() / 4;
     }
 
     @Override
@@ -53,23 +64,21 @@ public class FloatList extends FloatBlackboardBuffer implements ContainsStrings 
         int size = is.readInt();
         boolean constType = is.readBoolean();
         assert(constType);
-        resize(size, size, 4, false);
-        for (int i = 0; i < size; i++) {
-            set(i, is.readFloat());
-        }
+        super.ensureCapacity(size * 4, false, 0);
+        super.curSize = size * 4;
+        is.readFully(super.getBuffer(), 0, size * 4);
     }
 
     @Override
     public void serialize(OutputStreamBuffer os) {
         os.writeInt(size());
         os.writeBoolean(true);
-        for (int i = 0; i < size(); i++) {
-            os.writeFloat(get(i));
-        }
+        os.write(super.getBuffer(), 0, super.curSize);
     }
 
     public void set(int index, float value) {
-        getBuffer().putFloat(4 * index, value);
+        assert(index < size());
+        getBuffer().getBuffer().putFloat(4 * index, value);
     }
 
     @Override
@@ -79,7 +88,7 @@ public class FloatList extends FloatBlackboardBuffer implements ContainsStrings 
 
     @Override
     public CharSequence getString(int index) {
-        return "" + get(index);
+        return "" + getValue(index);
     }
 
     @Override

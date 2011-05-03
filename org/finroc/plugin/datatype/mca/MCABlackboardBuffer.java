@@ -22,32 +22,38 @@
 package org.finroc.plugin.datatype.mca;
 
 import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.serialization.InputStreamBuffer;
-import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.plugin.blackboard.BlackboardPlugin;
+import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
+import org.finroc.serialization.PortDataListImpl;
 
 /**
  * @author max
  *
  * Image-Blackboard
  */
-public class MCABlackboardBuffer extends BlackboardBuffer {
+public class MCABlackboardBuffer extends PortDataListImpl<BlackboardBuffer> {
 
-    @Override
-    public void deserialize(InputStreamBuffer is) {
-        int size = is.readInt();
-        boolean constType = is.readBoolean();
-        if (size == 0) {
-            return;
-        }
-        assert(size == 1 && constType == true);
-        super.deserialize(is);
+    public MCABlackboardBuffer(DataTypeBase blackboardType) {
+        super(blackboardType.getElementType());
+        resize(1);
     }
 
-    @Override
-    public void serialize(OutputStreamBuffer os) {
-        os.writeInt(1);
-        os.writeBoolean(true);
-        super.serialize(os);
+    public BlackboardBuffer getBuffer() {
+        return get(0);
+    }
+
+    protected static <T, E> DataType<T> getMcaBlackboardType(Class<T> bbType, Class<E> elementType, String elementTypeName) {
+        DataType<E> elemType = new DataType<E>(elementType, elementTypeName, false);
+        DataType<T> blackboardType = new DataType<T>(bbType, "List<" + elementTypeName + ">");
+        elemType.getInfo().listType = blackboardType;
+        blackboardType.getInfo().elementType = elemType;
+        BlackboardPlugin.registerBlackboardType(elemType);
+        return blackboardType;
+    }
+
+    public void resize(int length, int length2, int i, boolean b) {
+        getBuffer().resize(length, length2, i, b);
     }
 }
 

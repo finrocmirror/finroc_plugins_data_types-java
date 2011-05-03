@@ -25,10 +25,11 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.finroc.log.LogLevel;
+import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.Blittable;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.HasBlittable;
-import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
 
 /**
  * @author max
@@ -37,8 +38,8 @@ import org.finroc.serialization.DataType;
  */
 public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable {
 
-    public final static DataType<ImageBlackboard> TYPE = new DataType<ImageBlackboard>(ImageBlackboard.class, "List<2D Image>");
-    //public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    public static class Elem extends BlackboardBuffer {}
+    public final static DataTypeBase TYPE = getMcaBlackboardType(ImageBlackboard.class, Elem.class, "2D Image");
 
     /** Structure to access image information */
     private final MCA.tImageInfo info = new MCA.tImageInfo();
@@ -52,10 +53,14 @@ public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable
     /** The size of tImageInfo plus alignment padding (see tImage.h) */
     private static final int cImageInfoSizeWithPadding = MCA.cImageInfoSizeWithPadding;
 
+    public ImageBlackboard() {
+        super(TYPE);
+    }
+
     @Override
     public Blittable getBlittable() {
         synchronized (info) {
-            info.setBuffer(getBuffer());
+            info.setBuffer(getBuffer().getBuffer());
             int type = info.format.get();
             if (type == lastType) {
                 blitter.reinit();
@@ -126,7 +131,7 @@ public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable
             width = (int)info.width.get();
             height = (int)info.height.get();
             widthStep = (int)info.width_step.get();
-            imageData = getBuffer().getBuffer();
+            imageData = getBuffer().getBuffer().getBuffer();
         }
 
         @Override

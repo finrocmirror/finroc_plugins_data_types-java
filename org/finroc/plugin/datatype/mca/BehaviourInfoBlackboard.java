@@ -25,9 +25,8 @@ import java.util.ArrayList;
 
 import org.finroc.jc.annotation.JavaOnly;
 
-import org.finroc.plugin.blackboard.BlackboardPlugin;
+import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.BehaviourInfo;
-import org.finroc.serialization.DataType;
 import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.FixedBuffer;
 
@@ -38,31 +37,36 @@ import org.finroc.serialization.FixedBuffer;
 @JavaOnly
 public class BehaviourInfoBlackboard extends MCABlackboardBuffer implements BehaviourInfo {
 
-    public final static DataType<BehaviourInfoBlackboard> TYPE = new DataType<BehaviourInfoBlackboard>(BehaviourInfoBlackboard.class, "List<Behaviour Info>");
-    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE, "Blackboard<Behaviour Info>");
+    public static class Elem extends BlackboardBuffer {}
+    public final static DataTypeBase TYPE = getMcaBlackboardType(BehaviourInfoBlackboard.class, Elem.class, "Behaviour Info");
+    //public final static DataTypeBase BB_TYPE = TYPE.getAnnotation(BlackboardTypeInfo.class).blackboardType;
 
     /** Struct wrapper instances for accessing behaviour info - they stay constant once added */
     public final ArrayList<Entry> entries = new ArrayList<Entry>();
 
+    public BehaviourInfoBlackboard() {
+        super(TYPE);
+    }
+
     @Override
     public BehaviourInfo.Entry getEntry(int i) {
-        if (i >= getElements()) {
+        if (i >= getBuffer().getElements()) {
             throw new IndexOutOfBoundsException("" + i);
         }
         while (i >= entries.size()) {
-            entries.add(new Entry(getBuffer(), getElementOffset(entries.size())));
+            entries.add(new Entry(getBuffer().getBuffer(), getBuffer().getElementOffset(entries.size())));
         }
         return entries.get(i);
     }
 
     @Override
     public int size() {
-        return getElements();
+        return getBuffer().getElements();
     }
 
     @Override
     public void setSize(int size) {
-        super.resize(size, size, -1, true);
+        super.getBuffer().resize(size, size, -1, true);
     }
 
     @JavaOnly
