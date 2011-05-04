@@ -22,11 +22,11 @@
 package org.finroc.plugin.datatype;
 
 import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.serialization.Copyable;
+import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.serialization.DataType;
+import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.InputStreamBuffer;
 import org.finroc.serialization.OutputStreamBuffer;
-import org.finroc.serialization.RRLibSerializable;
 import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
@@ -35,100 +35,39 @@ import org.finroc.serialization.RRLibSerializableImpl;
  * MCA Style behaviour info - see tBehaviourInfo.h
  */
 @JavaOnly
-public interface BehaviourInfo extends RRLibSerializable {
+public class BehaviourInfo extends RRLibSerializableImpl {
 
     public final static DataType<BehaviourInfo> TYPE = new DataType<BehaviourInfo>(BehaviourInfo.class);
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
-    /**
-     * @return Number of entries
-     */
-    public int size();
+    //Copied from tBegaviourInfo.h
+    public short beh_id;
+    // activation
+    public float activity;
+    // target rating
+    public float target_rating;
+    public float activation;
+    public boolean auto_mode;
+    public boolean enabled;
 
-    /**
-     * @param size New Number of entries
-     */
-    public void setSize(int size);
-
-    /**
-     * @param index index
-     * @return Single entry in behaviour info list
-     */
-    public Entry getEntry(int index);
-
-    /**
-     * Single entry in behaviour info list
-     */
-    @JavaOnly
-    public interface Entry {
-
-        public short getBehId();
-        public void setBehId(short beh_id);
-        public float getActivation();
-        public void setActivation(float a);
-        public float getTargetRating();
-        public void setTargetRating(float r);
-        public float getActivity();
-        public void setActivity(float jota);
-        public boolean getAutoMode();
-        public void setAutoMode(boolean auto_mode);
-        public boolean isEnabled();
-        public void setEnabled(boolean enabled);
+    @Override
+    public void serialize(OutputStreamBuffer os) {
+        os.writeShort(beh_id);
+        os.writeFloat(activity);
+        os.writeFloat(target_rating);
+        os.writeFloat(activation);
+        os.writeBoolean(auto_mode);
+        os.writeBoolean(enabled);
     }
 
-    /**
-     * Dummy/Empty behaviour info
-     */
-    @JavaOnly
-    public static class Empty extends RRLibSerializableImpl implements BehaviourInfo {
-
-        public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyBehaviour");
-
-        @Override
-        public Entry getEntry(int index) {
-            return null;
-        }
-
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public void setSize(int size) {}
-
-        @Override
-        public void serialize(OutputStreamBuffer os) {
-        }
-
-        @Override
-        public void deserialize(InputStreamBuffer is) {
-        }
+    @Override
+    public void deserialize(InputStreamBuffer is) {
+        beh_id = is.readShort();
+        activity = is.readFloat();
+        target_rating = is.readFloat();
+        activation = is.readFloat();
+        auto_mode = is.readBoolean();
+        enabled = is.readBoolean();
     }
 
-    @JavaOnly
-    public static class Util {
-
-        @SuppressWarnings( { "rawtypes", "unchecked" })
-        public static void copy(BehaviourInfo src, BehaviourInfo dest) {
-            if (src.getClass() == dest.getClass() && src instanceof Copyable) {
-                try {
-                    ((Copyable)dest).copyFrom(src);
-                    return;
-                } catch (Exception e) {}
-            }
-
-            // copy by hand
-            dest.setSize(src.size());
-            for (int i = 0; i < src.size(); i++) {
-                Entry se = src.getEntry(i);
-                Entry de = dest.getEntry(i);
-                de.setActivation(se.getActivation());
-                de.setAutoMode(de.getAutoMode());
-                de.setBehId(se.getBehId());
-                de.setEnabled(se.isEnabled());
-                de.setActivity(se.getActivity());
-                de.setTargetRating(se.getTargetRating());
-            }
-        }
-    }
 }
