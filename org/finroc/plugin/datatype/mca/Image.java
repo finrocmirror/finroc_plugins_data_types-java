@@ -2,7 +2,7 @@
  * You received this file as part of an advanced experimental
  * robotics framework prototype ('finroc')
  *
- * Copyright (C) 2007-2010 Max Reichardt,
+ * Copyright (C) 2007-2011 Max Reichardt,
  *   Robotics Research Lab, University of Kaiserslautern
  *
  * This program is free software; you can redistribute it and/or
@@ -25,24 +25,46 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import org.finroc.log.LogLevel;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
+import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.Blittable;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.HasBlittable;
+import org.finroc.serialization.DataType;
 import org.finroc.serialization.DataTypeBase;
+import org.finroc.serialization.InputStreamBuffer;
+import org.finroc.serialization.MemoryBuffer;
+import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.PortDataListImpl;
+import org.finroc.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
  *
  * Image-Blackboard
  */
-public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable {
+public class Image extends RRLibSerializableImpl implements HasBlittable {
 
-    public static class Elem extends BlackboardBuffer {}
-    public final static DataTypeBase TYPE = getMcaBlackboardType(ImageBlackboard.class, Elem.class, "2D Image");
+    public static class ImageList extends PortDataListImpl<Image> implements HasBlittable {
 
-    /** Structure to access image information */
-    private final MCA.tImageInfo info = new MCA.tImageInfo();
+        public ImageList() {
+            super(Image.TYPE);
+        }
+
+        @Override
+        public Blittable getBlittable() {
+            return size() > 0 ? get(0).getBlittable() : null;
+        }
+    }
+
+    public final static DataType<Image> TYPE = new DataType<Image>(Image.class, "Image", false);
+    public final static DataType<ImageList> LIST_TYPE = new DataType<ImageList>(ImageList.class, "List<Image>", false);
+    public final static DataTypeBase BB_TYPE;
+
+    static {
+        TYPE.getInfo().listType = LIST_TYPE;
+        LIST_TYPE.getInfo().elementType = TYPE;
+        BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
+    }
 
     /** Current object for blitting */
     private BlackboardBlitter blitter;
@@ -50,60 +72,151 @@ public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable
     /** Type of blittable object */
     private int lastType = -1;
 
-    /** The size of tImageInfo plus alignment padding (see tImage.h) */
-    private static final int cImageInfoSizeWithPadding = MCA.cImageInfoSizeWithPadding;
+    /** relevant variable regarding image data */
+    private int width;
+    private int height;
+    private int widthStep;
+    private byte format;
 
-    public ImageBlackboard() {
-        super(TYPE);
+    /** Image Buffer */
+    private MemoryBuffer imageData = new MemoryBuffer();
+
+    @Override
+    public void serialize(OutputStreamBuffer os) {
+        os.writeInt(width);
+        os.writeInt(height);
+        os.writeByte(format);
+        os.writeInt(imageData.getSize());
+        os.writeInt(0); // extra data size
+
+        // region of interest
+        os.writeBoolean(false);
+        os.writeInt(0);
+        os.writeInt(0);
+        os.writeInt(0);
+        os.writeInt(0);
+
+        // Write image data
+        os.write(imageData.getBuffer(), 0, imageData.getSize());
+    }
+
+    @Override
+    public void deserialize(InputStreamBuffer is) {
+        width = is.readInt();
+        height = is.readInt();
+        format = is.readByte();
+        int imageSize = is.readInt();
+        int extraData = is.readInt();
+
+        // region of interest
+        is.readBoolean();
+        is.readInt();
+        is.readInt();
+        is.readInt();
+        is.readInt();
+
+        // Read image data
+        imageData.clear();
+        imageData.deserialize(is, imageSize);
+        is.skip(extraData);
+
+        // calculate internal variables
+        widthStep = calculateWidthStep(width, format);
+        blitter = createBlittable();
+    }
+
+    /**
+     * (see equivalent function in tImage.h
+     */
+    private int calculateWidthStep(int w, byte f) {
+        if (f == MCA.eIMAGE_FORMAT_YUV420P) {
+            return width;
+        }
+
+        final int alignment = 4;
+        int bpp = -1;
+        switch (format) {
+        case MCA.eIMAGE_FORMAT_RGB32:
+            bpp = 4;
+            break;
+        case MCA.eIMAGE_FORMAT_RGB24:
+        case MCA.eIMAGE_FORMAT_BGR24:
+        case MCA.eIMAGE_FORMAT_YUV444:
+            bpp = 3;
+            break;
+        case MCA.eIMAGE_FORMAT_RGB565:
+        case MCA.eIMAGE_FORMAT_MONO16:
+        case MCA.eIMAGE_FORMAT_YUV422:
+            bpp = 2;
+            break;
+        case MCA.eIMAGE_FORMAT_MONO8:
+            bpp = 1;
+            break;
+        default:
+            DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
+            bpp = 1;
+            //return Blittable.Empty.instance;
+        }
+
+        int temp = bpp * width;
+        while (temp % alignment != 0) {
+            temp++;
+        }
+        return temp;
+    }
+
+    /**
+     * @return Blackboard blitter
+     */
+    private BlackboardBlitter createBlittable() {
+        if (format == lastType) {
+            blitter.reinit();
+            return blitter;
+        }
+
+        // init blitter object
+        switch (format) {
+        case MCA.eIMAGE_FORMAT_RGB32:
+            blitter = new RGB32();
+            break;
+        case MCA.eIMAGE_FORMAT_RGB24:
+            blitter = new RGB24();
+            break;
+        case MCA.eIMAGE_FORMAT_BGR24:
+            blitter = new BGR24();
+            break;
+        case MCA.eIMAGE_FORMAT_MONO8:
+            blitter = new Mono8();
+            break;
+        case MCA.eIMAGE_FORMAT_MONO16:
+            blitter = new Mono16();
+            break;
+        case MCA.eIMAGE_FORMAT_RGB565:
+            blitter = new RGB565();
+            break;
+        case MCA.eIMAGE_FORMAT_YUV444:
+            blitter = new YUV444();
+            break;
+        case MCA.eIMAGE_FORMAT_YUV422:
+            blitter = new YUV422();
+            break;
+        case MCA.eIMAGE_FORMAT_YUV420P:
+            blitter = new YUV420P();
+            break;
+        default:
+            DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
+            blitter = null;
+            //return Blittable.Empty.instance;
+        }
+
+        lastType = format;
+        blitter.reinit();
+        return blitter;
     }
 
     @Override
     public Blittable getBlittable() {
-        synchronized (info) {
-            info.setBuffer(getBuffer().getBuffer());
-            int type = info.format.get();
-            if (type == lastType) {
-                blitter.reinit();
-                return blitter;
-            }
-
-            // init blitter object
-            switch (type) {
-            case MCA.eIMAGE_FORMAT_RGB32:
-                blitter = new RGB32();
-                break;
-            case MCA.eIMAGE_FORMAT_RGB24:
-                blitter = new RGB24();
-                break;
-            case MCA.eIMAGE_FORMAT_BGR24:
-                blitter = new BGR24();
-                break;
-            case MCA.eIMAGE_FORMAT_MONO8:
-                blitter = new Mono8();
-                break;
-            case MCA.eIMAGE_FORMAT_MONO16:
-                blitter = new Mono16();
-                break;
-            case MCA.eIMAGE_FORMAT_RGB565:
-                blitter = new RGB565();
-                break;
-            case MCA.eIMAGE_FORMAT_YUV444:
-                blitter = new YUV444();
-                break;
-            case MCA.eIMAGE_FORMAT_YUV422:
-                blitter = new YUV422();
-                break;
-            case MCA.eIMAGE_FORMAT_YUV420P:
-                blitter = new YUV420P();
-                break;
-            default:
-                DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning (ImageBlackboard): Image format " + type + " not supported yet");
-                return Blittable.Empty.instance;
-            }
-
-            lastType = type;
-            return blitter;
-        }
+        return blitter == null ? Blittable.Empty.instance : blitter;
     }
 
     public abstract class BlackboardBlitter extends Blittable {
@@ -112,12 +225,12 @@ public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable
         private static final long serialVersionUID = -6221787372563681396L;
 
         /** Width height and widthStep */
-        protected int width, height, widthStep, srcY;
+        protected int srcY;
         public transient ByteBuffer imageData;
 
         public void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int srcY, int srcOffset, int width) {
 
-            int offset = cImageInfoSizeWithPadding + widthStep * srcY;
+            int offset = widthStep * srcY;
             this.srcY = srcY;
             blitLineToRGB(destBuffer, destOffset, srcX, offset, width);
         }
@@ -128,10 +241,7 @@ public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable
          * (re-)initialize
          */
         public void reinit() {
-            width = (int)info.width.get();
-            height = (int)info.height.get();
-            widthStep = (int)info.width_step.get();
-            imageData = getBuffer().getBuffer().getBuffer();
+            imageData = Image.this.imageData.getBuffer().getBuffer();
         }
 
         @Override
@@ -419,7 +529,7 @@ public class ImageBlackboard extends MCABlackboardBuffer implements HasBlittable
 
             int yArraySize = getHeight() * getWidth();
             int uvArraySize = yArraySize / 4;
-            int yArrayOffset = cImageInfoSizeWithPadding;
+            int yArrayOffset = 0;
             int uArrayOffset = yArrayOffset + yArraySize;
             int vArrayOffset = uArrayOffset + uvArraySize;
 
