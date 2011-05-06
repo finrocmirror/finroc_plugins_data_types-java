@@ -137,6 +137,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable {
         int bpp = -1;
         switch (format) {
         case MCA.eIMAGE_FORMAT_RGB32:
+        case MCA.eIMAGE_FORMAT_BGR32:
             bpp = 4;
             break;
         case MCA.eIMAGE_FORMAT_RGB24:
@@ -181,6 +182,9 @@ public class Image extends RRLibSerializableImpl implements HasBlittable {
             break;
         case MCA.eIMAGE_FORMAT_RGB24:
             blitter = new RGB24();
+            break;
+        case MCA.eIMAGE_FORMAT_BGR32:
+            blitter = new BGR32();
             break;
         case MCA.eIMAGE_FORMAT_BGR24:
             blitter = new BGR24();
@@ -346,9 +350,12 @@ public class Image extends RRLibSerializableImpl implements HasBlittable {
 
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
-            imageData.position(lineOffset - 1 + srcX * 4);
-            IntBuffer ib = imageData.asIntBuffer();
-            ib.get(destBuffer, destOffset, width);
+            imageData.position(lineOffset + srcX * 4);
+            for (int x = 0; x < width; x++) {
+                destBuffer[destOffset] = toInt(imageData.get(), imageData.get(), imageData.get());
+                destOffset++;
+                imageData.get();
+            }
         }
     }
 
@@ -392,13 +399,8 @@ public class Image extends RRLibSerializableImpl implements HasBlittable {
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 4);
-            for (int x = 0; x < width; x++) {
-                byte b = imageData.get();
-                byte g = imageData.get();
-                destBuffer[destOffset] = toInt(imageData.get(), g, b);
-                imageData.get(); // skip
-                destOffset++;
-            }
+            IntBuffer ib = imageData.asIntBuffer();
+            ib.get(destBuffer, destOffset, width);
         }
     }
 
