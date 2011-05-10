@@ -109,4 +109,9 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
         }
         return getBuffer().getBuffer().getByte(curPos);
     }
+
+    @Override
+    public void setSize(int newSize) {
+        throw new RuntimeException("Unsupported");
+    }
 }

@@ -27,6 +27,8 @@ import org.finroc.serialization.InputStreamBuffer;
 import org.finroc.serialization.OutputStreamBuffer;
 import org.finroc.serialization.RRLibSerializable;
 import org.finroc.serialization.RRLibSerializableImpl;
+import org.finroc.serialization.StringInputStream;
+import org.finroc.serialization.StringOutputStream;
 
 /**
  * @author max
@@ -54,6 +56,11 @@ public interface ContainsStrings extends RRLibSerializable {
      * @param newString String at this index
      */
     public void setString(int index, CharSequence newString);
+
+    /**
+     * @param newSize New size
+     */
+    public void setSize(int newSize);
 
     /**
      * Empty String List
@@ -84,6 +91,10 @@ public interface ContainsStrings extends RRLibSerializable {
         @Override
         public void deserialize(InputStreamBuffer is) {
         }
+
+        @Override
+        public void setSize(int newSize) {
+        }
     }
 
     @JavaOnly
@@ -102,6 +113,48 @@ public interface ContainsStrings extends RRLibSerializable {
                 sb.append(cs.getString(i)).append("\n");
             }
             return sb;
+        }
+
+        /**
+         * Serialize string list to string output stream
+         *
+         * @param sos String output stream
+         * @param cs ContainsString object
+         * @param start Start character
+         * @param end End character
+         * @param delim Delimiter
+         */
+        public static void serialize(StringOutputStream sos, ContainsStrings cs, String start, String end, String delim) {
+            sos.append(start);
+            for (int i = 0, n = cs.stringCount(); i < n; i++) {
+                if (i > 0) {
+                    sos.append(delim).append(" ");
+                }
+                String s = cs.getString(i).toString();
+                assert(!s.contains(delim));
+                sos.append(s);
+            }
+            sos.append(end);
+        }
+
+        /**
+         * Deserialize string list from string input stream
+         *
+         * @param sos String input stream
+         * @param cs ContainsString object
+         * @param start Start character
+         * @param end End character
+         * @param delim Delimiter
+         */
+        public static void deserialize(StringInputStream sis, ContainsStrings cs, String start, String end, String delim) {
+            String s = sis.readAll().trim();
+            assert(s.startsWith(start) && s.endsWith(end));
+            s = s.substring(1, s.length() - 1).trim();
+            String[] sa = s.split(delim);
+            cs.setSize(sa.length);
+            for (int i = 0, n = sa.length; i < n; i++) {
+                cs.setString(i, sa[i].trim());
+            }
         }
     }
 }

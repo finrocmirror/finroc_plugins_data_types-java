@@ -55,4 +55,9 @@ public class StringBlackboardBuffer extends MCABlackboardBuffer implements Conta
     public int stringCount() {
         return getBuffer().getElements();
     }
+
+    @Override
+    public void setSize(int newSize) {
+        throw new RuntimeException("Unsupported");
+    }
 }

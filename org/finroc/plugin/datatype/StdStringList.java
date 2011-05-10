@@ -84,4 +84,14 @@ public class StdStringList extends RRLibSerializableImpl implements ContainsStri
             wrapped.add(is.readString());
         }
     }
+
+    @Override
+    public void setSize(int newSize) {
+        while (wrapped.size() > newSize) {
+            wrapped.remove(wrapped.size()  - 1);
+        }
+        while (wrapped.size() < newSize) {
+            wrapped.add("");
+        }
+    }
 }

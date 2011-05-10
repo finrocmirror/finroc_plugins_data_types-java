@@ -26,6 +26,8 @@ import org.finroc.serialization.DataType;
 import org.finroc.serialization.InputStreamBuffer;
 import org.finroc.serialization.MemoryBuffer;
 import org.finroc.serialization.OutputStreamBuffer;
+import org.finroc.serialization.StringInputStream;
+import org.finroc.serialization.StringOutputStream;
 
 /**
  * @author max
@@ -64,8 +66,7 @@ public class FloatList extends MemoryBuffer implements ContainsStrings {
         int size = is.readInt();
         boolean constType = is.readBoolean();
         assert(constType);
-        super.ensureCapacity(size * 4, false, 0);
-        super.curSize = size * 4;
+        setSize(size);
         is.readFully(super.getBuffer(), 0, size * 4);
     }
 
@@ -95,4 +96,24 @@ public class FloatList extends MemoryBuffer implements ContainsStrings {
     public void setString(int index, CharSequence newString) {
         set(index, Float.parseFloat(newString.toString()));
     }
+
+    @Override
+    public void setSize(int newSize) {
+        super.ensureCapacity(newSize * 4, false, 0);
+        super.curSize = newSize * 4;
+    }
+
+    @Override
+    public void serialize(StringOutputStream os) {
+        ContainsStrings.Util.serialize(os, this, "[", "]", ",");
+    }
+
+    /* (non-Javadoc)
+     * @see org.finroc.serialization.RRLibSerializableImpl#deserialize(org.finroc.serialization.StringInputStream)
+     */
+    @Override
+    public void deserialize(StringInputStream s) throws Exception {
+        ContainsStrings.Util.deserialize(s, this, "[", "]", ",");
+    }
+
 }
