@@ -242,52 +242,34 @@ public class MCA {
                                                     eVT_DIMENSION = 3;
 
     /** cDistanceDataFormatInfo */
-    public static final Object[][] cDistanceDataFormatInfo = new Object[][] {
-        new Object[]{"eDF_POLAR_2D_FLOAT", 2, 4, false, eVT_POLAR},
-        new Object[]{"eDF_POLAR_3D_FLOAT", 3, 4, false, eVT_POLAR},
-        new Object[]{"eDF_CARTESIAN_2D_FLOAT", 2, 4, false, eVT_CARTESIAN},
-        new Object[]{"eDF_CARTESIAN_3D_FLOAT", 3, 4, false, eVT_CARTESIAN},
-        new Object[]{"eDF_POLAR_2D_DOUBLE", 2, 8, false, eVT_POLAR},
-        new Object[]{"eDF_POLAR_3D_DOUBLE", 3, 8, false, eVT_POLAR},
-        new Object[]{"eDF_CARTESIAN_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN},
-        new Object[]{"eDF_CARTESIAN_3D_DOUBLE", 3, 8, false, eVT_CARTESIAN},
-        new Object[]{"eDF_POLAR_2D_FLOAT_PLANAR", 2, 4, true, eVT_POLAR},
-        new Object[]{"eDF_POLAR_3D_FLOAT_PLANAR", 3, 4, true, eVT_POLAR},
-        new Object[]{"eDF_CARTESIAN_2D_FLOAT_PLANAR", 2, 4, true, eVT_CARTESIAN},
-        new Object[]{"eDF_CARTESIAN_3D_FLOAT_PLANAR", 3, 4, true, eVT_CARTESIAN},
-        new Object[]{"eDF_DISTANCE_ONLY_FLOAT_PLANAR", 1, 4, true, eVT_DISTANCE_ONLY},
-        new Object[]{"eDF_POLAR_2D_DOUBLE_PLANAR", 2, 8, true, eVT_POLAR},
-        new Object[]{"eDF_POLAR_3D_DOUBLE_PLANAR", 3, 8, true, eVT_POLAR},
-        new Object[]{"eDF_CARTESIAN_2D_DOUBLE_PLANAR", 2, 8, true, eVT_CARTESIAN},
-        new Object[]{"eDF_CARTESIAN_3D_DOUBLE_PLANAR", 3, 8, true, eVT_CARTESIAN},
-        new Object[]{"eDF_DISTANCE_ONLY_DOUBLE_PLANAR", 1, 8, true, eVT_DISTANCE_ONLY},
-        new Object[]{"eDF_DISTANCE_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY},
-        new Object[]{"eDF_INVALID", 0, 0, false, eVT_DIMENSION}
+    public static final DistanceData.FormatInfo[] cDistanceDataFormatInfo = new DistanceData.FormatInfo[] {
+        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT", 2, 4, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT", 3, 4, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT", 2, 4, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT", 3, 4, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE", 2, 8, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE", 3, 8, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE", 3, 8, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_FLOAT", 2, 4, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_DOUBLE", 2, 8, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_FLOAT", 2, 4, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT_PLANAR", 2, 4, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT_PLANAR", 3, 4, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT_PLANAR", 2, 4, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT_PLANAR", 3, 4, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_FLOAT_PLANAR", 1, 4, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE_PLANAR", 2, 8, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE_PLANAR", 3, 8, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE_PLANAR", 2, 8, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE_PLANAR", 3, 8, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_DOUBLE_PLANAR", 1, 8, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED8_PLANAR", 1, 1, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_INVALID", 0, 0, false, eVT_DIMENSION)
     };
-
-    /** tDistanceDataFormat */
-    public static final int
-    eDF_POLAR_2D_FLOAT = 0,
-                         eDF_POLAR_3D_FLOAT = 1,
-                                              eDF_CARTESIAN_2D_FLOAT = 2,
-                                                                       eDF_CARTESIAN_3D_FLOAT = 3,
-                                                                                                eDF_POLAR_2D_DOUBLE = 4,
-                                                                                                                      eDF_POLAR_3D_DOUBLE = 5,
-                                                                                                                                            eDF_CARTESIAN_2D_DOUBLE = 6,
-                                                                                                                                                                      eDF_CARTESIAN_3D_DOUBLE = 7,
-                                                                                                                                                                                                eDF_POLAR_2D_FLOAT_PLANAR = 8,
-                                                                                                                                                                                                                            eDF_POLAR_3D_FLOAT_PLANAR = 9,
-                                                                                                                                                                                                                                                        eDF_CARTESIAN_2D_FLOAT_PLANAR = 10,
-                                                                                                                                                                                                                                                                                        eDF_CARTESIAN_3D_FLOAT_PLANAR = 11,
-                                                                                                                                                                                                                                                                                                                        eDF_DISTANCE_ONLY_FLOAT_PLANAR = 12,
-                                                                                                                                                                                                                                                                                                                                                         eDF_POLAR_2D_DOUBLE_PLANAR = 13,
-                                                                                                                                                                                                                                                                                                                                                                                      eDF_POLAR_3D_DOUBLE_PLANAR = 14,
-                                                                                                                                                                                                                                                                                                                                                                                                                   eDF_CARTESIAN_2D_DOUBLE_PLANAR = 15,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                    eDF_CARTESIAN_3D_DOUBLE_PLANAR = 16,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     eDF_DISTANCE_ONLY_DOUBLE_PLANAR = 17,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       eDF_DISTANCE_ONLY_UNSIGNED16_PLANAR = 18,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             eDF_INVALID = 19,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           eDF_DIMENSION = 20;
 
     /** Enum containing eBBT_UNKNOWN */
     public static final int
