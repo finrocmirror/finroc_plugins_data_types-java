@@ -22,6 +22,8 @@
 package org.finroc.plugin.datatype.mca;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 
 import org.finroc.core.datatype.Unit;
 import org.finroc.log.LogLevel;
@@ -29,9 +31,11 @@ import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.Dimension;
 import org.finroc.plugin.datatype.Paintable;
+import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.plugin.datatype.PointList;
 import org.finroc.plugin.datatype.Pose3D;
 import org.finroc.plugin.datatype.Time;
+import org.finroc.plugin.datatype.util.BoundsExtractingGraphics2D;
 import org.finroc.serialization.DataType;
 import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.InputStreamBuffer;
@@ -45,7 +49,7 @@ import org.finroc.serialization.RRLibSerializableImpl;
  *
  * tDistanceData Java equivalent
  */
-public class DistanceData extends RRLibSerializableImpl implements Paintable, PointList {
+public class DistanceData extends RRLibSerializableImpl implements PaintablePortData, PointList {
 
     public static class DistanceDataList extends PortDataListImpl<DistanceData> implements Paintable, PointList {
 
@@ -55,7 +59,7 @@ public class DistanceData extends RRLibSerializableImpl implements Paintable, Po
 
         @Override
         public int getDimensionCount() {
-            return get(0).getDimensionCount();
+            return size() > 0 ? get(0).getDimensionCount() : 0;
         }
 
         @Override
@@ -65,7 +69,7 @@ public class DistanceData extends RRLibSerializableImpl implements Paintable, Po
 
         @Override
         public int getPointCount() {
-            return get(0).getPointCount();
+            return size() > 0 ? get(0).getPointCount() : 0;
         }
 
         @Override
@@ -83,6 +87,11 @@ public class DistanceData extends RRLibSerializableImpl implements Paintable, Po
             for (int i = 0; i < size(); i++) {
                 get(i).paint(g);
             }
+        }
+
+        @Override
+        public Rectangle2D getBounds() {
+            return size() > 0 ? get(0).getBounds() : null;
         }
     }
 
@@ -323,6 +332,10 @@ public class DistanceData extends RRLibSerializableImpl implements Paintable, Po
 
     @Override
     public void paint(Graphics2D g) {
+        AffineTransform at = g.getTransform(); // backup current transformation
+        robotPose.applyTransformation(g);
+        sensorPose.applyTransformation(g);
+        sensorPoseDelta.applyTransformation(g);
         if (formatInfo.valueType == MCA.eVT_DISTANCE_ONLY) {
             // assume scan is from -180° to +180°
             double minAngle = -Math.PI / 2;
@@ -349,10 +362,16 @@ public class DistanceData extends RRLibSerializableImpl implements Paintable, Po
                 drawPoint(g, x, y);
             }
         }
+        g.setTransform(at);
     }
 
     private void drawPoint(Graphics2D g, double x, double y) {
         g.fillRect((int)x, (int)y, 1, 1);
+    }
+
+    @Override
+    public Rectangle2D getBounds() {
+        return BoundsExtractingGraphics2D.getBounds(this);
     }
 }
 

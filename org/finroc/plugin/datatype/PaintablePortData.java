@@ -21,6 +21,7 @@
 package org.finroc.plugin.datatype;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 import org.finroc.serialization.DataType;
 import org.finroc.serialization.InputStreamBuffer;
@@ -55,6 +56,11 @@ public interface PaintablePortData extends Paintable, RRLibSerializable {
 
         @Override
         public void deserialize(InputStreamBuffer is) {
+        }
+
+        @Override
+        public Rectangle getBounds() {
+            return null;
         }
     }
 }

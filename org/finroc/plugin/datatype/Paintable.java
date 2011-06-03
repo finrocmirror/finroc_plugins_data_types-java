@@ -21,6 +21,7 @@
 package org.finroc.plugin.datatype;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * @author max
@@ -29,6 +30,16 @@ import java.awt.Graphics2D;
  */
 public interface Paintable {
 
+    /**
+     * Paint object
+     *
+     * @param g Graphics2D Object to blit to
+     */
     public void paint(Graphics2D g);
 
+    /**
+     * @return Bounds of paintable object (null if nothing is drawn)
+     * (Note: y direction is downwards on screen)
+     */
+    public Rectangle2D getBounds();
 }

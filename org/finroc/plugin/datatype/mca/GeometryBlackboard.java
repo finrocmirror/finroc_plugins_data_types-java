@@ -37,6 +37,7 @@ import org.finroc.plugin.blackboard.BlackboardBuffer;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.plugin.datatype.Vector2D;
+import org.finroc.plugin.datatype.util.BoundsExtractingGraphics2D;
 import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.FixedBuffer;
 
@@ -340,5 +341,10 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
         } catch (Exception e) {
             DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "GeometryBlackboard", e);
         }
+    }
+
+    @Override
+    public Rectangle2D getBounds() {
+        return BoundsExtractingGraphics2D.getBounds(this);
     }
 }

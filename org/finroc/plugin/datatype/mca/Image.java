@@ -21,6 +21,8 @@
  */
 package org.finroc.plugin.datatype.mca;
 
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -29,6 +31,7 @@ import org.finroc.plugin.blackboard.BlackboardPlugin;
 import org.finroc.plugin.datatype.Blittable;
 import org.finroc.plugin.datatype.DataTypePlugin;
 import org.finroc.plugin.datatype.HasBlittable;
+import org.finroc.plugin.datatype.PaintablePortData;
 import org.finroc.serialization.DataType;
 import org.finroc.serialization.DataTypeBase;
 import org.finroc.serialization.InputStreamBuffer;
@@ -42,9 +45,9 @@ import org.finroc.serialization.RRLibSerializableImpl;
  *
  * Image-Blackboard
  */
-public class Image extends RRLibSerializableImpl implements HasBlittable {
+public class Image extends RRLibSerializableImpl implements HasBlittable, PaintablePortData {
 
-    public static class ImageList extends PortDataListImpl<Image> implements HasBlittable {
+    public static class ImageList extends PortDataListImpl<Image> implements HasBlittable, PaintablePortData {
 
         public ImageList() {
             super(Image.TYPE);
@@ -53,6 +56,18 @@ public class Image extends RRLibSerializableImpl implements HasBlittable {
         @Override
         public Blittable getBlittable() {
             return size() > 0 ? get(0).getBlittable() : null;
+        }
+
+        @Override
+        public Rectangle2D getBounds() {
+            return size() > 0 ? get(0).getBounds() : null;
+        }
+
+        @Override
+        public void paint(Graphics2D g) {
+            if (size() > 0) {
+                get(0).paint(g);
+            }
         }
     }
 
@@ -550,6 +565,16 @@ public class Image extends RRLibSerializableImpl implements HasBlittable {
                 destOffset++;
             }
         }
+    }
+
+    @Override
+    public Rectangle2D getBounds() {
+        return new Rectangle2D.Double(0, 0, width, height);
+    }
+
+    @Override
+    public void paint(Graphics2D g) {
+        getBlittable().standardPaintImplementation(g);
     }
 }
 

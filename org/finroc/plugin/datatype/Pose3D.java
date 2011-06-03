@@ -21,6 +21,8 @@
  */
 package org.finroc.plugin.datatype;
 
+import java.awt.Graphics2D;
+
 import org.finroc.core.portdatabase.FinrocTypeInfo;
 import org.finroc.jc.annotation.JavaOnly;
 import org.finroc.serialization.Copyable;
@@ -102,5 +104,15 @@ public class Pose3D extends RRLibSerializableImpl implements Copyable<Pose3D> {
         roll = o.roll;
         pitch = o.pitch;
         yaw = o.yaw;
+    }
+
+    /**
+     * Apply transformation to 2D graphics
+     *
+     * @param g Graphics2D object to apply transformation to
+     */
+    public void applyTransformation(Graphics2D g) {
+        g.translate(x, y);
+        g.rotate(yaw);
     }
 }

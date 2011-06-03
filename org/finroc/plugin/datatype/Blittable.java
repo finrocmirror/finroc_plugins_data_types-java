@@ -21,9 +21,11 @@
 package org.finroc.plugin.datatype;
 
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 /**
  * @author max
@@ -36,6 +38,9 @@ public abstract class Blittable {
     private static final long serialVersionUID = 4897809725205162786L;
 
     protected abstract void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int srcY, int srcOffset, int width);
+
+    /** Temporary buffer for painting images to Graphics2D java objects */
+    private static ThreadLocal<PaintHelper> paintTempBuffer = new ThreadLocal<PaintHelper>();
 
     /**
      * Copy (part of) image to another image
@@ -177,4 +182,54 @@ public abstract class Blittable {
         }
     }
 
+    /**
+     * Helper class for painting blittable to Graphics2D
+     */
+    class PaintHelper extends BufferedImage implements Destination {
+
+        public PaintHelper(int width, int height) {
+            super(width, height, BufferedImage.TYPE_INT_RGB);
+        }
+
+        @Override
+        public int[] getBuffer() {
+            return ((DataBufferInt)getRaster().getDataBuffer()).getData();
+        }
+
+        @Override
+        public Rectangle getBounds() {
+            return new Rectangle(0, 0, getWidth(), getHeight());
+        }
+
+        @Override
+        public Dimension getSize() {
+            return new Dimension(getWidth(), getHeight());
+        }
+
+        @Override
+        public BufferedImage getBufferedImage() {
+            return this;
+        }
+
+    }
+
+    /**
+     * Standard (slightly inefficient) paint implementation to paint
+     * blittable to Graphics2D Java object
+     * (blits blittable to temp buffer and then paints temp buffer to graphics2d)
+     *
+     * @param g Graphics2D object
+     */
+    public void standardPaintImplementation(Graphics2D g) {
+        if (getWidth() <= 0 || getHeight() <= 0) {
+            return;
+        }
+        PaintHelper img = paintTempBuffer.get();
+        if (img == null || img.getWidth() < getWidth() || img.getHeight() < getHeight()) {
+            img = new PaintHelper(getWidth(), getHeight());
+            paintTempBuffer.set(img);
+        }
+        blitTo(img);
+        g.drawImage(img, 0, 0, null);
+    }
 }
