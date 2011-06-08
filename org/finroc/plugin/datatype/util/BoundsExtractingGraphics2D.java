@@ -106,7 +106,7 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
     public static Rectangle2D getBounds(Paintable p) {
         BoundsExtractingGraphics2D b = getInstance();
         p.paint(b);
-        return new Rectangle2D.Double(b.bounds.getX(), b.bounds.getY(), b.bounds.getWidth(), b.bounds.getHeight());
+        return b.bounds == null ? null : new Rectangle2D.Double(b.bounds.getX(), b.bounds.getY(), b.bounds.getWidth(), b.bounds.getHeight());
     }
 
 
