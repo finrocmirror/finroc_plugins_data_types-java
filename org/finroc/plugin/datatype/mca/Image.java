@@ -54,8 +54,8 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         }
 
         @Override
-        public Blittable getBlittable() {
-            return size() > 0 ? get(0).getBlittable() : null;
+        public Blittable getBlittable(int index) {
+            return size() > index ? get(index).getBlittable(0) : null;
         }
 
         @Override
@@ -68,6 +68,11 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
             if (size() > 0) {
                 get(0).paint(g);
             }
+        }
+
+        @Override
+        public int getNumberOfBlittables() {
+            return size();
         }
     }
 
@@ -234,8 +239,13 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     @Override
-    public Blittable getBlittable() {
+    public Blittable getBlittable(int index) {
         return blitter == null ? Blittable.Empty.instance : blitter;
+    }
+
+    @Override
+    public int getNumberOfBlittables() {
+        return blitter == null ? 0 : 1;
     }
 
     public abstract class BlackboardBlitter extends Blittable {
@@ -574,7 +584,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     @Override
     public void paint(Graphics2D g) {
-        getBlittable().standardPaintImplementation(g);
+        getBlittable(0).standardPaintImplementation(g);
     }
 }
 

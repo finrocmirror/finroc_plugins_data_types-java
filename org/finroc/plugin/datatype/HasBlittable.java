@@ -37,9 +37,15 @@ public interface HasBlittable extends RRLibSerializable {
     public final static DataType<HasBlittable> TYPE = new DataType<HasBlittable>(HasBlittable.class);
 
     /**
-     * @return Blittable object
+     * @return number of blittable objects in this objects (Image lists may have multiple)
      */
-    public Blittable getBlittable();
+    public int getNumberOfBlittables();
+
+    /**
+     * @param Index of blittable
+     * @return Blittable object (null if index is out of bounds);
+     */
+    public Blittable getBlittable(int index);
 
     /**
      * Empty Blittable
@@ -49,7 +55,7 @@ public interface HasBlittable extends RRLibSerializable {
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "DummyBlittable");
 
         @Override
-        public Blittable getBlittable() {
+        public Blittable getBlittable(int index) {
             return org.finroc.plugin.datatype.Blittable.Empty.instance;
         }
 
@@ -59,6 +65,11 @@ public interface HasBlittable extends RRLibSerializable {
 
         @Override
         public void deserialize(InputStreamBuffer is) {
+        }
+
+        @Override
+        public int getNumberOfBlittables() {
+            return 0;
         }
     }
 }
