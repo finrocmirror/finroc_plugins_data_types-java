@@ -21,6 +21,7 @@
  */
 package org.finroc.plugin.datatype.mca;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -232,6 +233,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
     /** Helper variables derived from header data */
     private FormatInfo formatInfo = MCA.cDistanceDataFormatInfo[0];
     private DimensionImpl[] dimensions = null;
+    private int pointDrawSize = 50;
 
     /** Data Buffer */
     private MemoryBuffer data = new MemoryBuffer();
@@ -271,6 +273,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
 
         // Read image data
         data.clear();
+        formatInfo = MCA.cDistanceDataFormatInfo[format];
         int size = dimension * formatInfo.numberOfBytesPerValue * formatInfo.numberOfValues;
         data.deserialize(is, size);
 
@@ -278,12 +281,12 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
 
         // calculate internal variables
         if (formatChanged) {
-            formatInfo = MCA.cDistanceDataFormatInfo[format];
             dimensions = new DimensionImpl[formatInfo.numberOfValues];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new DimensionImpl(i);
             }
         }
+        pointDrawSize = (int)Unit.cm.convertTo(3, getUnit());
     }
 
     public Unit getUnit() {
@@ -366,7 +369,8 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
     }
 
     private void drawPoint(Graphics2D g, double x, double y) {
-        g.fillRect((int)x, (int)y, 1, 1);
+        //g.setColor(Color.BLACK);
+        g.fillRect((int)x, (int)y, pointDrawSize, pointDrawSize);
     }
 
     @Override
