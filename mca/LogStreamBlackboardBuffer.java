@@ -1,17 +1,17 @@
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
 import java.io.EOFException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.finroc.log.LogLevel;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.plugin.datatype.ContainsStrings;
-import org.finroc.plugin.datatype.DataTypePlugin;
-import org.finroc.serialization.DataTypeBase;
-import org.finroc.serialization.FixedBuffer;
-import org.finroc.serialization.InputStreamBuffer;
+import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.finroc.plugins.blackboard.BlackboardBuffer;
+import org.finroc.plugins.data_types.ContainsStrings;
+import org.finroc.plugins.data_types.DataTypePlugin;
+import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
+import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 
 /**
  * @author max

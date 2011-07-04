@@ -19,13 +19,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype;
+package org.finroc.plugins.data_types;
 
-import org.finroc.serialization.DataType;
-import org.finroc.serialization.InputStreamBuffer;
-import org.finroc.serialization.OutputStreamBuffer;
-import org.finroc.serialization.RRLibSerializable;
-import org.finroc.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;
+import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
  * @author max
@@ -56,7 +56,7 @@ public interface HasBlittable extends RRLibSerializable {
 
         @Override
         public Blittable getBlittable(int index) {
-            return org.finroc.plugin.datatype.Blittable.Empty.instance;
+            return org.finroc.plugins.data_types.Blittable.Empty.instance;
         }
 
         @Override

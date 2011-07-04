@@ -19,31 +19,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 
 import org.finroc.core.datatype.Unit;
-import org.finroc.log.LogLevel;
-import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.plugin.datatype.DataTypePlugin;
-import org.finroc.plugin.datatype.Dimension;
-import org.finroc.plugin.datatype.Paintable;
-import org.finroc.plugin.datatype.PaintablePortData;
-import org.finroc.plugin.datatype.PointList;
-import org.finroc.plugin.datatype.Pose3D;
-import org.finroc.plugin.datatype.Time;
-import org.finroc.plugin.datatype.util.BoundsExtractingGraphics2D;
-import org.finroc.serialization.DataType;
-import org.finroc.serialization.DataTypeBase;
-import org.finroc.serialization.InputStreamBuffer;
-import org.finroc.serialization.MemoryBuffer;
-import org.finroc.serialization.OutputStreamBuffer;
-import org.finroc.serialization.PortDataListImpl;
-import org.finroc.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.finroc.plugins.blackboard.BlackboardPlugin;
+import org.finroc.plugins.data_types.DataTypePlugin;
+import org.finroc.plugins.data_types.Dimension;
+import org.finroc.plugins.data_types.Paintable;
+import org.finroc.plugins.data_types.PaintablePortData;
+import org.finroc.plugins.data_types.PointList;
+import org.finroc.plugins.data_types.Pose3D;
+import org.finroc.plugins.data_types.Time;
+import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
+import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
+import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
+import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
  * @author max

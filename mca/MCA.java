@@ -19,13 +19,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
-import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.jc.jni.JNIInfo;
-import org.finroc.jc.jni.Struct;
-import org.finroc.jc.jni.StructBase;
-import org.finroc.serialization.FixedBuffer;
+import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
+import org.rrlib.finroc_core_utils.jc.jni.JNIInfo;
+import org.rrlib.finroc_core_utils.jc.jni.Struct;
+import org.rrlib.finroc_core_utils.jc.jni.StructBase;
+import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
 
 @JavaOnly
 public class MCA {

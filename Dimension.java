@@ -2,7 +2,7 @@
  * You received this file as part of an advanced experimental
  * robotics framework prototype ('finroc')
  *
- * Copyright (C) 2007-2010 Max Reichardt,
+ * Copyright (C) 2011 Max Reichardt,
  *   Robotics Research Lab, University of Kaiserslautern
  *
  * This program is free software; you can redistribute it and/or
@@ -19,27 +19,25 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype;
+package org.finroc.plugins.data_types;
 
-import org.finroc.core.plugin.Plugin;
-import org.finroc.core.plugin.Plugins;
-import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.log.LogDomain;
-import org.finroc.plugin.datatype.mca.MCA;
+import org.finroc.core.datatype.Unit;
 
 /**
  * @author max
  *
+ * A Dimension.
+ *
+ * Each point coordinate, for instance, lies in such a dimension.
  */
-public class DataTypePlugin implements Plugin {
+public interface Dimension {
 
-    @Override
-    public void init(/*PluginManager mgr*/) {
-        Plugins.loadAllDataTypesInPackage(BehaviourInfo.class);
-        Plugins.loadAllDataTypesInPackage(MCA.class);
-    }
+    /** Type of values */
+    public Class<?> getValueType();
 
-    /** Log domain for this class */
-    @JavaOnly
-    public static final LogDomain logDomain = Plugins.logDomain.getSubDomain("data_types");
+    /** Unit in which dimension is measured */
+    public Unit getUnit();
+
+    /** Name of dimension */
+    public String getDimensionName();
 }

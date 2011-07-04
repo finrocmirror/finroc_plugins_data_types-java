@@ -19,33 +19,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types;
 
-import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.serialization.DataTypeBase;
+import org.finroc.core.plugin.Plugin;
+import org.finroc.core.plugin.Plugins;
+import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
+import org.rrlib.finroc_core_utils.log.LogDomain;
+import org.finroc.plugins.data_types.mca.MCA;
 
 /**
  * @author max
  *
- * Float blackboard buffer
  */
-@JavaOnly
-public class FloatBlackboardBuffer extends MCABlackboardBuffer {
+public class DataTypePlugin implements Plugin {
 
-    public static class Elem extends BlackboardBuffer {}
-    public final static DataTypeBase TYPE = getMcaBlackboardType(FloatBlackboardBuffer.class, Elem.class, "Float");
-
-    public FloatBlackboardBuffer() {
-        super(TYPE);
+    @Override
+    public void init(/*PluginManager mgr*/) {
+        Plugins.loadAllDataTypesInPackage(BehaviourInfo.class);
+        Plugins.loadAllDataTypesInPackage(MCA.class);
     }
 
-    public int size() {
-        return (getBuffer().getElements() * getBuffer().getElementSize()) / 4;
-    }
-
-    public float getValue(int index) {
-        return getBuffer().getBuffer().getFloat(4 * index);
-    }
-
+    /** Log domain for this class */
+    @JavaOnly
+    public static final LogDomain logDomain = Plugins.logDomain.getSubDomain("data_types");
 }

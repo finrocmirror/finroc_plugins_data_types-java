@@ -19,13 +19,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
-import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.serialization.DataType;
-import org.finroc.serialization.DataTypeBase;
-import org.finroc.serialization.PortDataListImpl;
+import org.finroc.plugins.blackboard.BlackboardBuffer;
+import org.finroc.plugins.blackboard.BlackboardPlugin;
+import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
 
 /**
  * @author max

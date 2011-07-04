@@ -19,26 +19,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import org.finroc.log.LogLevel;
-import org.finroc.plugin.blackboard.BlackboardPlugin;
-import org.finroc.plugin.datatype.Blittable;
-import org.finroc.plugin.datatype.DataTypePlugin;
-import org.finroc.plugin.datatype.HasBlittable;
-import org.finroc.plugin.datatype.PaintablePortData;
-import org.finroc.serialization.DataType;
-import org.finroc.serialization.DataTypeBase;
-import org.finroc.serialization.InputStreamBuffer;
-import org.finroc.serialization.MemoryBuffer;
-import org.finroc.serialization.OutputStreamBuffer;
-import org.finroc.serialization.PortDataListImpl;
-import org.finroc.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.finroc.plugins.blackboard.BlackboardPlugin;
+import org.finroc.plugins.data_types.Blittable;
+import org.finroc.plugins.data_types.DataTypePlugin;
+import org.finroc.plugins.data_types.HasBlittable;
+import org.finroc.plugins.data_types.PaintablePortData;
+import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
+import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
+import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
  * @author max

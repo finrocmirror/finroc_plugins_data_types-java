@@ -19,15 +19,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype;
+package org.finroc.plugins.data_types;
 
-import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.serialization.DataType;
-import org.finroc.serialization.InputStreamBuffer;
-import org.finroc.serialization.MemoryBuffer;
-import org.finroc.serialization.OutputStreamBuffer;
-import org.finroc.serialization.StringInputStream;
-import org.finroc.serialization.StringOutputStream;
+import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
+import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
+import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.StringInputStream;
+import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
  * @author max

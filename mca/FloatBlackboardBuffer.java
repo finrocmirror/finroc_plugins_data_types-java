@@ -19,45 +19,33 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
-import org.finroc.jc.annotation.JavaOnly;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.plugin.datatype.ContainsStrings;
-import org.finroc.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
+import org.finroc.plugins.blackboard.BlackboardBuffer;
+import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
 
 /**
  * @author max
  *
- * String blackboard buffer
+ * Float blackboard buffer
  */
 @JavaOnly
-public class StringBlackboardBuffer extends MCABlackboardBuffer implements ContainsStrings {
+public class FloatBlackboardBuffer extends MCABlackboardBuffer {
 
     public static class Elem extends BlackboardBuffer {}
-    public final static DataTypeBase TYPE = getMcaBlackboardType(StringBlackboardBuffer.class, Elem.class, "Signed Char");
+    public final static DataTypeBase TYPE = getMcaBlackboardType(FloatBlackboardBuffer.class, Elem.class, "Float");
 
-    public StringBlackboardBuffer() {
+    public FloatBlackboardBuffer() {
         super(TYPE);
     }
 
-    @Override
-    public CharSequence getString(int index) {
-        return getBuffer().getBuffer().getString(getBuffer().getElementOffset(index));
+    public int size() {
+        return (getBuffer().getElements() * getBuffer().getElementSize()) / 4;
     }
 
-    @Override
-    public void setString(int index, CharSequence newString) {
-        getBuffer().getBuffer().putString(getBuffer().getElementOffset(index), newString.toString());
+    public float getValue(int index) {
+        return getBuffer().getBuffer().getFloat(4 * index);
     }
 
-    @Override
-    public int stringCount() {
-        return getBuffer().getElements();
-    }
-
-    @Override
-    public void setSize(int newSize) {
-        throw new RuntimeException("Unsupported");
-    }
 }

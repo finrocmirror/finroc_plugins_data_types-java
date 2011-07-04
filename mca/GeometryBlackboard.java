@@ -19,7 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.mca;
+package org.finroc.plugins.data_types.mca;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -31,15 +31,15 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import org.finroc.jc.jni.StructBase;
-import org.finroc.log.LogLevel;
-import org.finroc.plugin.blackboard.BlackboardBuffer;
-import org.finroc.plugin.datatype.DataTypePlugin;
-import org.finroc.plugin.datatype.PaintablePortData;
-import org.finroc.plugin.datatype.Vector2D;
-import org.finroc.plugin.datatype.util.BoundsExtractingGraphics2D;
-import org.finroc.serialization.DataTypeBase;
-import org.finroc.serialization.FixedBuffer;
+import org.rrlib.finroc_core_utils.jc.jni.StructBase;
+import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.finroc.plugins.blackboard.BlackboardBuffer;
+import org.finroc.plugins.data_types.DataTypePlugin;
+import org.finroc.plugins.data_types.PaintablePortData;
+import org.finroc.plugins.data_types.Vector2D;
+import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
+import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
 
 public class GeometryBlackboard extends MCABlackboardBuffer implements PaintablePortData {
 

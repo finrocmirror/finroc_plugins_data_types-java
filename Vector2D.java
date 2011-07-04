@@ -2,7 +2,7 @@
  * You received this file as part of an advanced experimental
  * robotics framework prototype ('finroc')
  *
- * Copyright (C) 2011 Max Reichardt,
+ * Copyright (C) 2007-2010 Max Reichardt,
  *   Robotics Research Lab, University of Kaiserslautern
  *
  * This program is free software; you can redistribute it and/or
@@ -19,41 +19,64 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype;
+package org.finroc.plugins.data_types;
+
+import org.rrlib.finroc_core_utils.serialization.DataType;
 
 /**
  * @author max
  *
- * List of points (in arbitrary space).
+ * Simple 2D Vector
  */
-public interface PointList {
+public class Vector2D {
+
+    public final static DataType<Vector2D> TYPE = new DataType<Vector2D>(Vector2D.class);
+
+    private double x, y;
+
+    public Vector2D(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public double length() {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    public double polarAngleRad() {
+        return Math.atan2(y, x);
+    }
 
     /**
-     * @return Number of dimensions of space/points
+     * @return the x
      */
-    public int getDimensionCount();
+    public double getX() {
+        return x;
+    }
 
     /**
-     * @param index Dimension index (must be < getDimensionCount())
-     * @return Dimension with specified index
+     * @param x the x to set
      */
-    public Dimension getDimension(int index);
+    public void setX(double x) {
+        this.x = x;
+    }
 
     /**
-     * @return Number of points
+     * @return the y
      */
-    public int getPointCount();
+    public double getY() {
+        return y;
+    }
 
     /**
-     * @param pointIndex Index (must be < getPointCount()) of point of interest
-     * @param dimensionIndex Index (must be < getDimensionCount()) of interest
-     * @return Coordinate
+     * @param y the y to set
      */
-    public double getPointCoordinate(int pointIndex, int dimensionIndex);
+    public void setY(double y) {
+        this.y = y;
+    }
 
-    /**
-     * @param pointIndex Index (must be < getPointCount()) of point of interest
-     * @param resultBuffer Buffer to write point coordinates to
-     */
-    public void getPoint(int pointIndex, double[] resultBuffer);
+    public void set(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
 }

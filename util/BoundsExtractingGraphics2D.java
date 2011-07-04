@@ -18,7 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugin.datatype.util;
+package org.finroc.plugins.data_types.util;
 
 import java.awt.Color;
 import java.awt.Composite;
@@ -47,10 +47,10 @@ import java.awt.image.renderable.RenderableImage;
 import java.text.AttributedCharacterIterator;
 import java.util.Map;
 
-import org.finroc.jc.log.LogDefinitions;
-import org.finroc.log.LogDomain;
-import org.finroc.log.LogLevel;
-import org.finroc.plugin.datatype.Paintable;
+import org.rrlib.finroc_core_utils.jc.log.LogDefinitions;
+import org.rrlib.finroc_core_utils.log.LogDomain;
+import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.finroc.plugins.data_types.Paintable;
 
 /**
  * @author max
