@@ -45,9 +45,6 @@ import org.finroc.core.datatype.Unit;
 @JavaOnly
 public class PartWiseLinearFunction extends RRLibSerializableImpl implements Function {
 
-    /** UID */
-    private static final long serialVersionUID = 105;
-
     /** list with nodes... invariant: there is only one node with the same x value */
     protected final List<Node> nodes;
 

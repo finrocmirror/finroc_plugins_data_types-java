@@ -34,9 +34,6 @@ import java.awt.image.DataBufferInt;
  */
 public abstract class Blittable {
 
-    /** UID */
-    private static final long serialVersionUID = 4897809725205162786L;
-
     protected abstract void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int srcY, int srcOffset, int width);
 
     /** Temporary buffer for painting images to Graphics2D java objects */

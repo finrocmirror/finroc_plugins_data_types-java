@@ -250,9 +250,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     public abstract class BlackboardBlitter extends Blittable {
 
-        /** UID */
-        private static final long serialVersionUID = -6221787372563681396L;
-
         /** Width height and widthStep */
         protected int srcY;
         public transient ByteBuffer imageData;
@@ -370,9 +367,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     public class RGB32 extends BlackboardBlitter {
 
-        /** UID */
-        private static final long serialVersionUID = 3347494921353574228L;
-
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 4);
@@ -386,9 +380,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     public class RGB24 extends BlackboardBlitter {
 
-        /** UID */
-        private static final long serialVersionUID = 862575747828052539L;
-
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 3);
@@ -400,9 +391,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     public class BGR24 extends BlackboardBlitter {
-
-        /** UID */
-        private static final long serialVersionUID = 8580032150270926134L;
 
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
@@ -418,9 +406,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     public class BGR32 extends BlackboardBlitter {
 
-        /** UID */
-        private static final long serialVersionUID = -4429188067092456195L;
-
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 4);
@@ -430,9 +415,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     public class Mono8 extends BlackboardBlitter {
-
-        /** UID */
-        private static final long serialVersionUID = 5857468128941036873L;
 
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
@@ -447,9 +429,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     public class Mono16 extends BlackboardBlitter {
 
-        /** UID */
-        private static final long serialVersionUID = -3377683723648179410L;
-
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 2);
@@ -463,9 +442,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     public class RGB565 extends BlackboardBlitter {
-
-        /** UID */
-        private static final long serialVersionUID = -4786403807992138925L;
 
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
@@ -487,9 +463,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     public class YUV444 extends BlackboardBlitter {
 
-        /** UID */
-        private static final long serialVersionUID = 4529284403628031942L;
-
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 3);
@@ -501,9 +474,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     public class YUV422 extends BlackboardBlitter {
-
-        /** UID */
-        private static final long serialVersionUID = 1619579721348846824L;
 
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
@@ -547,9 +517,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     public class YUV420P extends BlackboardBlitter {
-
-        /** UID */
-        private static final long serialVersionUID = -4256927785125538010L;
 
         @Override
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
