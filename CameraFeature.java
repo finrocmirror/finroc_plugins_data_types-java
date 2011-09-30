@@ -22,6 +22,7 @@
 package org.finroc.plugins.data_types;
 
 import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.rrlib.finroc_core_utils.serialization.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
@@ -33,16 +34,19 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
  */
 public class CameraFeature extends RRLibSerializableImpl {
 
-    enum CameraFeatureMode {
-        eCFM_OFF,
-        eCFM_MANUAL,
-        eCFM_AUTOMATIC,
-        eCFM_ABSOLUTE,
-        eCFM_ONE_PUSH_AUTOMATIC,
-        eCFM_DIMENSION
+    public final static DataType<CameraFeature> TYPE = new DataType<CameraFeature>(CameraFeature.class);
+    public final static DataType<CameraFeature.Set> SET_TYPE = new DataType<CameraFeature.Set>(CameraFeature.Set.class, "CameraFeatureSet");
+
+    public enum Mode {
+        OFF,
+        MANUAL,
+        AUTOMATIC,
+        ABSOLUTE,
+        ONE_PUSH_AUTOMATIC,
+        DIMENSION
     }
 
-    enum CameraFeatureID {
+    public enum ID {
         eCF_FEATURE_BRIGHTNESS,
         eCF_FEATURE_EXPOSURE,
         eCF_FEATURE_SHARPNESS,
@@ -116,18 +120,18 @@ public class CameraFeature extends RRLibSerializableImpl {
     /**
      * Java equivalent for CameraFeatureSet in rrlib_coviroa
      */
-    public class Set extends RRLibSerializableImpl {
+    public static class Set extends RRLibSerializableImpl {
 
         /** Name and vendor of camera */
         public String name, vendor;
 
         /** Feature in set */
-        public CameraFeature[] features = new CameraFeature[CameraFeatureID.eCF_DIMENSION.ordinal()];
+        public CameraFeature[] features = new CameraFeature[ID.eCF_DIMENSION.ordinal()];
 
         public Set() {
             for (int i = 0; i < features.length; i++) {
                 features[i] = new CameraFeature();
-                features[i].featureId = CameraFeatureID.values()[i];
+                features[i].featureId = ID.values()[i];
             }
         }
 
@@ -154,21 +158,21 @@ public class CameraFeature extends RRLibSerializableImpl {
     }
 
     /** Capabilities */
-    public Capability automatic;
-    public Capability one_push;
-    public Capability readout;
-    public Capability on_off;
-    public CapabilityRange manual;
-    public CapabilityRange absolute;
+    public Capability automatic = new Capability();
+    public Capability one_push = new Capability();
+    public Capability readout = new Capability();
+    public Capability on_off = new Capability();
+    public CapabilityRange manual = new CapabilityRange();
+    public CapabilityRange absolute = new CapabilityRange();
 
     /** Stores the unique id of this camera feature. */
-    private CameraFeatureID featureId;
+    private ID featureId;
 
     /** Indicates whether this feature is available in the camera at hand or not. */
     private boolean available;
 
     /** Stores the mode of the camera feature. */
-    private CameraFeatureMode mode;
+    private Mode mode;
 
     /** Absolute value of this camera feature if applicable. */
     private float absoluteValue;
@@ -219,7 +223,7 @@ public class CameraFeature extends RRLibSerializableImpl {
      * @return Returns the number of values defining
      * the properties of this feature.
      */
-    public int GetNumberOfValues() {
+    public int getNumberOfValues() {
         switch (featureId) {
         case eCF_FEATURE_WHITE_BALANCE:
             return 2;
@@ -236,8 +240,8 @@ public class CameraFeature extends RRLibSerializableImpl {
      * @param index Index of value (in case this is a feature with multiple values)
      * @return Current value
      */
-    int GetValue(int index) {
-        assert(index >= 0 && index < GetNumberOfValues());
+    public int getValue(int index) {
+        assert(index >= 0 && index < getNumberOfValues());
         return values[index];
     }
 
@@ -247,8 +251,8 @@ public class CameraFeature extends RRLibSerializableImpl {
         os.writeBoolean(available);
         os.writeByte((byte)mode.ordinal());
         os.writeFloat(absoluteValue);
-        for (int i = 0; i < GetNumberOfValues(); i++) {
-            os.writeInt(GetValue(i));
+        for (int i = 0; i < getNumberOfValues(); i++) {
+            os.writeInt(getValue(i));
         }
         automatic.serialize(os);
         one_push.serialize(os);
@@ -260,11 +264,11 @@ public class CameraFeature extends RRLibSerializableImpl {
 
     @Override
     public void deserialize(InputStreamBuffer is) {
-        featureId = CameraFeatureID.values()[is.readByte()];
+        featureId = ID.values()[is.readByte()];
         available = is.readBoolean();
-        mode = CameraFeatureMode.values()[is.readByte()];
+        mode = Mode.values()[is.readByte()];
         absoluteValue = is.readFloat();
-        for (int i = 0; i < GetNumberOfValues(); i++) {
+        for (int i = 0; i < getNumberOfValues(); i++) {
             values[i] = is.readInt();
         }
         automatic.deserialize(is);
@@ -273,5 +277,72 @@ public class CameraFeature extends RRLibSerializableImpl {
         on_off.deserialize(is);
         manual.deserialize(is);
         absolute.deserialize(is);
+    }
+
+    /*!
+     * Is any mode of camera feature available?
+     */
+    public boolean isAvailable() {
+        return absolute.active || automatic.active || manual.active || on_off.active || one_push.active || readout.active;
+    }
+
+    /**
+     * @return unique id of this camera feature
+     */
+    public ID getFeatureId() {
+        return featureId;
+    }
+
+    /**
+     * (Do not use when feature is part of feature set)
+     *
+     * @param featureId New feature id
+     */
+    public void setFeatureId(ID featureId) {
+        this.featureId = featureId;
+    }
+
+    /**
+     * @return Name of this camera feature
+     */
+    public String getFeatureName() {
+        String s = featureId.toString().substring(12).toLowerCase().replace('_', ' ');
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    /**
+     * @return mode of the camera feature
+     */
+    public Mode getMode() {
+        return mode;
+    }
+
+    /**
+     * @param mode New mode of the camera feature
+     */
+    public void setMode(Mode mode) {
+        this.mode = mode;
+    }
+
+    /**
+     * @param index Index of value
+     * @param newValue New Value
+     */
+    public void setValue(int index, int newValue) {
+        values[index] = newValue;
+    }
+
+    /**
+     * @return Absolute value of this camera feature if applicable.
+     */
+    public float getAbsoluteValue() {
+        return absoluteValue;
+    }
+
+    /**
+     * @param absoluteValue Absolute value of this camera feature if applicable.
+     */
+    public void setAbsoluteValue(float absoluteValue) {
+        this.absoluteValue = absoluteValue;
     }
 }
