@@ -26,6 +26,8 @@ import org.rrlib.finroc_core_utils.serialization.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.serialization.Serialization;
+import org.rrlib.finroc_core_utils.xml.XMLNode;
 
 /**
  * @author max
@@ -153,6 +155,147 @@ public class CameraFeature extends RRLibSerializableImpl {
                 if (features[i].featureId.ordinal() != i) {
                     DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "CameraFeature", "Invalid feature id. Stream seems corrupted :-/.");
                 }
+            }
+        }
+
+        @Override
+        public void serialize(XMLNode node) throws Exception {
+            // important part: values
+            for (int f = 0; f < ID.eCF_DIMENSION.ordinal(); f++) {
+                CameraFeature cf = features[f];
+                if (cf.available) {
+                    XMLNode cfnode = node.addChildNode("feature");
+                    cfnode.setAttribute("id", "" + cf.getFeatureName());
+                    cfnode.setAttribute("mode", Serialization.serialize(cf.getMode()));
+                    if (cf.on_off.available && cf.on_off.active == false) {
+                        cfnode.setAttribute("on", false);
+                    } else {
+                        String s = "";
+                        switch (cf.getMode()) {
+                        case ABSOLUTE:
+                            cfnode.setContent("" + cf.getAbsoluteValue());
+                            break;
+                        case MANUAL:
+                            s += cf.getValue(0);
+                            for (int i = 1; i < cf.getNumberOfValues(); i++) {
+                                s += ", " + cf.getValue(i);
+                            }
+                            cfnode.setContent(s);
+                            break;
+                        case AUTOMATIC:
+                        case OFF:
+                        case ONE_PUSH_AUTOMATIC:
+                            break;
+                        default:
+                            DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "CameraFeature", "Not handled");
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // optional camera info
+            XMLNode inode = node.addChildNode("info");
+            inode.setAttribute("hint", "not required in config file");
+            inode.setAttribute("vendor", vendor);
+            inode.setAttribute("camera", name);
+
+            // feature capabilities
+            for (int f = 0; f < ID.eCF_DIMENSION.ordinal(); f++) {
+                CameraFeature cf = features[f];
+                if (cf.available) {
+                    XMLNode cfnode = inode.addChildNode("feature");
+                    cfnode.setAttribute("id", "" + cf.getFeatureName());
+
+                    String available = "";
+                    available += cf.absolute.available ? "1" : "0";
+                    available += cf.automatic.available ? "1" : "0";
+                    available += cf.manual.available ? "1" : "0";
+                    available += cf.on_off.available ? "1" : "0";
+                    available += cf.one_push.available ? "1" : "0";
+                    available += cf.readout.available ? "1" : "0";
+                    cfnode.setAttribute("available", available);
+                    if (cf.absolute.available) {
+                        cfnode.setAttribute("abs_min", cf.absolute.min);
+                        cfnode.setAttribute("abs_max", cf.absolute.max);
+                    }
+                    if (cf.manual.available) {
+                        cfnode.setAttribute("min", cf.manual.min);
+                        cfnode.setAttribute("max", cf.manual.max);
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void deserialize(XMLNode node) throws Exception {
+            // clear
+            for (int i = 0; i < features.length; i++) {
+                features[i] = new CameraFeature();
+                features[i].featureId = ID.values()[i];
+            }
+
+            try {
+                for (XMLNode.ConstChildIterator it = node.getChildrenBegin(); it.get() != node.getChildrenEnd(); it.next()) {
+                    if (it.get().getName().equals("feature")) {
+                        CameraFeature cf = features[Serialization.deserialize(it.get().getStringAttribute("id"), ID.class).ordinal()];
+                        cf.available = true;
+                        cf.mode = Serialization.deserialize(it.get().getStringAttribute("mode"), Mode.class);
+                        if (it.get().hasAttribute("on") && (!it.get().getBoolAttribute("on"))) {
+                            cf.on_off.available = true;
+                            cf.on_off.active = false;
+                        } else {
+                            switch (cf.getMode()) {
+                            case ABSOLUTE:
+                                cf.absoluteValue = Float.parseFloat(it.get().getTextContent());
+                                break;
+                            case AUTOMATIC:
+                            case OFF:
+                            case ONE_PUSH_AUTOMATIC:
+                                break;
+                            default:
+                                DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "CameraFeature", "Not handled");
+                                break;
+                            case MANUAL:
+                                String[] split = it.get().getTextContent().split(",");
+                                for (int i = 0; i < cf.getNumberOfValues(); i++) {
+                                    cf.values[i] = Integer.parseInt(split[i]);
+                                }
+                                break;
+                            }
+                        }
+                    } else if (it.get().getName().equals("info")) {
+                        vendor = it.get().getStringAttribute("vendor");
+                        name = it.get().getStringAttribute("camera");
+
+                        // feature capabilities
+                        for (XMLNode.ConstChildIterator it2 = it.get().getChildrenBegin(); it2.get() != it.get().getChildrenEnd(); it2.next()) {
+                            if (it2.get().getName().equals("feature")) {
+                                CameraFeature cf = features[Serialization.deserialize(it.get().getStringAttribute("id"), ID.class).ordinal()];
+                                cf.available = true;
+
+                                String s = it2.get().getStringAttribute("available");
+                                cf.absolute.available = s.charAt(0) == '1';
+                                cf.automatic.available = s.charAt(1) == '1';
+                                cf.manual.available = s.charAt(2) == '1';
+                                cf.on_off.available = s.charAt(3) == '1';
+                                cf.one_push.available = s.charAt(4) == '1';
+                                cf.readout.available = s.charAt(5) == '1';
+
+                                if (cf.absolute.available) {
+                                    cf.absolute.min = it2.get().getFloatAttribute("abs_min");
+                                    cf.absolute.min = it2.get().getFloatAttribute("abs_max");
+                                }
+                                if (cf.manual.available) {
+                                    cf.manual.min = it2.get().getFloatAttribute("min");
+                                    cf.manual.min = it2.get().getFloatAttribute("max");
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "CameraFeature", "Error deserializing camera feature set: " + e);
             }
         }
     }
