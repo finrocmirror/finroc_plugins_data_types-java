@@ -245,6 +245,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                             cf.on_off.available = true;
                             cf.on_off.active = false;
                         } else {
+                            cf.on_off.active = true;
                             switch (cf.getMode()) {
                             case ABSOLUTE:
                                 cf.absoluteValue = Float.parseFloat(it.get().getTextContent());

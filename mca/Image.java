@@ -433,9 +433,9 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
             imageData.position(lineOffset + srcX * 2);
             for (int x = 0; x < width; x++) {
+                imageData.get(); // skip
                 byte b = imageData.get();
                 destBuffer[destOffset] = toInt(b, b, b);
-                imageData.get(); // skip
                 destOffset++;
             }
         }
