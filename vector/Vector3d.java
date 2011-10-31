@@ -2,7 +2,7 @@
  * You received this file as part of an advanced experimental
  * robotics framework prototype ('finroc')
  *
- * Copyright (C) 2007-2010 Max Reichardt,
+ * Copyright (C) 2011 Max Reichardt,
  *   Robotics Research Lab, University of Kaiserslautern
  *
  * This program is free software; you can redistribute it and/or
@@ -19,29 +19,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.finroc.plugins.data_types;
+package org.finroc.plugins.data_types.vector;
 
-import org.finroc.core.plugin.Plugin;
-import org.finroc.core.plugin.Plugins;
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
-import org.rrlib.finroc_core_utils.log.LogDomain;
-import org.finroc.plugins.data_types.mca.MCA;
-import org.finroc.plugins.data_types.vector.Vector2i;
+import org.rrlib.finroc_core_utils.serialization.DataType;
 
 /**
  * @author max
  *
+ * Java equivalent to tVec3d
  */
-public class DataTypePlugin implements Plugin {
+public class Vector3d extends Vector2d {
 
-    @Override
-    public void init(/*PluginManager mgr*/) {
-        Plugins.loadAllDataTypesInPackage(BehaviourInfo.class);
-        Plugins.loadAllDataTypesInPackage(MCA.class);
-        Plugins.loadAllDataTypesInPackage(Vector2i.class);
+    public final static DataType<Vector3d> TYPE = new DataType<Vector3d>(Vector3d.class);
+
+    public Vector3d() {
+        super(3);
+    }
+    /** for subclasses */
+    protected Vector3d(int dim) {
+        super(dim);
     }
 
-    /** Log domain for this class */
-    @JavaOnly
-    public static final LogDomain logDomain = Plugins.logDomain.getSubDomain("data_types");
+    public double getZ() {
+        return getDouble(2);
+    }
+    public void setZ(double value) {
+        set(2, value);
+    }
 }

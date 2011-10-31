@@ -36,8 +36,8 @@ import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.data_types.DataTypePlugin;
 import org.finroc.plugins.data_types.PaintablePortData;
-import org.finroc.plugins.data_types.Vector2D;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
+import org.finroc.plugins.data_types.vector.Vector2d;
 import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
 import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
 
@@ -65,7 +65,7 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
         private final MCA.tLine line = new MCA.tLine();
         private final MCA.tLineSegment lineSeg = new MCA.tLineSegment();
         private final MCA.tRectangle rectangle = new MCA.tRectangle();
-        private final Vector2D d1 = new Vector2D(0, 0), d2 = new Vector2D(0, 0);
+        private final Vector2d d1 = new Vector2d(0, 0), d2 = new Vector2d(0, 0);
         private final MCA.tCircle circle = new MCA.tCircle();
         private final MCA.tText text = new MCA.tText();
         private final MCA.tTriangle triangle = new MCA.tTriangle();

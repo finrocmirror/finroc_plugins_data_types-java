@@ -79,6 +79,30 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     public final static DataType<Image> TYPE = new DataType<Image>(Image.class, "Image", false);
     public final static DataType<ImageList> LIST_TYPE = new DataType<ImageList>(ImageList.class, "List<Image>", false);
     public final static DataTypeBase BB_TYPE;
+    public final static DataType<Format> FORMAT_TYPE = new DataType<Format>(Format.class, "ImageFormat");
+
+    enum Format {
+        MONO8,
+        MONO16,
+        MONO32_FLOAT,
+        RGB565,
+        RGB24,
+        BGR24,
+        RGB32,
+        BGR32,
+        YUV420P,
+        YUV411,
+        YUV422,
+        UYVY422,
+        YUV444,
+        BAYER_RGGB,
+        BAYER_GBRG,
+        BAYER_GRBG,
+        BAYER_BGGR,
+        HSV,
+        HLS,
+        HI240
+    };
 
     static {
         TYPE.getInfo().listType = LIST_TYPE;
@@ -90,13 +114,13 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     private BlackboardBlitter blitter;
 
     /** Type of blittable object */
-    private int lastType = -1;
+    private Format lastType = null;
 
     /** relevant variable regarding image data */
     private int width;
     private int height;
     private int widthStep;
-    private byte format;
+    private Format format;
 
     /** Image Buffer */
     private MemoryBuffer imageData = new MemoryBuffer();
@@ -105,7 +129,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     public void serialize(OutputStreamBuffer os) {
         os.writeInt(width);
         os.writeInt(height);
-        os.writeByte(format);
+        os.writeEnum(format);
         os.writeInt(imageData.getSize());
         os.writeInt(0); // extra data size
 
@@ -124,7 +148,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     public void deserialize(InputStreamBuffer is) {
         width = is.readInt();
         height = is.readInt();
-        format = is.readByte();
+        format = is.readEnum(Format.class);
         int imageSize = is.readInt();
         int extraData = is.readInt();
 
@@ -148,33 +172,33 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     /**
      * (see equivalent function in tImage.h
      */
-    private int calculateWidthStep(int w, byte f) {
-        if (f == MCA.eIMAGE_FORMAT_YUV420P) {
+    private int calculateWidthStep(int w, Format f) {
+        if (f == Format.YUV420P) {
             return width;
         }
 
         final int alignment = 4;
         int bpp = -1;
         switch (format) {
-        case MCA.eIMAGE_FORMAT_RGB32:
-        case MCA.eIMAGE_FORMAT_BGR32:
+        case RGB32:
+        case BGR32:
             bpp = 4;
             break;
-        case MCA.eIMAGE_FORMAT_RGB24:
-        case MCA.eIMAGE_FORMAT_BGR24:
-        case MCA.eIMAGE_FORMAT_YUV444:
+        case RGB24:
+        case BGR24:
+        case YUV444:
             bpp = 3;
             break;
-        case MCA.eIMAGE_FORMAT_RGB565:
-        case MCA.eIMAGE_FORMAT_MONO16:
-        case MCA.eIMAGE_FORMAT_YUV422:
+        case RGB565:
+        case MONO16:
+        case YUV422:
             bpp = 2;
             break;
-        case MCA.eIMAGE_FORMAT_MONO8:
+        case MONO8:
             bpp = 1;
             break;
         default:
-            DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
+            DataTypePlugin.logDomain.log(LogLevel.LL_DEBUG_VERBOSE_1, "ImageBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
             bpp = 1;
             //return Blittable.Empty.instance;
         }
@@ -197,39 +221,39 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
         // init blitter object
         switch (format) {
-        case MCA.eIMAGE_FORMAT_RGB32:
+        case RGB32:
             blitter = new RGB32();
             break;
-        case MCA.eIMAGE_FORMAT_RGB24:
+        case RGB24:
             blitter = new RGB24();
             break;
-        case MCA.eIMAGE_FORMAT_BGR32:
+        case BGR32:
             blitter = new BGR32();
             break;
-        case MCA.eIMAGE_FORMAT_BGR24:
+        case BGR24:
             blitter = new BGR24();
             break;
-        case MCA.eIMAGE_FORMAT_MONO8:
+        case MONO8:
             blitter = new Mono8();
             break;
-        case MCA.eIMAGE_FORMAT_MONO16:
+        case MONO16:
             blitter = new Mono16();
             break;
-        case MCA.eIMAGE_FORMAT_RGB565:
+        case RGB565:
             blitter = new RGB565();
             break;
-        case MCA.eIMAGE_FORMAT_YUV444:
+        case YUV444:
             blitter = new YUV444();
             break;
-        case MCA.eIMAGE_FORMAT_YUV422:
+        case YUV422:
             blitter = new YUV422();
             break;
-        case MCA.eIMAGE_FORMAT_YUV420P:
+        case YUV420P:
             blitter = new YUV420P();
             break;
         default:
-            DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
-            blitter = null;
+            DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "ImageBlackboard", "Image format " + format + " not supported yet");
+            blitter = new NullBlitter();
             //return Blittable.Empty.instance;
         }
 
@@ -539,6 +563,17 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
                 destBuffer[destOffset] = yuvToRGB(y, u, v);
                 ypos++;
                 x++;
+                destOffset++;
+            }
+        }
+    }
+
+    public class NullBlitter extends BlackboardBlitter {
+
+        @Override
+        protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
+            for (int x = 0; x < width; x++) {
+                destBuffer[destOffset] = 0;
                 destOffset++;
             }
         }
