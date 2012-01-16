@@ -588,5 +588,25 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     public void paint(Graphics2D g) {
         getBlittable(0).standardPaintImplementation(g);
     }
+
+    /**
+     * Sets image data from raw RGB32 buffer
+     * (as can be obtained from fingui's BufferedImageRGB)
+     *
+     * @param width Width of image
+     * @param height Height of image
+     * @param data Image Data (in RGB32 without any padding)
+     */
+    public void setImageDataRGB32(int width, int height, int[] data) {
+        this.width = width;
+        this.height = height;
+        format = Format.RGB32;
+        imageData.clear();
+        OutputStreamBuffer os = new OutputStreamBuffer(imageData);
+        for (int i = 0; i < data.length; i++) {
+            os.writeInt(data[i]);
+        }
+        widthStep = calculateWidthStep(width, format);
+    }
 }
 
