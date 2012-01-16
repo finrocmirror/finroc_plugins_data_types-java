@@ -610,7 +610,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     public void setImageDataRGB32(int width, int height, int[] data) {
         this.width = width;
         this.height = height;
-        format = Format.RGB32;
+        format = Format.BGR32;
         imageData.clear();
         OutputStreamBuffer os = new OutputStreamBuffer(imageData);
         for (int i = 0, n = width * height; i < n; i++) {
