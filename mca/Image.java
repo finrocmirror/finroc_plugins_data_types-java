@@ -135,7 +135,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     @Override
     public void serialize(OutputStreamBuffer os) {
-        System.out.println("Image::serialize>> exporting image : " + width + " x " + height);
 
         os.writeInt(width);
         os.writeInt(height);
@@ -162,8 +161,6 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         format = is.readEnum(Format.class);
         int imageSize = is.readInt();
         int extraData = is.readInt();
-
-        System.out.println("Image::deserialize>> exporting image : " + width + " x " + height);
 
         // region of interest
         is.readBoolean();
