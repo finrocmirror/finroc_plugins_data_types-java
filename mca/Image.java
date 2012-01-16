@@ -120,13 +120,23 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     private int width;
     private int height;
     private int widthStep;
-    private Format format;
+    private Format format = Format.RGB24;
 
     /** Image Buffer */
     private MemoryBuffer imageData = new MemoryBuffer();
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     @Override
     public void serialize(OutputStreamBuffer os) {
+        System.out.println("Image::serialize>> exporting image : " + width + " x " + height);
+
         os.writeInt(width);
         os.writeInt(height);
         os.writeEnum(format);
@@ -146,11 +156,14 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
 
     @Override
     public void deserialize(InputStreamBuffer is) {
+
         width = is.readInt();
         height = is.readInt();
         format = is.readEnum(Format.class);
         int imageSize = is.readInt();
         int extraData = is.readInt();
+
+        System.out.println("Image::deserialize>> exporting image : " + width + " x " + height);
 
         // region of interest
         is.readBoolean();
@@ -603,7 +616,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         format = Format.RGB32;
         imageData.clear();
         OutputStreamBuffer os = new OutputStreamBuffer(imageData);
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < width * height; i++) {
             os.writeInt(data[i]);
         }
         os.close();
