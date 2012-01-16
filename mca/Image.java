@@ -606,6 +606,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         for (int i = 0; i < data.length; i++) {
             os.writeInt(data[i]);
         }
+        os.close();
         widthStep = calculateWidthStep(width, format);
     }
 }
