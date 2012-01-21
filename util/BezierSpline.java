@@ -32,15 +32,23 @@ public class BezierSpline extends Path2D.Double {
     private static final long serialVersionUID = 2136129794501102627L;
 
     /** Parameter T for spline curves */
-    private static final double T = 0;
+    private final double T;
 
     /** Precalculated helper variables for spline curves */
-    private static final double X = (1 - T) / 4;
-    private static final double Y = (1 + T) / 2;
-    private static final double Z = (1 - T) / 2;
+    private final double X;
+    private final double Y;
+    private final double Z;
 
     public BezierSpline(Point2D.Double[] points) {
+        this(points, 0);
+    }
+
+    public BezierSpline(java.awt.geom.Point2D.Double[] points, float tension) {
         super(Path2D.WIND_NON_ZERO, points.length);
+        T = tension;
+        X = (1 - T) / 4;
+        Y = (1 + T) / 2;
+        Z = (1 - T) / 2;
 
         // duplicate first point and last point
         Point2D.Double[] splinePoints = new Point2D.Double[points.length + 2];
