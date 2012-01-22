@@ -237,9 +237,9 @@ public class MCA {
     /** tValueType */
     public static final int
     eVT_POLAR = 0,
-                eVT_CARTESIAN = 1,
-                                eVT_DISTANCE_ONLY = 2,
-                                                    eVT_DIMENSION = 3;
+    eVT_CARTESIAN = 1,
+    eVT_DISTANCE_ONLY = 2,
+    eVT_DIMENSION = 3;
 
     /** cDistanceDataFormatInfo */
     public static final DistanceData.FormatInfo[] cDistanceDataFormatInfo = new DistanceData.FormatInfo[] {
@@ -274,52 +274,52 @@ public class MCA {
     /** Enum containing eBBT_UNKNOWN */
     public static final int
     eBBT_UNKNOWN = 0,
-                   eBBT_USER_DEFINED_IO = 1,
-                                          eBBT_CHAR_U = 2,
-                                                        eBBT_CHAR_S = 3,
-                                                                      eBBT_SHORT_INT_U = 4,
-                                                                                         eBBT_SHORT_INT_S = 5,
-                                                                                                            eBBT_LONG_INT_U = 6,
-                                                                                                                              eBBT_LONG_INT_S = 7,
-                                                                                                                                                eBBT_FLOAT = 8,
-                                                                                                                                                             eBBT_DOUBLE = 9,
-                                                                                                                                                                           eBBT_GEOMETRY_ENTRIES = 10,
-                                                                                                                                                                                                   eBBT_LOG_STREAM = 11,
-                                                                                                                                                                                                                     eBBT_IMAGE = 12,
-                                                                                                                                                                                                                                  eBBT_SIMVIS3D_ELEMENT_DESCRIPTOR = 13,
-                                                                                                                                                                                                                                                                     eBBT_MATRIX_FLOAT_2X2 = 14,
-                                                                                                                                                                                                                                                                                             eBBT_MATRIX_FLOAT_3X3 = 15,
-                                                                                                                                                                                                                                                                                                                     eBBT_MATRIX_FLOAT_4X4 = 16,
-                                                                                                                                                                                                                                                                                                                                             eBBT_MATRIX_DOUBLE_2X2 = 17,
-                                                                                                                                                                                                                                                                                                                                                                      eBBT_MATRIX_DOUBLE_3X3 = 18,
-                                                                                                                                                                                                                                                                                                                                                                                               eBBT_MATRIX_DOUBLE_4X4 = 19,
-                                                                                                                                                                                                                                                                                                                                                                                                                        eBBT_BEHAVIOUR_INFO = 20,
-                                                                                                                                                                                                                                                                                                                                                                                                                                              eBBT_SERIALIZED_LOG = 21,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                    eBBT_SCANNER_DATA = 22,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        eBBT_DISTANCE_DATA = 23,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             eBBT_EXTRACTED_EDGE = 24,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   eBBT_EXTRACTED_CLUSTER = 25,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            eBBT_SCANNER_DATA_EXTENDED = 26,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         eBBT_FACE_LIST = 27,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          eBBT_METHOD_MARK = 28,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             eBBT_CAMERA_FEATURE_SET = 29,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       eBBT_TVEC3_PAIR = 30,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         eBBT_COMPLEX_DOUBLE = 31,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               eBBT_BUILDING_GRID_MAP = 32,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        eBBT_TRANSMISSION_GRID_MAP = 33,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     eBBT_GRID_MAP_PATH = 34,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          eBBT_SECTOR_MAP_BB = 35,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               eBBT_SECTOR_MAP_DESCRIPTION_BB = 36,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                eBBT_GRID_MAP = 37,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                eBBT_DIMENSION = 38;
+    eBBT_USER_DEFINED_IO = 1,
+    eBBT_CHAR_U = 2,
+    eBBT_CHAR_S = 3,
+    eBBT_SHORT_INT_U = 4,
+    eBBT_SHORT_INT_S = 5,
+    eBBT_LONG_INT_U = 6,
+    eBBT_LONG_INT_S = 7,
+    eBBT_FLOAT = 8,
+    eBBT_DOUBLE = 9,
+    eBBT_GEOMETRY_ENTRIES = 10,
+    eBBT_LOG_STREAM = 11,
+    eBBT_IMAGE = 12,
+    eBBT_SIMVIS3D_ELEMENT_DESCRIPTOR = 13,
+    eBBT_MATRIX_FLOAT_2X2 = 14,
+    eBBT_MATRIX_FLOAT_3X3 = 15,
+    eBBT_MATRIX_FLOAT_4X4 = 16,
+    eBBT_MATRIX_DOUBLE_2X2 = 17,
+    eBBT_MATRIX_DOUBLE_3X3 = 18,
+    eBBT_MATRIX_DOUBLE_4X4 = 19,
+    eBBT_BEHAVIOUR_INFO = 20,
+    eBBT_SERIALIZED_LOG = 21,
+    eBBT_SCANNER_DATA = 22,
+    eBBT_DISTANCE_DATA = 23,
+    eBBT_EXTRACTED_EDGE = 24,
+    eBBT_EXTRACTED_CLUSTER = 25,
+    eBBT_SCANNER_DATA_EXTENDED = 26,
+    eBBT_FACE_LIST = 27,
+    eBBT_METHOD_MARK = 28,
+    eBBT_CAMERA_FEATURE_SET = 29,
+    eBBT_TVEC3_PAIR = 30,
+    eBBT_COMPLEX_DOUBLE = 31,
+    eBBT_BUILDING_GRID_MAP = 32,
+    eBBT_TRANSMISSION_GRID_MAP = 33,
+    eBBT_GRID_MAP_PATH = 34,
+    eBBT_SECTOR_MAP_BB = 35,
+    eBBT_SECTOR_MAP_DESCRIPTION_BB = 36,
+    eBBT_GRID_MAP = 37,
+    eBBT_DIMENSION = 38;
 
     /** tDistanceUnit */
     public static final int
     eDISTANCE_UNIT_MM = 0,
-                        eDISTANCE_UNIT_CM = 1,
-                                            eDISTANCE_UNIT_DM = 2,
-                                                                eDISTANCE_UNIT_M = 3,
-                                                                                   eDISTANCE_UNIT_DIMENSION = 4;
+    eDISTANCE_UNIT_CM = 1,
+    eDISTANCE_UNIT_DM = 2,
+    eDISTANCE_UNIT_M = 3,
+    eDISTANCE_UNIT_DIMENSION = 4;
 
     public static class tGeometryEntryHeader extends Struct {
         public final static int sizeof32 = 36;
@@ -481,7 +481,7 @@ public class MCA {
 
     /** tGeometryType */
     public static final int eGT_POINT = 0, eGT_POINT_3D = 1, eGT_LINE = 2, eGT_LINE_SEGMENT = 3, eGT_CIRCLE = 4, eGT_RECTANGLE = 5, eGT_TEXT = 6, eGT_TRIANGLE = 7, eGT_ARROW = 8,
-                                        eGT_CUBE = 9, eGT_CYLINDER = 10, eGT_CIRCLE_3D = 11, eGT_RECTANGLE_3D = 12, eGT_DIMENSION = 13;
+                            eGT_CUBE = 9, eGT_CYLINDER = 10, eGT_CIRCLE_3D = 11, eGT_RECTANGLE_3D = 12, eGT_DIMENSION = 13;
 
     public static class tPose2D extends Struct {
         public final static int sizeof32 = 24;
@@ -764,7 +764,7 @@ public class MCA {
 
     /** tImageFormat */
     public static final int eIMAGE_FORMAT_MONO8 = 0, eIMAGE_FORMAT_MONO16 = 1, eIMAGE_FORMAT_MONO32_FLOAT = 2, eIMAGE_FORMAT_RGB565 = 3, eIMAGE_FORMAT_RGB24 = 4, eIMAGE_FORMAT_BGR24 = 5, eIMAGE_FORMAT_RGB32 = 6, eIMAGE_FORMAT_BGR32 = 7, eIMAGE_FORMAT_YUV420P = 8, eIMAGE_FORMAT_YUV411 = 9,
-            eIMAGE_FORMAT_YUV422 = 10, eIMAGE_FORMAT_UYVY422 = 11, eIMAGE_FORMAT_YUV444 = 12, eIMAGE_FORMAT_BAYER_RGGB = 13, eIMAGE_FORMAT_BAYER_GBRG = 14, eIMAGE_FORMAT_BAYER_GRBG = 15, eIMAGE_FORMAT_BAYER_BGGR = 16, eIMAGE_FORMAT_HSV = 17, eIMAGE_FORMAT_HLS = 18, eIMAGE_FORMAT_HI240 = 19, eIMAGE_FORMAT_DIMENSION = 20;
+                            eIMAGE_FORMAT_YUV422 = 10, eIMAGE_FORMAT_UYVY422 = 11, eIMAGE_FORMAT_YUV444 = 12, eIMAGE_FORMAT_BAYER_RGGB = 13, eIMAGE_FORMAT_BAYER_GBRG = 14, eIMAGE_FORMAT_BAYER_GRBG = 15, eIMAGE_FORMAT_BAYER_BGGR = 16, eIMAGE_FORMAT_HSV = 17, eIMAGE_FORMAT_HLS = 18, eIMAGE_FORMAT_HI240 = 19, eIMAGE_FORMAT_DIMENSION = 20;
 
     /** cImageInfoSizeWithPadding */
     public static final int cImageInfoSizeWithPadding = 48;

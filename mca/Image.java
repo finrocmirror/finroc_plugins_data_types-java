@@ -535,7 +535,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
                 y2  = imageData.get();
                 v = imageData.get();
                 destBuffer[destOffset] = yuvToRGB(y1, u, v);
-                destBuffer[destOffset+1] = yuvToRGB(y2, u, v);
+                destBuffer[destOffset + 1] = yuvToRGB(y2, u, v);
                 destOffset += 2;
             }
 
