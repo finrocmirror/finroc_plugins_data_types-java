@@ -51,6 +51,9 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
     public final static DataType<Canvas> TYPE = new DataType<Canvas>(Canvas.class, "Canvas2D");
 
+    private final static double cARROW_HEAD_SIZE = 5.0;
+    private final static double cSTROKE_WIDTH = 1.0;
+
     enum Opcode {
         // ####### tCanvas-supported opcodes ########
 
@@ -291,32 +294,44 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         is.close();
     }
 
+    private class ScalingFactors {
+        public double x;
+        public double y;
+    }
+
     /**
-     * Calculate a stroke width that is suitable for the given scaling
+     * This function extracts the real scaling factors of the affine transformation
+     * used in the given Graphics2D object \arg g. It also set the strokeWidth to
+     * be independent from current scaling.
      *
-     * @param scaleX             The current scaling factor along the x-axis
-     * @param scaleY             The current scaling factor along the y-axis
-     * @param defaultTransform   The transformation currently given by the renderer
+     * @note This method only works if not shear is involved as the resulting
+     *       system would be under-determined otherwise.
      *
-     * @return A stroke width to be used with BasicStroke
+     * @param g   The graphics object to render
+     *
+     * @return The current scaling factors for x- and y-axis
      */
-    private float calculateStrokeWidth(double scaleX, double scaleY, AffineTransform defaultTransform) {
-        scaleX *= defaultTransform.getScaleX();
-        scaleY *= defaultTransform.getScaleY();
-        return (float)(1.0 / Math.sqrt(scaleX * scaleX + scaleY * scaleY));
+    private ScalingFactors calculateScalingFactorsAndUpdateStrokeWidth(Graphics2D g) {
+        ScalingFactors result = new ScalingFactors();
+
+        double[] m = new double[4];
+        g.getTransform().getMatrix(m);
+        result.x = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
+        result.y = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
+
+        g.setStroke(new BasicStroke((float)(cSTROKE_WIDTH / Math.sqrt(result.x * result.x + result.y * result.y))));
+
+        return result;
     }
 
     public void paintGeometry(Graphics2D g, RenderContext lvl, InputStreamBuffer is, AffineTransform defaultTransform) {
         double[] v = new double[1000];
         boolean fill = lvl.fill;
-        double scaleX = 1.0;
-        double scaleY = 1.0;
         Color edgeColor = lvl.edgeColor;
         Color fillColor = lvl.fillColor;
         g.setColor(edgeColor);
         g.setTransform(defaultTransform);
         g.transform(lvl.at);
-        g.setStroke(new BasicStroke(calculateStrokeWidth(scaleX, scaleY, defaultTransform)));
 
         // Shapes
         final Line2D.Double line = new Line2D.Double();
@@ -337,6 +352,8 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         arrowHead.lineTo(-2.0, -1.0);
         arrowHead.lineTo(0.0, 0.0);
 
+        ScalingFactors scaling = calculateScalingFactorsAndUpdateStrokeWidth(g);
+
         boolean readNextOpcode = true;
         Opcode opcode = null;
         for (int i = 0; i < lvl.commandCount; i++) {
@@ -350,6 +367,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             case eSET_TRANSFORMATION:
                 g.setTransform(defaultTransform);
                 g.transform(new AffineTransform(readValues(is, v, 6)));
+                scaling = calculateScalingFactorsAndUpdateStrokeWidth(g);
                 break;
             case eTRANSFORM:
                 g.transform(new AffineTransform(readValues(is, v, 6)));
@@ -364,15 +382,12 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 break;
             case eSCALE:          // [2D-vector]
                 readValues(is, v, 2);
-                scaleX *= v[0];
-                scaleY *= v[1];
                 g.scale(v[0], v[1]);
-                g.setStroke(new BasicStroke(calculateStrokeWidth(scaleX, scaleY, defaultTransform)));
+                scaling = calculateScalingFactorsAndUpdateStrokeWidth(g);
                 break;
             case eRESET_TRANSFORMATION:
-                scaleX = scaleY = 1.0;
                 g.setTransform(defaultTransform);
-                g.setStroke(new BasicStroke(calculateStrokeWidth(scaleX, scaleY, defaultTransform)));
+                scaling = calculateScalingFactorsAndUpdateStrokeWidth(g);
                 break;
 
             case eSET_COLOR:         // [RGB: 3 bytes]
@@ -466,26 +481,24 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 line.y2 = v[3];
                 g.draw(line);
 
-                AffineTransform old_transform = g.getTransform();
+                AffineTransform currentTransform = g.getTransform();
 
                 double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
-                double localScaleX = 5.0 / (scaleX * defaultTransform.getScaleX());
-                double localScaleY = 5.0 / (scaleY * defaultTransform.getScaleY());
 
                 g.translate(line.x2, line.y2);
                 g.rotate(angle);
-                g.scale(localScaleX, localScaleY);
+                g.scale(cARROW_HEAD_SIZE / scaling.x, cARROW_HEAD_SIZE / scaling.y);
                 g.fill(arrowHead);
 
                 if (undirected) {
-                    g.setTransform(old_transform);
+                    g.setTransform(currentTransform);
                     g.translate(line.x1, line.y1);
                     g.rotate(angle + Math.PI);
-                    g.scale(localScaleX, localScaleY);
+                    g.scale(cARROW_HEAD_SIZE / scaling.x, cARROW_HEAD_SIZE / scaling.y);
                     g.fill(arrowHead);
                 }
 
-                g.setTransform(old_transform);
+                g.setTransform(currentTransform);
                 break;
 
             case eDRAW_BOX:             // [2D-point][width][height]
