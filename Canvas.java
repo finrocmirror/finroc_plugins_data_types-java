@@ -55,44 +55,45 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         // ####### tCanvas-supported opcodes ########
 
         // Transformation operations
-        eSET_TRANSFORMATION,      // [(K+1)x(K+1) matrix]
-        eTRANSFORM,               // [(K+1)x(K+1) matrix]
-        eTRANSLATE,               // [vector]
-        eROTATE,                  // [yaw]
-        eSCALE,                   // [vector]
-        eRESET_TRANSFORMATION,    // []
+        eSET_TRANSFORMATION,            // [(K+1)x(K+1) matrix]
+        eTRANSFORM,                     // [(K+1)x(K+1) matrix]
+        eTRANSLATE,                     // [vector]
+        eROTATE,                        // [yaw]
+        eSCALE,                         // [vector]
+        eRESET_TRANSFORMATION,          // []
 
         // Canvas, Draw & encoding mode
-        eSET_COLOR,               // [RGB: 3 bytes]
-        eSET_EDGE_COLOR,          // [RGB: 3 bytes]
-        eSET_FILL_COLOR,          // [RGB: 3 bytes]
-        eSET_FILL,                // [bool]
-        eSET_ALPHA,               // [1 byte]
+        eSET_COLOR,                     // [RGB: 3 bytes]
+        eSET_EDGE_COLOR,                // [RGB: 3 bytes]
+        eSET_FILL_COLOR,                // [RGB: 3 bytes]
+        eSET_FILL,                      // [bool]
+        eSET_ALPHA,                     // [1 byte]
 
         // Geometry primitives
-        eDRAW_POINT,              // [vector]
-        eDRAW_LINE,               // [vector][vector]
-        eDRAW_LINE_SEGMENT,       // [vector][vector]
-        eDRAW_BOX,                // [vector][size1]...[sizeN]
-        eDRAW_ELLIPSOID,          // [vector][diameter1]...[diameterN]
-        eDRAW_POLYGON,            // [number of values: N][vector1]...[vectorN]
-        eDRAW_SPLINE,             // [number of values: N][tension-parameter][vector1]...[vectorN]  (uniform b-spline)
-        eDRAW_CUBIC_BEZIER_CURVE, // [vector][vector][vector][vector]
-        eDRAW_STRING,             // [vector][null-terminated chars]
+        eDRAW_POINT,                    // [vector]
+        eDRAW_LINE,                     // [vector][vector]
+        eDRAW_LINE_SEGMENT,             // [vector][vector]
+        eDRAW_ARROW,                    // [bool][vector][vector]
+        eDRAW_BOX,                      // [vector][size1]...[sizeN]
+        eDRAW_ELLIPSOID,                // [vector][diameter1]...[diameterN]
+        eDRAW_POLYGON,                  // [number of values: N][vector1]...[vectorN]
+        eDRAW_SPLINE,                   // [number of values: N][tension-parameter][vector1]...[vectorN]  (uniform b-spline)
+        eDRAW_CUBIC_BEZIER_CURVE,       // [vector][vector][vector][vector]
+        eDRAW_STRING,                   // [vector][null-terminated chars]
 
         // Custom path/shape
-        ePATH_START,              // [point]
-        ePATH_END_OPEN,           // [point]
-        ePATH_END_CLOSED,         // [point]
-        ePATH_LINE,               // [point]
-        ePATH_QUADRATIC_CURVE,    // [point][point]
-        ePATH_CUBIC_CURVE,        // [point][point][point]
+        ePATH_START,                    // [point]
+        ePATH_END_OPEN,                 // [point]
+        ePATH_END_CLOSED,               // [point]
+        ePATH_LINE,                     // [point]
+        ePATH_QUADRATIC_BEZIER_CURVE,   // [point][point]
+        ePATH_CUBIC_BEZIER_CURVE,       // [point][point][point]
 
         // ####### tCanvas2D-only opcodes ########
 
         // Canvas, Draw & encoding mode
-        eSET_Z,                   // [value]
-        eSET_EXTRUSION            // [value]
+        eSET_Z,                         // [value]
+        eSET_EXTRUSION                  // [value]
 
         // ####### tCanvas3D-only opcodes ########
     }
@@ -167,7 +168,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         zLevels.add(current);
         while (is.moreDataAvailable()) {
             Opcode opcode = is.readEnum(Opcode.class);
-            if (opcode != Opcode.ePATH_CUBIC_CURVE && opcode != Opcode.ePATH_QUADRATIC_CURVE && opcode != Opcode.ePATH_LINE) {
+            if (opcode != Opcode.ePATH_CUBIC_BEZIER_CURVE && opcode != Opcode.ePATH_QUADRATIC_BEZIER_CURVE && opcode != Opcode.ePATH_LINE) {
                 current.commandCount++;
             }
             switch (opcode) {
@@ -230,11 +231,13 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 skipValues(is, 2);
                 break;
 
+            case eDRAW_ARROW:              // [bool][2D-point][2D-point]
+                is.readBoolean();
             case eDRAW_LINE:               // [2D-point][2D-point]
             case eDRAW_LINE_SEGMENT:       // [2D-point][2D-point]
             case eDRAW_BOX:                // [2D-point][width][height]
             case eDRAW_ELLIPSOID:          // [2D-point][width][height]
-            case ePATH_QUADRATIC_CURVE:
+            case ePATH_QUADRATIC_BEZIER_CURVE:
                 skipValues(is, 4);
                 break;
 
@@ -250,7 +253,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 is.readString();
                 break;
 
-            case ePATH_CUBIC_CURVE:
+            case ePATH_CUBIC_BEZIER_CURVE:
                 skipValues(is, 6);
                 break;
 
@@ -274,28 +277,46 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     @Override
     public void paint(Graphics2D g) {
         InputStreamBuffer is = new InputStreamBuffer(this);
-        double[] v = new double[1000];
         Graphics2D g2d = (Graphics2D)g.create();
         g2d.scale(1000, 1000);
-        g2d.setStroke(new BasicStroke(0.01f));
         AffineTransform defaultTransform = g2d.getTransform();
+
         for (RenderContext lvl : zLevels) {
             if (lvl.commandCount > 0) {
                 is.reset(this);
                 is.skip(lvl.bufferOffset);
-                paintGeometry(g2d, lvl, is, v, defaultTransform);
+                paintGeometry(g2d, lvl, is, defaultTransform);
             }
         }
         is.close();
     }
 
-    public void paintGeometry(Graphics2D g, RenderContext lvl, InputStreamBuffer is, double[] v, AffineTransform defaultTransform) {
+    /**
+     * Calculate a stroke width that is suitable for the given scaling
+     *
+     * @param scaleX             The current scaling factor along the x-axis
+     * @param scaleY             The current scaling factor along the y-axis
+     * @param defaultTransform   The transformation currently given by the renderer
+     *
+     * @return A stroke width to be used with BasicStroke
+     */
+    private float calculateStrokeWidth(double scaleX, double scaleY, AffineTransform defaultTransform) {
+        scaleX *= defaultTransform.getScaleX();
+        scaleY *= defaultTransform.getScaleY();
+        return (float)(1.0 / Math.sqrt(scaleX * scaleX + scaleY * scaleY));
+    }
+
+    public void paintGeometry(Graphics2D g, RenderContext lvl, InputStreamBuffer is, AffineTransform defaultTransform) {
+        double[] v = new double[1000];
         boolean fill = lvl.fill;
+        double scaleX = 1.0;
+        double scaleY = 1.0;
         Color edgeColor = lvl.edgeColor;
         Color fillColor = lvl.fillColor;
         g.setColor(edgeColor);
         g.setTransform(defaultTransform);
         g.transform(lvl.at);
+        g.setStroke(new BasicStroke(calculateStrokeWidth(scaleX, scaleY, defaultTransform)));
 
         // Shapes
         final Line2D.Double line = new Line2D.Double();
@@ -308,6 +329,13 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         final Point2D.Double p2 = new Point2D.Double();
         final Point2D.Double p1t = new Point2D.Double();
         final Point2D.Double p2t = new Point2D.Double();
+
+        // Arrow head
+        final Path2D.Double arrowHead = new Path2D.Double();
+        arrowHead.moveTo(0.0, 0.0);
+        arrowHead.lineTo(-2.0, 1.0);
+        arrowHead.lineTo(-2.0, -1.0);
+        arrowHead.lineTo(0.0, 0.0);
 
         boolean readNextOpcode = true;
         Opcode opcode = null;
@@ -336,10 +364,15 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 break;
             case eSCALE:          // [2D-vector]
                 readValues(is, v, 2);
+                scaleX *= v[0];
+                scaleY *= v[1];
                 g.scale(v[0], v[1]);
+                g.setStroke(new BasicStroke(calculateStrokeWidth(scaleX, scaleY, defaultTransform)));
                 break;
             case eRESET_TRANSFORMATION:
+                scaleX = scaleY = 1.0;
                 g.setTransform(defaultTransform);
+                g.setStroke(new BasicStroke(calculateStrokeWidth(scaleX, scaleY, defaultTransform)));
                 break;
 
             case eSET_COLOR:         // [RGB: 3 bytes]
@@ -422,6 +455,37 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 line.x2 = v[2];
                 line.y2 = v[3];
                 g.draw(line);
+                break;
+
+            case eDRAW_ARROW:      // [bool][2D-point][2D-point]
+                boolean undirected = is.readBoolean();
+                readValues(is, v, 4);
+                line.x1 = v[0];
+                line.y1 = v[1];
+                line.x2 = v[2];
+                line.y2 = v[3];
+                g.draw(line);
+
+                AffineTransform old_transform = g.getTransform();
+
+                double angle = Math.atan2(line.y2 - line.y1, line.x2 - line.x1);
+                double localScaleX = 5.0 / (scaleX * defaultTransform.getScaleX());
+                double localScaleY = 5.0 / (scaleY * defaultTransform.getScaleY());
+
+                g.translate(line.x2, line.y2);
+                g.rotate(angle);
+                g.scale(localScaleX, localScaleY);
+                g.fill(arrowHead);
+
+                if (undirected) {
+                    g.setTransform(old_transform);
+                    g.translate(line.x1, line.y1);
+                    g.rotate(angle + Math.PI);
+                    g.scale(localScaleX, localScaleY);
+                    g.fill(arrowHead);
+                }
+
+                g.setTransform(old_transform);
                 break;
 
             case eDRAW_BOX:             // [2D-point][width][height]
@@ -526,10 +590,10 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                         if (opcode == Opcode.ePATH_LINE) {
                             readValues(is, v, 2);
                             path.lineTo(v[0], v[1]);
-                        } else if (opcode == Opcode.ePATH_QUADRATIC_CURVE) {
+                        } else if (opcode == Opcode.ePATH_QUADRATIC_BEZIER_CURVE) {
                             readValues(is, v, 4);
                             path.quadTo(v[0], v[1], v[2], v[3]);
-                        } else if (opcode == Opcode.ePATH_CUBIC_CURVE) {
+                        } else if (opcode == Opcode.ePATH_CUBIC_BEZIER_CURVE) {
                             readValues(is, v, 6);
                             path.curveTo(v[0], v[1], v[2], v[3], v[4], v[5]);
                         } else {
