@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.rtti.DataType;
 
 public class StringList extends ArrayList<String> {
 

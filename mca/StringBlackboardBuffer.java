@@ -24,7 +24,7 @@ package org.finroc.plugins.data_types.mca;
 import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.data_types.ContainsStrings;
-import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
 
 /**
  * @author max

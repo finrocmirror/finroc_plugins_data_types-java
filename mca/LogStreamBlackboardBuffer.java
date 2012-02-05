@@ -9,7 +9,7 @@ import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.data_types.ContainsStrings;
 import org.finroc.plugins.data_types.DataTypePlugin;
-import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
 import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 

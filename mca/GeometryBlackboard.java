@@ -38,7 +38,7 @@ import org.finroc.plugins.data_types.DataTypePlugin;
 import org.finroc.plugins.data_types.PaintablePortData;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
 import org.finroc.plugins.data_types.vector.Vector2d;
-import org.rrlib.finroc_core_utils.serialization.DataTypeBase;
+import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
 import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
 
 public class GeometryBlackboard extends MCABlackboardBuffer implements PaintablePortData {

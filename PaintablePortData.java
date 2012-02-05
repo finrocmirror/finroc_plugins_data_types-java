@@ -23,7 +23,7 @@ package org.finroc.plugins.data_types;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import org.rrlib.finroc_core_utils.serialization.DataType;
+import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;

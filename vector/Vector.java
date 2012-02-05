@@ -21,7 +21,7 @@
  */
 package org.finroc.plugins.data_types.vector;
 
-import org.rrlib.finroc_core_utils.serialization.Copyable;
+import org.rrlib.finroc_core_utils.rtti.Copyable;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
