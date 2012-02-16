@@ -67,7 +67,7 @@ public class Pose2D extends RRLibSerializableImpl implements Copyable<Pose2D> {
 
     @Override
     public void serialize(StringOutputStream os) {
-        os.append("(").append(x).append(", ").append(y).append(", ").append(", ").append(yaw).append(")");
+        os.append("(").append(x).append(", ").append(y).append(", ").append(yaw).append(")");
     }
 
     @Override
