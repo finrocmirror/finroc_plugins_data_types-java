@@ -37,7 +37,7 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 @JavaOnly
 public class StdStringList extends RRLibSerializableImpl implements ContainsStrings {
 
-    public final static DataType<StdStringList> TYPE = new DataType<StdStringList>(StdStringList.class, "List<string>");
+    public final static DataType<StdStringList> TYPE = new DataType<StdStringList>(StdStringList.class, "List<String>");
 
     private final ArrayList<String> wrapped = new ArrayList<String>();
 
