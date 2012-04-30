@@ -28,6 +28,7 @@ import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.xml.XMLNode;
 
 /**
  * @author max
@@ -82,6 +83,21 @@ public class StdStringList extends RRLibSerializableImpl implements ContainsStri
         wrapped.clear();
         for (int i = 0; i < size; i++) {
             wrapped.add(is.readString());
+        }
+    }
+
+    @Override
+    public void serialize(XMLNode node) throws Exception {
+        for (String s : wrapped) {
+            node.addChildNode("element").setContent(s);
+        }
+    }
+
+    @Override
+    public void deserialize(XMLNode node) throws Exception {
+        wrapped.clear();
+        for (XMLNode.ConstChildIterator e = node.getChildrenBegin(); e.get() != node.getChildrenEnd(); e.next()) {
+            wrapped.add(e.get().hasTextContent() ? e.get().getTextContent() : "");
         }
     }
 

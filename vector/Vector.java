@@ -21,6 +21,7 @@
  */
 package org.finroc.plugins.data_types.vector;
 
+import org.finroc.core.portdatabase.CCType;
 import org.rrlib.finroc_core_utils.rtti.Copyable;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
@@ -33,7 +34,7 @@ import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
  *
  * Generic base class for Java equivalents to tVec2i, tVec3i, tVec6i, tVec2d, tVec3d, tVec6d
  */
-public class Vector extends RRLibSerializableImpl implements Copyable<Vector> {
+public class Vector extends RRLibSerializableImpl implements Copyable<Vector>, CCType {
 
     /** Backend that stores values */
     protected int[] ibuffer;
