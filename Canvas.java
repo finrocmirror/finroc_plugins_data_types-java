@@ -21,6 +21,7 @@
  */
 package org.finroc.plugins.data_types;
 
+import java.lang.Math;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -79,9 +80,9 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         eDRAW_ARROW,                    // [bool][vector][vector]
         eDRAW_BOX,                      // [vector][size1]...[sizeN]
         eDRAW_ELLIPSOID,                // [vector][diameter1]...[diameterN]
+        eDRAW_BEZIER_CURVE,             // [degree: N][vector1]...[vectorN+1]
         eDRAW_POLYGON,                  // [number of values: N][vector1]...[vectorN]
-        eDRAW_SPLINE,                   // [number of values: N][tension-parameter][vector1]...[vectorN]  (uniform b-spline)
-        eDRAW_CUBIC_BEZIER_CURVE,       // [vector][vector][vector][vector]
+        eDRAW_SPLINE,                   // [number of values: N][tension-parameter][vector1]...[vectorN]
         eDRAW_STRING,                   // [vector][null-terminated chars]
 
         // Custom path/shape
@@ -260,8 +261,9 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 skipValues(is, 6);
                 break;
 
-            case eDRAW_CUBIC_BEZIER_CURVE: // [2D-point][2D-point][2D-point][2D-point]
-                skipValues(is, 8);
+            case eDRAW_BEZIER_CURVE:       // [degree: N][2D-point1]...[2D-pointN+1]
+                int degree = is.readShort();
+                skipValues(is, (degree + 1) * 2);
                 break;
 
             case ePATH_START:
@@ -337,7 +339,6 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         final Line2D.Double line = new Line2D.Double();
         final Ellipse2D.Double ellipse = new Ellipse2D.Double();
         final Rectangle2D.Double rect = new Rectangle2D.Double();
-        final CubicCurve2D.Double curve = new CubicCurve2D.Double();
 
         // Helper objects for line drawing
         final Point2D.Double p1 = new Point2D.Double();
@@ -575,17 +576,16 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 g.drawString(s, (float)v[0], (float)v[1]);
                 break;
 
-            case eDRAW_CUBIC_BEZIER_CURVE: // [2D-point][2D-point][2D-point][2D-point]
-                readValues(is, v, 8);
-                curve.x1 = v[0];
-                curve.y1 = v[1];
-                curve.ctrlx1 = v[2];
-                curve.ctrly1 = v[3];
-                curve.ctrlx2 = v[4];
-                curve.ctrly2 = v[5];
-                curve.x2 = v[6];
-                curve.y2 = v[7];
-                g.draw(curve);
+            case eDRAW_BEZIER_CURVE: // [degree: N][2D-point1]...[2D-pointN+1]
+                short degree = is.readShort();
+                points = degree + 1;
+                if (points * 2 > v.length) {
+                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "Degree greater than " + (v.length / 2 - 1) + " points not supported");
+                    return;
+                }
+                readValues(is, v, points * 2);
+                double twist_threshold = 1.0 / Math.sqrt(Math.pow(scaling.x, 2) + Math.pow(scaling.y, 2));
+                drawBezierCurve(g, degree, v, twist_threshold);
                 break;
 
             case ePATH_START:
@@ -708,5 +708,61 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         return BoundsExtractingGraphics2D.getBounds(this);
     }
 
+    private void drawBezierCurve(Graphics2D g, int degree, double[] v, double twist_threshold) {
+        int points = degree + 1;
+        int values = 2 * points;
+
+        double twist = 0.0;
+        for (int i = 0; i < degree - 1; ++i) {
+            int offset_0 = 2 * i;
+            int offset_1 = offset_0 + 2;
+            int offset_2 = offset_1 + 2;
+            double second_forward_difference_x = (v[offset_2] - v[offset_1]) - (v[offset_1] - v[offset_0]);
+            double second_forward_difference_y = (v[offset_2 + 1] - v[offset_1 + 1]) - (v[offset_1 + 1] - v[offset_0 + 1]);
+
+            twist = Math.max(twist, Math.sqrt(Math.pow(second_forward_difference_x, 2) + Math.pow(second_forward_difference_y, 2)));
+        }
+        twist *= degree * (degree - 1);
+
+        if (twist < twist_threshold) {
+            Line2D.Double line = new Line2D.Double();
+            line.x1 = v[0];
+            line.y1 = v[1];
+            line.x2 = v[values - 2];
+            line.y2 = v[values - 1];
+            g.draw(line);
+            return;
+        }
+
+        double[] first_half = new double[values];
+        double[] second_half = new double[values];
+        double[] temp_points = new double[values];
+        for (int i = 0; i < values; ++i) {
+            temp_points[i] = v[i];
+        }
+
+        first_half[0] = temp_points[0];
+        first_half[1] = temp_points[1];
+        second_half[values - 2] = temp_points[values - 2];
+        second_half[values - 1] = temp_points[values - 1];
+
+        int k = 0;
+        while (k < degree) {
+            for (int i = 0; i < degree - k; ++i) {
+                int point_x = 2 * i;
+                int point_y = 2 * i + 1;
+                temp_points[point_x] = (temp_points[point_x] + temp_points[point_x + 2]) * 0.5;
+                temp_points[point_y] = (temp_points[point_y] + temp_points[point_y + 2]) * 0.5;
+            }
+            ++k;
+            first_half[2 * k] = temp_points[0];
+            first_half[2 * k + 1] = temp_points[1];
+            second_half[2 * (degree - k)] = temp_points[2 * (degree - k)];
+            second_half[2 * (degree - k) + 1] = temp_points[2 * (degree - k) + 1];
+        }
+
+        drawBezierCurve(g, degree, first_half, twist_threshold);
+        drawBezierCurve(g, degree, second_half, twist_threshold);
+    }
 
 }
