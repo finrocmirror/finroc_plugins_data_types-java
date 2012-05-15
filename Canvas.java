@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -38,6 +37,8 @@ import java.util.Collections;
 
 import org.finroc.plugins.data_types.util.BezierSpline;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
+import org.rrlib.finroc_core_utils.jc.annotation.Const;
+import org.rrlib.finroc_core_utils.jc.annotation.Ref;
 import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
@@ -282,7 +283,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     @Override
     public void paint(Graphics2D g) {
         InputStreamBuffer is = new InputStreamBuffer(this);
-        Graphics2D g2d = (Graphics2D)g.create();
+        Graphics2D g2d = (g instanceof BoundsExtractingGraphics2D) ? g : (Graphics2D)g.create();
         g2d.scale(1000, 1000);
         AffineTransform defaultTransform = g2d.getTransform();
 
@@ -438,9 +439,9 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 double vecx = v[2];
                 double vecy = v[3];
                 AffineTransform at = g.getTransform();
-                Rectangle r = g.getClipBounds();
 
                 if (!(g instanceof BoundsExtractingGraphics2D)) {
+                    Rectangle r = g.getClipBounds();
                     while (true) {
                         p1.x = x1 - vecx;
                         p1.y = y1 - vecy;
@@ -765,4 +766,9 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         drawBezierCurve(g, degree, second_half, twist_threshold);
     }
 
+    @Override
+    public void copyFrom(@Const @Ref MemoryBuffer source) {
+        super.copyFrom(source);
+        extractZLevels();
+    }
 }
