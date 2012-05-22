@@ -574,7 +574,15 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             case eDRAW_STRING:             // [2D-point][null-terminated chars]
                 readValues(is, v, 2);
                 String s = is.readString();
-                g.drawString(s, (float)v[0], (float)v[1]);
+                AffineTransform tmp = g.getTransform();
+                p1.setLocation(0, 0);
+                tmp.transform(p1, p1t);
+                AffineTransform nonRotated = new AffineTransform();
+                nonRotated.translate(p1t.x, p1t.y);
+                nonRotated.translate(scaling.x * v[0], scaling.y * -v[1]);
+                g.setTransform(nonRotated);
+                g.drawString(s, 0, 0);
+                g.setTransform(tmp);
                 break;
 
             case eDRAW_BEZIER_CURVE: // [degree: N][2D-point1]...[2D-pointN+1]
