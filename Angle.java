@@ -86,29 +86,44 @@ public class Angle extends RRLibSerializableImpl implements Copyable<Angle>, Num
         unsignedRad = o.unsignedRad;
     }
 
-    public double GetSignedRad() {
+    public double getSignedRad() {
         return unsignedRad > Math.PI ? unsignedRad - Math.PI : unsignedRad;
     }
 
-    public double GetUnsignedRad() {
+    public double getUnsignedRad() {
         return unsignedRad;
     }
 
-    public double GetSignedDeg() {
-        return (GetSignedRad() / Math.PI) * 180;
+    public double getSignedDeg() {
+        return (getSignedRad() / Math.PI) * 180;
     }
 
-    public double GetUnsignedDeg() {
-        return (GetUnsignedRad() / Math.PI) * 180;
+    public double getUnsignedDeg() {
+        return (getUnsignedRad() / Math.PI) * 180;
     }
 
     public String toString() {
-        CoreNumber cn = new CoreNumber(GetSignedDeg(), Unit.deg);
+        CoreNumber cn = new CoreNumber(getSignedDeg(), Unit.deg);
         return cn.toString();
     }
 
     @Override
     public Number getNumericRepresentation() {
-        return GetSignedDeg();
+        return getSignedDeg();
+    }
+
+    public void setDeg(double newAngle) {
+        setRad((newAngle / 180.0) * Math.PI);
+    }
+
+    // TODO implement normalization properly
+    public void setRad(double newAngle) {
+        unsignedRad = newAngle;
+        while (unsignedRad < 0) {
+            unsignedRad += 2 * Math.PI;
+        }
+        while (unsignedRad > 2 * Math.PI) {
+            unsignedRad -= 2 * Math.PI;
+        }
     }
 }
