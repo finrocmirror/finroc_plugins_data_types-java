@@ -87,7 +87,7 @@ public class Angle extends RRLibSerializableImpl implements Copyable<Angle>, Num
     }
 
     public double getSignedRad() {
-        return unsignedRad > Math.PI ? unsignedRad - Math.PI : unsignedRad;
+        return unsignedRad > Math.PI ? (unsignedRad - 2 * Math.PI) : unsignedRad;
     }
 
     public double getUnsignedRad() {
