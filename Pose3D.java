@@ -26,6 +26,7 @@ import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.Serialization;
 import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
@@ -107,5 +108,9 @@ public class Pose3D extends Pose2D {
             roll = 0;
             pitch = 0;
         }
+    }
+
+    public String toString() {
+        return Serialization.serialize(this);
     }
 }

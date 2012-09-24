@@ -31,6 +31,7 @@ import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.serialization.Serialization;
 import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
@@ -103,5 +104,9 @@ public class Pose2D extends RRLibSerializableImpl implements Copyable<Pose2D>, C
     public void applyTransformation(Graphics2D g) {
         g.translate(x, y);
         g.rotate(yaw);
+    }
+
+    public String toString() {
+        return Serialization.serialize(this);
     }
 }
