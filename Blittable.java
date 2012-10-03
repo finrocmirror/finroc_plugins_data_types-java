@@ -182,7 +182,7 @@ public abstract class Blittable {
     /**
      * Helper class for painting blittable to Graphics2D
      */
-    class PaintHelper extends BufferedImage implements Destination {
+    static class PaintHelper extends BufferedImage implements Destination {
 
         public PaintHelper(int width, int height) {
             super(width, height, BufferedImage.TYPE_INT_RGB);

@@ -24,96 +24,88 @@ package org.finroc.plugins.data_types;
 import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
+import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
- * Float list (as used in finroc blackboards)
+ * Boolean list
  */
 @JavaOnly
-public class FloatList extends MemoryBuffer implements ContainsStrings {
+public class BoolList extends RRLibSerializableImpl {
 
-    public final static DataType<FloatList> TYPE = new DataType<FloatList>(FloatList.class, "List<float>", false);
+    public final static DataType<BoolList> TYPE = new DataType<BoolList>(BoolList.class, "List<bool>", false);
+
+    /** Buffer backend */
+    private boolean[] buffer = new boolean[10];
+
+    /** Current size */
+    private int size = 0;
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < size(); i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(getValue(i));
+            sb.append(getValue(i) ? '1' : '0');
         }
         return sb.toString();
     }
 
-    private float getValue(int i) {
-        return super.getBuffer().getFloat(i * 4);
+    private boolean getValue(int i) {
+        return buffer[i];
     }
 
     /**
-     * @return Number of floats in buffer
+     * @return Number of bools in buffer
      */
     public int size() {
-        return super.getSize() / 4;
+        return size;
     }
 
     @Override
     public void deserialize(InputStreamBuffer is) {
-        int size = is.readInt();
+        size = is.readInt();
+        if (size > buffer.length) {
+            buffer = new boolean[size];
+        }
         boolean constType = is.readBoolean();
         assert(constType);
-        setSize(size);
-        is.readFully(super.getBuffer(), 0, size * 4);
+        for (int i = 0; i < size; i++) {
+            buffer[i] = is.readBoolean();
+        }
     }
 
     @Override
     public void serialize(OutputStreamBuffer os) {
         os.writeInt(size());
         os.writeBoolean(true);
-        os.write(super.getBuffer(), 0, super.curSize);
+        for (int i = 0; i < size; i++) {
+            os.writeBoolean(getValue(i));
+        }
     }
 
-    public void set(int index, float value) {
+    public void set(int index, boolean value) {
         assert(index < size());
-        getBuffer().getBuffer().putFloat(4 * index, value);
-    }
-
-    @Override
-    public int stringCount() {
-        return size();
-    }
-
-    @Override
-    public CharSequence getString(int index) {
-        return "" + getValue(index);
-    }
-
-    @Override
-    public void setString(int index, CharSequence newString) {
-        set(index, Float.parseFloat(newString.toString()));
-    }
-
-    @Override
-    public void setSize(int newSize) {
-        super.ensureCapacity(newSize * 4, false, 0);
-        super.curSize = newSize * 4;
+        buffer[index] = value;
     }
 
     @Override
     public void serialize(StringOutputStream os) {
-        ContainsStrings.Util.serialize(os, this, "[", "]", ",");
+        os.append(toString());
     }
 
-    /* (non-Javadoc)
-     * @see org.finroc.serialization.RRLibSerializableImpl#deserialize(org.finroc.serialization.StringInputStream)
-     */
     @Override
-    public void deserialize(StringInputStream s) throws Exception {
-        ContainsStrings.Util.deserialize(s, this, "[", "]", ",");
+    public void deserialize(StringInputStream sis) throws Exception {
+        String s = sis.readLine();
+        size = s.length();
+        if (size > buffer.length) {
+            buffer = new boolean[size];
+        }
+        for (int i = 0; i < size; i++) {
+            buffer[i] = s.charAt(i) != '0';
+        }
     }
 
 }
