@@ -228,6 +228,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
     private Pose3D sensorPoseDelta = new Pose3D();
     private Pose3D robotPose = new Pose3D();
     private Time timestamp = new Time();
+    private int extraDataSize;
 
     /** Helper variables derived from header data */
     private FormatInfo formatInfo = MCA.cDistanceDataFormatInfo[0];
@@ -236,6 +237,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
 
     /** Data Buffer */
     private MemoryBuffer data = new MemoryBuffer();
+    private MemoryBuffer extraData = new MemoryBuffer();
 
     @Override
     public void serialize(OutputStreamBuffer os) {
@@ -243,6 +245,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         os.writeInt(capacity);
         os.writeInt(dimension);
         os.writeByte(unit);
+        os.writeInt(extraDataSize);
 
         sensorPose.serialize(os);
         sensorPoseDelta.serialize(os);
@@ -253,7 +256,8 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         int size = dimension * formatInfo.numberOfBytesPerValue * formatInfo.numberOfValues;
         os.write(data.getBuffer(), 0, size);
 
-        // extra data doesn't seem accessible, so we skip it
+        // Write extra data
+        os.write(extraData.getBuffer(), 0, extraDataSize);
     }
 
     @Override
@@ -264,6 +268,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         capacity = is.readInt();
         dimension = is.readInt();
         unit = is.readByte();
+        extraDataSize = is.readInt();
 
         sensorPose.deserialize(is);
         sensorPoseDelta.deserialize(is);
@@ -276,7 +281,9 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         int size = dimension * formatInfo.numberOfBytesPerValue * formatInfo.numberOfValues;
         data.deserialize(is, size);
 
-        // extra data doesn't seem accessible, so we skip it
+        // Read extra data
+        extraData.clear();
+        extraData.deserialize(is, extraDataSize);
 
         // calculate internal variables
         if (formatChanged) {
