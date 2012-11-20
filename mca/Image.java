@@ -101,7 +101,8 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         BAYER_BGGR,
         HSV,
         HLS,
-        HI240
+        HI240,
+        NV21
     };
 
     static {
@@ -183,7 +184,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
      * (see equivalent function in tImage.h
      */
     private int calculateWidthStep(int w, Format f) {
-        if (f == Format.YUV420P) {
+        if (f == Format.YUV420P || f == Format.NV21) {
             return width;
         }
 
@@ -260,6 +261,9 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
             break;
         case YUV420P:
             blitter = new YUV420P();
+            break;
+        case NV21:
+            blitter = new NV21();
             break;
         default:
             DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "ImageBlackboard", "Image format " + format + " not supported yet");
@@ -570,6 +574,33 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
                 int uvIndex = uvOffset + x / 2;
                 byte u = imageData.get(uvIndex + uArrayOffset);
                 byte v = imageData.get(uvIndex + vArrayOffset);
+                destBuffer[destOffset] = yuvToRGB(y, u, v);
+                ypos++;
+                x++;
+                destOffset++;
+            }
+        }
+    }
+
+    public class NV21 extends BlackboardBlitter {
+
+        @Override
+        protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
+
+            int yArraySize = getHeight() * getWidth();
+            int uvArraySize = yArraySize / 4;
+            int yArrayOffset = 0;
+            int uvArrayOffset = yArrayOffset + yArraySize;
+
+            int x = srcX;
+            int ypos = srcY * getWidth() + x + yArrayOffset;
+            int uvOffset = ((srcY / 2) * (getWidth() / 2));
+
+            for (int i = 0; i < width; i++) {
+                byte y = imageData.get(ypos);
+                int uvIndex = (uvOffset + x / 2) * 2;
+                byte u = imageData.get(uvIndex + uvArrayOffset + 1);
+                byte v = imageData.get(uvIndex + uvArrayOffset);
                 destBuffer[destOffset] = yuvToRGB(y, u, v);
                 ypos++;
                 x++;
