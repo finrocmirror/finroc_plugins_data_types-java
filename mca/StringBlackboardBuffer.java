@@ -21,17 +21,15 @@
  */
 package org.finroc.plugins.data_types.mca;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.data_types.ContainsStrings;
 import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * String blackboard buffer
  */
-@JavaOnly
 public class StringBlackboardBuffer extends MCABlackboardBuffer implements ContainsStrings {
 
     public static class Elem extends BlackboardBuffer {}

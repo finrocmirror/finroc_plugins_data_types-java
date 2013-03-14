@@ -53,7 +53,7 @@ import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.finroc.plugins.data_types.Paintable;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Graphics2d object that can be used for extracting bounds of paintable
  * object.

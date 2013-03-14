@@ -37,15 +37,13 @@ import java.util.Collections;
 
 import org.finroc.plugins.data_types.util.BezierSpline;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
-import org.rrlib.finroc_core_utils.jc.annotation.Const;
-import org.rrlib.finroc_core_utils.jc.annotation.Ref;
 import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Java equivalent to rrlib::canvas::tCanvas
  */
@@ -775,7 +773,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     }
 
     @Override
-    public void copyFrom(@Const @Ref MemoryBuffer source) {
+    public void copyFrom(MemoryBuffer source) {
         super.copyFrom(source);
         extractZLevels();
     }

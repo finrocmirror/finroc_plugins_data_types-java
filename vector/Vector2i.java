@@ -24,7 +24,7 @@ package org.finroc.plugins.data_types.vector;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Java equivalent to tVec2i
  */

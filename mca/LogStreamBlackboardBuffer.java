@@ -14,7 +14,7 @@ import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * MCA2 Log Stream Blackboard Buffer
  */

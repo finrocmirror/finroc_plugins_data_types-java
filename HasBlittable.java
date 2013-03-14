@@ -28,7 +28,7 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Data Type that in some way can be rendered to an image buffer.
  */

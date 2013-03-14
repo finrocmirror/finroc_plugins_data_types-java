@@ -24,7 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Marks objects that are paintable through a Java Graphics2D interface
  */

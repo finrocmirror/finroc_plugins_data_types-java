@@ -45,7 +45,7 @@ import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * tDistanceData Java equivalent
  */

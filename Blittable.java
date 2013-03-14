@@ -28,7 +28,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Abstract superclass for anything that can be blitted
  */

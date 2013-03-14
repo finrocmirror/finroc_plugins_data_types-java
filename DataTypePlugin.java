@@ -23,13 +23,12 @@ package org.finroc.plugins.data_types;
 
 import org.finroc.core.plugin.Plugin;
 import org.finroc.core.plugin.Plugins;
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.log.LogDomain;
 import org.finroc.plugins.data_types.mca.MCA;
 import org.finroc.plugins.data_types.vector.Vector2i;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  */
 public class DataTypePlugin implements Plugin {
@@ -42,6 +41,5 @@ public class DataTypePlugin implements Plugin {
     }
 
     /** Log domain for this class */
-    @JavaOnly
     public static final LogDomain logDomain = Plugins.logDomain.getSubDomain("data_types");
 }

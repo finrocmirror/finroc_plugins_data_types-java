@@ -21,7 +21,6 @@
  */
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
@@ -31,11 +30,10 @@ import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Class that contains Strings
  */
-@JavaOnly
 public interface ContainsStrings extends RRLibSerializable {
 
     public final static DataType<ContainsStrings> TYPE = new DataType<ContainsStrings>(ContainsStrings.class);
@@ -65,7 +63,6 @@ public interface ContainsStrings extends RRLibSerializable {
     /**
      * Empty String List
      */
-    @JavaOnly
     public class Empty extends RRLibSerializableImpl implements ContainsStrings {
 
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyStrings");
@@ -97,7 +94,6 @@ public interface ContainsStrings extends RRLibSerializable {
         }
     }
 
-    @JavaOnly
     public static class Util {
 
         /**

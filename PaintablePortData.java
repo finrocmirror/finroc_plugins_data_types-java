@@ -30,7 +30,7 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Marks objects that are paintable through Graphics interface
  */

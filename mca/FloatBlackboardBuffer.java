@@ -21,16 +21,14 @@
  */
 package org.finroc.plugins.data_types.mca;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Float blackboard buffer
  */
-@JavaOnly
 public class FloatBlackboardBuffer extends MCABlackboardBuffer {
 
     public static class Elem extends BlackboardBuffer {}

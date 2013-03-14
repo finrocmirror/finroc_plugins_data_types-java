@@ -24,7 +24,7 @@ package org.finroc.plugins.data_types;
 import org.finroc.core.datatype.Unit;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * A Dimension.
  *

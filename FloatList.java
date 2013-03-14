@@ -21,7 +21,6 @@
  */
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
@@ -30,11 +29,10 @@ import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Float list (as used in finroc blackboards)
  */
-@JavaOnly
 public class FloatList extends MemoryBuffer implements ContainsStrings {
 
     public final static DataType<FloatList> TYPE = new DataType<FloatList>(FloatList.class, "List<float>", false);

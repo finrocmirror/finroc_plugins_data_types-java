@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
@@ -35,14 +34,13 @@ import org.finroc.core.datatype.Unit;
 
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Efficient implementation of a part-wise linear function.
  *
  * Writing to this class is not thread-safe.
  * Reading is not thread-safe during writes.
  */
-@JavaOnly
 public class PartWiseLinearFunction extends RRLibSerializableImpl implements Function {
 
     /** list with nodes... invariant: there is only one node with the same x value */
@@ -136,7 +134,7 @@ public class PartWiseLinearFunction extends RRLibSerializableImpl implements Fun
     }
 
     /**
-     * @author max
+     * @author Max Reichardt
      *
      * One Point/Node of linear function
      */

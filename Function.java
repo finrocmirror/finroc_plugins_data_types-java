@@ -21,7 +21,6 @@
  */
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
@@ -29,11 +28,10 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 import org.finroc.core.datatype.Unit;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * This is an interface for any function double=>double
  */
-@JavaOnly
 public interface Function extends HasFunctionRepresentation {
 
     public final static DataType<Function> TYPE = new DataType<Function>(Function.class);

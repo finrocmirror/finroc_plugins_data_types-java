@@ -22,7 +22,7 @@
 package org.finroc.plugins.data_types;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * List of points (in arbitrary space).
  */

@@ -21,7 +21,6 @@
  */
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
@@ -30,11 +29,10 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * All objects that are representable as a function
  */
-@JavaOnly
 public interface HasFunctionRepresentation extends RRLibSerializable {
 
     public final static DataType<HasFunctionRepresentation> TYPE = new DataType<HasFunctionRepresentation>(HasFunctionRepresentation.class);
@@ -45,7 +43,6 @@ public interface HasFunctionRepresentation extends RRLibSerializable {
     /**
      * Empty Function
      */
-    @JavaOnly
     public class Empty extends RRLibSerializableImpl implements HasFunctionRepresentation {
 
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "HasEmptyFunction");

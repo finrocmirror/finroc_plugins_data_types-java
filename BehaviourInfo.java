@@ -21,7 +21,6 @@
  */
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
@@ -30,11 +29,10 @@ import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * MCA Style behaviour info - see tBehaviourInfo.h
  */
-@JavaOnly
 public class BehaviourInfo extends RRLibSerializableImpl {
 
     public final static DataType<BehaviourInfo> TYPE = new DataType<BehaviourInfo>(BehaviourInfo.class);

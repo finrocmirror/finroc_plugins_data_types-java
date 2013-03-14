@@ -30,7 +30,7 @@ import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Generic base class for Java equivalents to tVec2i, tVec3i, tVec6i, tVec2d, tVec3d, tVec6d
  */

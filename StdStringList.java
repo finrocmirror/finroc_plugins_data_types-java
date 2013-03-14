@@ -23,7 +23,6 @@ package org.finroc.plugins.data_types;
 
 import java.util.ArrayList;
 
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
@@ -31,11 +30,10 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
 import org.rrlib.finroc_core_utils.xml.XMLNode;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Class to interpret C++ std::string lists
  */
-@JavaOnly
 public class StdStringList extends RRLibSerializableImpl implements ContainsStrings {
 
     public final static DataType<StdStringList> TYPE = new DataType<StdStringList>(StdStringList.class, "List<String>");

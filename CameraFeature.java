@@ -30,7 +30,7 @@ import org.rrlib.finroc_core_utils.serialization.Serialization;
 import org.rrlib.finroc_core_utils.xml.XMLNode;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * Java equivalent for tCameraFeature in rrlib_coviroa
  */

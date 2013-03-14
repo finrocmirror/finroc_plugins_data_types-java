@@ -24,7 +24,6 @@ package org.finroc.plugins.data_types;
 import org.finroc.core.datatype.CoreNumber;
 import org.finroc.core.datatype.Unit;
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.Copyable;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
@@ -35,11 +34,10 @@ import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * rrlib::math::tAngleRad Java equivalent
  */
-@JavaOnly
 public class Angle extends RRLibSerializableImpl implements Copyable<Angle>, NumericRepresentation {
 
     /** Data Type */

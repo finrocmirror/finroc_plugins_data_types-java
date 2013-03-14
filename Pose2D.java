@@ -25,7 +25,6 @@ import java.awt.Graphics2D;
 
 import org.finroc.core.portdatabase.CCType;
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.rrlib.finroc_core_utils.jc.annotation.JavaOnly;
 import org.rrlib.finroc_core_utils.rtti.Copyable;
 import org.rrlib.finroc_core_utils.rtti.DataType;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
@@ -36,11 +35,10 @@ import org.rrlib.finroc_core_utils.serialization.StringInputStream;
 import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
- * @author max
+ * @author Max Reichardt
  *
  * tPose2D Java equivalent
  */
-@JavaOnly
 public class Pose2D extends RRLibSerializableImpl implements Copyable<Pose2D>, CCType {
 
     /** Data Type */
