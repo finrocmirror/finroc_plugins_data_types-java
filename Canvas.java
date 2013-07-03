@@ -76,6 +76,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         eDRAW_POINT,                    // [vector]
         eDRAW_LINE,                     // [vector][vector]
         eDRAW_LINE_SEGMENT,             // [vector][vector]
+        eDRAW_LINE_STRIP,               // [number of values: N][vector1]...[vectorN]
         eDRAW_ARROW,                    // [bool][vector][vector]
         eDRAW_BOX,                      // [vector][size1]...[sizeN]
         eDRAW_ELLIPSOID,                // [vector][diameter1]...[diameterN]
@@ -472,6 +473,23 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 g.draw(line);
                 break;
 
+            case eDRAW_LINE_STRIP: {      // [number of values][2D-vector1]...[2D-vectorN]
+                int points = is.readShort();
+                Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points + 1);
+                if (points * 2 > v.length) {
+                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    return;
+                }
+                readValues(is, v, points * 2);
+                synchronized (path) { // maybe this speeds synchronized calls up?
+                    path.moveTo(v[0], v[1]);
+                    for (int j = 1; j < points; j++) {
+                        path.lineTo(v[j * 2], v[j * 2 + 1]);
+                    }
+                }
+                g.draw(path);
+                break;
+            }
             case eDRAW_ARROW:      // [bool][2D-point][2D-point]
                 boolean undirected = is.readBoolean();
                 readValues(is, v, 4);
