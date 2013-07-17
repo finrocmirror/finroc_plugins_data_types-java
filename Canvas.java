@@ -248,6 +248,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             case eDRAW_SPLINE:             // [number of values][2D-vector1]...[2D-vectorN]  (bezier spline)
                 is.readFloat();
             case eDRAW_POLYGON:            // [number of values][2D-vector1]...[2D-vectorN]
+            case eDRAW_LINE_STRIP:
                 int points = is.readShort();
                 skipValues(is, points * 2);
                 break;
@@ -475,7 +476,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
             case eDRAW_LINE_STRIP: {      // [number of values][2D-vector1]...[2D-vectorN]
                 int points = is.readShort();
-                Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points + 1);
+                Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points);
                 if (points * 2 > v.length) {
                     DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
                     return;
