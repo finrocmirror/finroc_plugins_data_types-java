@@ -108,4 +108,13 @@ public class StdStringList extends RRLibSerializableImpl implements ContainsStri
             wrapped.add("");
         }
     }
+
+    /**
+     * Adds string to list
+     *
+     * @param string String to add
+     */
+    public void add(String string) {
+        wrapped.add(string);
+    }
 }
