@@ -21,13 +21,16 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types.mca;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.util.Arrays;
 
 import org.finroc.core.datatype.Unit;
 import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardPlugin;
+import org.finroc.plugins.data_types.Canvas;
 import org.finroc.plugins.data_types.DataTypePlugin;
 import org.finroc.plugins.data_types.Dimension;
 import org.finroc.plugins.data_types.Paintable;
@@ -233,11 +236,42 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
     /** Helper variables derived from header data */
     private FormatInfo formatInfo = MCA.cDistanceDataFormatInfo[0];
     private DimensionImpl[] dimensions = null;
-    private int pointDrawSize = 50;
 
     /** Data Buffer */
     private MemoryBuffer data = new MemoryBuffer();
     private MemoryBuffer extraData = new MemoryBuffer();
+
+    /**
+     * Cartesian points (updated by calculateCartesianPoints() when needed for drawing)
+     *
+     * Index 0: X coordinate of point 0
+     * Index 1: Y coordinate of point 0
+     * Index 2: Z coordinate of point 0
+     * Index 3: X coordinate of point 1
+     * ...
+     */
+    private double[] cartesianPoints = new double[30];
+    private boolean cartesianPointsValid = false;
+
+    /**
+     * When rendered to Graphics2D, the cartesian points are projected to a plane
+     * This array defines which plane this is:
+     * (0,1) XY
+     * (0,2) XZ
+     * (1,2) YZ
+     *
+     * (updated by calculateCartesianPoints() when needed for drawing)
+     */
+    private final int[] viewPlane2dDimensionIndices = new int[2];
+
+    /**
+     * Bounding box (updated by calculateCartesianPoints() when needed for drawing)
+     * Index 0: minimum X
+     * Index 1: maximum X
+     * Index 2: minimum Y
+     * ...
+     */
+    private final double[] bounds = new double[6];
 
     @Override
     public void serialize(OutputStreamBuffer os) {
@@ -292,7 +326,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
                 dimensions[i] = new DimensionImpl(i);
             }
         }
-        pointDrawSize = (int)Unit.cm.convertTo(3, getUnit());
+        cartesianPointsValid = false;
     }
 
     public Unit getUnit() {
@@ -339,49 +373,165 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         }
     }
 
+    private synchronized void calculateCartesianPoints() {
+        if (!cartesianPointsValid) { // recalculate
+            if (cartesianPoints.length < dimension * 3) {
+                cartesianPoints = new double[dimension * 3 + 30];
+            }
+
+            int cartesianIndex = 0;
+
+            if (formatInfo.valueType == MCA.eVT_DISTANCE_ONLY) {
+                // assume scan is from -180° to +180°
+                double minAngle = -Math.PI / 2;
+                double maxAngle = Math.PI / 2;
+                double increment = (maxAngle - minAngle) / (dimension - 1);
+                double angle = minAngle;
+                for (int i = 0; i < dimension; i++) {
+                    double distance = getPointCoordinate(i, 0);
+                    cartesianPoints[cartesianIndex] = Math.cos(angle) * distance;
+                    cartesianPoints[cartesianIndex + 1] = Math.sin(angle) * distance;
+                    cartesianPoints[cartesianIndex + 2] = 0;
+                    angle += increment;
+                    cartesianIndex += 3;
+                }
+            } else if (formatInfo.valueType == MCA.eVT_CARTESIAN) {
+                for (int i = 0; i < dimension; i++) {
+                    cartesianPoints[cartesianIndex] = getPointCoordinate(i, 0);
+                    cartesianPoints[cartesianIndex + 1] = getPointCoordinate(i, 1);
+                    cartesianPoints[cartesianIndex + 2] = formatInfo.numberOfValues < 3 ? 0 : getPointCoordinate(i, 2);
+                    cartesianIndex += 3;
+                }
+            } else if (formatInfo.valueType == MCA.eVT_POLAR) {
+                if (formatInfo.numberOfValues < 3) {
+                    for (int i = 0; i < dimension; i++) {
+                        double angle = getPointCoordinate(i, 0);
+                        double distance = getPointCoordinate(i, 1);
+                        double x = Math.cos(angle) * distance;
+                        double y = Math.sin(angle) * distance;
+                        cartesianPoints[cartesianIndex] = x;
+                        cartesianPoints[cartesianIndex + 1] = y;
+                        cartesianPoints[cartesianIndex + 2] = 0;
+                        cartesianIndex += 3;
+                    }
+                } else {
+                    for (int i = 0; i < dimension; i++) {
+                        // TODO: This is not tested - as 3D Polar coordinates do not seem to be used in any components/projects
+                        double polarAngle = getPointCoordinate(i, 0);
+                        double azimuthalAngle = getPointCoordinate(i, 1);
+                        double distance = getPointCoordinate(i, 2);
+
+                        // Formulas from wikipedia
+                        double x = Math.sin(azimuthalAngle) * Math.cos(polarAngle) * distance;
+                        double y = Math.sin(azimuthalAngle) * Math.sin(polarAngle) * distance;
+                        double z = Math.cos(azimuthalAngle) * distance;
+                        cartesianPoints[cartesianIndex] = x;
+                        cartesianPoints[cartesianIndex + 1] = y;
+                        cartesianPoints[cartesianIndex + 2] = z;
+                        cartesianIndex += 3;
+                    }
+                }
+            }
+
+            // Calculate bounds
+            if (dimension == 0) {
+                Arrays.fill(bounds, 0);
+                viewPlane2dDimensionIndices[0] = 0;
+                viewPlane2dDimensionIndices[1] = 1;
+            } else {
+
+                // Set BoundingBox to first point
+                for (int i = 0; i < 3; i++) {
+                    bounds[i * 2] = cartesianPoints[i];
+                    bounds[i * 2 + 1] = cartesianPoints[i];
+                }
+
+                // Extend bounding box
+                cartesianIndex = 3;
+                for (int i = 1; i < dimension; i++, cartesianIndex += 3) {
+                    for (int j = 0; j < 3; j++) {
+                        bounds[j * 2] = Math.min(bounds[j * 2], cartesianPoints[cartesianIndex + j]);
+                        bounds[j * 2 + 1] = Math.max(bounds[j * 2 + 1], cartesianPoints[cartesianIndex + j]);
+                    }
+                }
+
+                // Decide on viewing plane
+                double xDistance = bounds[1] - bounds[0];
+                double yDistance = bounds[3] - bounds[2];
+                double zDistance = bounds[5] - bounds[4];
+                if (zDistance > xDistance * 10 && zDistance > yDistance * 10) {
+                    viewPlane2dDimensionIndices[0] = xDistance >= yDistance ? 0 : 1;
+                    viewPlane2dDimensionIndices[1] = 2;
+                } else if (zDistance > xDistance * 10) {
+                    viewPlane2dDimensionIndices[0] = 1;
+                    viewPlane2dDimensionIndices[1] = 2;
+                } else if (zDistance > yDistance * 10) {
+                    viewPlane2dDimensionIndices[0] = 0;
+                    viewPlane2dDimensionIndices[1] = 2;
+                } else {
+                    viewPlane2dDimensionIndices[0] = 0;
+                    viewPlane2dDimensionIndices[1] = 1;
+                }
+            }
+
+            cartesianPointsValid = true;
+        }
+    }
+
+
     @Override
     public void paint(Graphics2D g) {
+        calculateCartesianPoints();
+
         AffineTransform at = g.getTransform(); // backup current transformation
-        robotPose.applyTransformation(g);
-        sensorPose.applyTransformation(g);
-        sensorPoseDelta.applyTransformation(g);
-        if (formatInfo.valueType == MCA.eVT_DISTANCE_ONLY) {
-            // assume scan is from -180° to +180°
-            double minAngle = -Math.PI / 2;
-            double maxAngle = Math.PI / 2;
-            double increment = (maxAngle - minAngle) / (dimension - 1);
-            double angle = minAngle;
-            for (int i = 0; i < dimension; i++) {
-                double distance = getPointCoordinate(i, 0);
-                double x = Math.cos(angle) * distance;
-                double y = Math.sin(angle) * distance;
-                drawPoint(g, x, y);
-                angle += increment;
-            }
-        } else if (formatInfo.valueType == MCA.eVT_CARTESIAN) {
-            for (int i = 0; i < dimension; i++) {
-                drawPoint(g, getPointCoordinate(i, 0), getPointCoordinate(i, 1));
-            }
-        } else if (formatInfo.valueType == MCA.eVT_POLAR) {
-            for (int i = 0; i < dimension; i++) {
-                double angle = getPointCoordinate(i, 0);
-                double distance = getPointCoordinate(i, formatInfo.numberOfValues - 1);
-                double x = Math.cos(angle) * distance;
-                double y = Math.sin(angle) * distance;
-                drawPoint(g, x, y);
-            }
+        applyTransformation(g, robotPose);
+        applyTransformation(g, sensorPose);
+        applyTransformation(g, sensorPoseDelta);
+        Canvas.calculateScalingFactorsAndUpdateStrokeWidth(g);
+        float strokeWidth = ((BasicStroke)g.getStroke()).getLineWidth();
+        g.setStroke(new BasicStroke(2 * strokeWidth));
+
+        int index = 0;
+        int xdim = viewPlane2dDimensionIndices[0];
+        int ydim = viewPlane2dDimensionIndices[1];
+        for (int i = 0; i < dimension; i++, index += 3) {
+            drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim]);
         }
+
         g.setTransform(at);
+    }
+
+    /**
+     * Applies transformation to graphics using the view plane set in viewPlane2dDimensionIndices
+     * (note that only 2D transforms will be applied with XY plane (use case: display in 2D maps) -
+     *  everything else would require full 3D calculations which is complicated and does not
+     *  necessarily make the 2D view more helpful)
+     *
+     * @param g Graphics2D
+     * @param pose Pose
+     */
+    private void applyTransformation(Graphics2D g, Pose3D pose) {
+        int xdim = viewPlane2dDimensionIndices[0];
+        int ydim = viewPlane2dDimensionIndices[1];
+
+        if (xdim == 0 && ydim == 1 && pose.pitch == 0 && pose.roll == 0) {
+            pose.applyTransformation(g);
+        }
     }
 
     private void drawPoint(Graphics2D g, double x, double y) {
         //g.setColor(Color.BLACK);
-        g.fillRect((int)x, (int)y, pointDrawSize, pointDrawSize);
+        //g.fillRect((int)x, (int)y, pointDrawSize, pointDrawSize);
+        g.drawLine((int)x, (int)y, (int)x, (int)y);
     }
 
     @Override
     public Rectangle2D getBounds() {
-        return BoundsExtractingGraphics2D.getBounds(this);
+        if (dimension == 0) {
+            return null;
+        }
+
+        return BoundsExtractingGraphics2D.getBounds(this); // TODO: could be optimized
     }
 }
 

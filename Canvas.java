@@ -297,7 +297,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         is.close();
     }
 
-    private class ScalingFactors {
+    private static class ScalingFactors {
         public double x;
         public double y;
     }
@@ -314,7 +314,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
      *
      * @return The current scaling factors for x- and y-axis
      */
-    private ScalingFactors calculateScalingFactorsAndUpdateStrokeWidth(Graphics2D g) {
+    public static ScalingFactors calculateScalingFactorsAndUpdateStrokeWidth(Graphics2D g) {
         ScalingFactors result = new ScalingFactors();
 
         double[] m = new double[4];
