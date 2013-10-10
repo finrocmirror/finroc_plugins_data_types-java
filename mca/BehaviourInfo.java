@@ -19,7 +19,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 //----------------------------------------------------------------------
-package org.finroc.plugins.data_types;
+package org.finroc.plugins.data_types.mca;
 
 import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.rrlib.finroc_core_utils.rtti.DataType;
