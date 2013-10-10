@@ -26,6 +26,8 @@ import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
 import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
 import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.finroc_core_utils.serialization.StringInputStream;
+import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
 
 /**
  * @author Max Reichardt
@@ -37,10 +39,10 @@ public class BehaviorStatus extends RRLibSerializableImpl {
 
     public final static DataTypeBase TYPE = new DataType<BehaviorStatus>(BehaviorStatus.class, "finroc.ib2c.Status");
 
-    enum StimulationMode {
-        AUTO,
-        ENABLED,
-        DISABLED
+    public enum StimulationMode {
+        Auto,
+        Enabled,
+        Disabled
     };
 
     public String name;
@@ -68,5 +70,15 @@ public class BehaviorStatus extends RRLibSerializableImpl {
         activity = stream.readDouble();
         targetRating = stream.readDouble();
         activation = stream.readDouble();
+    }
+
+    @Override
+    public void serialize(StringOutputStream stream) {
+        stream.append("Activity: " + activity + ", Activation: " + activation + ", Target Rating: " + targetRating + ", Stimulation Mode: " + stimulationMode + ", Name: " + name + ", ModuleHandle: " + moduleHandle);
+    }
+
+    @Override
+    public void deserialize(StringInputStream stream) throws Exception {
+        throw new Exception("You cannot set the behavior status via finstruct");
     }
 }
