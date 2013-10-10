@@ -35,7 +35,7 @@ import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
  */
 public class BehaviorStatus extends RRLibSerializableImpl {
 
-    public final static DataTypeBase TYPE = new DataType<BehaviorStatus>(BehaviorStatus.class, "rrlib.ib2c.Status");
+    public final static DataTypeBase TYPE = new DataType<BehaviorStatus>(BehaviorStatus.class, "finroc.ib2c.Status");
 
     enum StimulationMode {
         AUTO,
@@ -44,6 +44,7 @@ public class BehaviorStatus extends RRLibSerializableImpl {
     };
 
     public String name;
+    public int moduleHandle;
     public StimulationMode stimulationMode;
     public double activity;
     public double targetRating;
@@ -52,6 +53,7 @@ public class BehaviorStatus extends RRLibSerializableImpl {
     @Override
     public void serialize(OutputStreamBuffer stream) {
         stream.writeString(name);
+        stream.writeInt(moduleHandle);
         stream.writeEnum(stimulationMode);
         stream.writeDouble(activity);
         stream.writeDouble(targetRating);
@@ -61,6 +63,7 @@ public class BehaviorStatus extends RRLibSerializableImpl {
     @Override
     public void deserialize(InputStreamBuffer stream) {
         name = stream.readString();
+        moduleHandle = stream.readInt();
         stimulationMode = stream.readEnum(StimulationMode.class);
         activity = stream.readDouble();
         targetRating = stream.readDouble();

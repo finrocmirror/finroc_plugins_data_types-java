@@ -35,7 +35,7 @@ public class DataTypePlugin implements Plugin {
 
     @Override
     public void init(/*PluginManager mgr*/) {
-        Plugins.loadAllDataTypesInPackage(BehaviourInfo.class);
+        Plugins.loadAllDataTypesInPackage(BehaviorStatus.class);
         Plugins.loadAllDataTypesInPackage(MCA.class);
         Plugins.loadAllDataTypesInPackage(Vector2i.class);
     }
