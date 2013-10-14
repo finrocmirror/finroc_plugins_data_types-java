@@ -140,23 +140,23 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
 
     @Override
     public boolean drawImage(Image img, AffineTransform xform, ImageObserver obs) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
         return true;
     }
 
     @Override
     public void drawImage(BufferedImage img, BufferedImageOp op, int x, int y) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
     public void drawRenderedImage(RenderedImage img, AffineTransform xform) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
     public void drawRenderableImage(RenderableImage img, AffineTransform xform) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
@@ -173,17 +173,17 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
 
     @Override
     public void drawString(AttributedCharacterIterator iterator, int x, int y) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
     public void drawString(AttributedCharacterIterator iterator, float x, float y) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
     public void drawGlyphVector(GlyphVector g, float x, float y) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
@@ -313,7 +313,7 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
 
     @Override
     public void clip(Shape s) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
@@ -323,7 +323,7 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
 
     @Override
     public Graphics create() {
-        logDomain.log(LogLevel.LL_ERROR, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.ERROR, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
         return null;
     }
 
@@ -364,29 +364,29 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
 
     @Override
     public Rectangle getClipBounds() {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
         return null;
     }
 
     @Override
     public void clipRect(int x, int y, int width, int height) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
     public void setClip(int x, int y, int width, int height) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
     public Shape getClip() {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
         return null;
     }
 
     @Override
     public void setClip(Shape clip) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
     }
 
     @Override
@@ -484,13 +484,13 @@ public class BoundsExtractingGraphics2D extends Graphics2D {
 
     @Override
     public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, ImageObserver observer) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
         return true;
     }
 
     @Override
     public boolean drawImage(Image img, int dx1, int dy1, int dx2, int dy2, int sx1, int sy1, int sx2, int sy2, Color bgcolor, ImageObserver observer) {
-        logDomain.log(LogLevel.LL_DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
+        logDomain.log(LogLevel.DEBUG_WARNING, "BoundsExtractingGraphics2D", "Not implemented. Skipping.");
         return true;
     }
 

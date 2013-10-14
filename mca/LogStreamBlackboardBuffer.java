@@ -95,7 +95,7 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
         } catch (EOFException e) {
             // normal when buffer was wrapped around
         } catch (Exception e) {
-            DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "LogStreamBlackboard", e);
+            DataTypePlugin.logDomain.log(LogLevel.ERROR, "LogStreamBlackboard", e);
         }
     }
 

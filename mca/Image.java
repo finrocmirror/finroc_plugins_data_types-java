@@ -209,7 +209,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
             bpp = 1;
             break;
         default:
-            DataTypePlugin.logDomain.log(LogLevel.LL_DEBUG_VERBOSE_1, "ImageBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
+            DataTypePlugin.logDomain.log(LogLevel.DEBUG_VERBOSE_1, "ImageBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
             bpp = 1;
             //return Blittable.Empty.instance;
         }
@@ -266,7 +266,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
             blitter = new NV21();
             break;
         default:
-            DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "ImageBlackboard", "Image format " + format + " not supported yet");
+            DataTypePlugin.logDomain.log(LogLevel.WARNING, "ImageBlackboard", "Image format " + format + " not supported yet");
             blitter = new NullBlitter();
             //return Blittable.Empty.instance;
         }

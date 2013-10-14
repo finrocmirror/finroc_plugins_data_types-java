@@ -153,7 +153,7 @@ public class CameraFeature extends RRLibSerializableImpl {
             for (int i = 0; i < features.length; i++) {
                 features[i].deserialize(is);
                 if (features[i].featureId.ordinal() != i) {
-                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "CameraFeature", "Invalid feature id. Stream seems corrupted :-/.");
+                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "CameraFeature", "Invalid feature id. Stream seems corrupted :-/.");
                 }
             }
         }
@@ -187,7 +187,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                         case ONE_PUSH_AUTOMATIC:
                             break;
                         default:
-                            DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "CameraFeature", "Not handled");
+                            DataTypePlugin.logDomain.log(LogLevel.ERROR, "CameraFeature", "Not handled");
                             break;
                         }
                     }
@@ -255,7 +255,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                             case ONE_PUSH_AUTOMATIC:
                                 break;
                             default:
-                                DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "CameraFeature", "Not handled");
+                                DataTypePlugin.logDomain.log(LogLevel.ERROR, "CameraFeature", "Not handled");
                                 break;
                             case MANUAL:
                                 String[] split = it.get().getTextContent().split(",");
@@ -296,7 +296,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                     }
                 }
             } catch (Exception e) {
-                DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "CameraFeature", "Error deserializing camera feature set: " + e);
+                DataTypePlugin.logDomain.log(LogLevel.ERROR, "CameraFeature", "Error deserializing camera feature set: " + e);
             }
         }
     }

@@ -328,7 +328,7 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
                     break;
 
                 default:
-                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "GeometryBlackboard", "warning: Unknown entry type " + type + " in Geometry blackboard... skipping the rest");
+                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "GeometryBlackboard", "warning: Unknown entry type " + type + " in Geometry blackboard... skipping the rest");
                     // reset graphics object
                     g.setTransform(at);
                     return;
@@ -339,7 +339,7 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
             }
 
         } catch (Exception e) {
-            DataTypePlugin.logDomain.log(LogLevel.LL_ERROR, "GeometryBlackboard", e);
+            DataTypePlugin.logDomain.log(LogLevel.ERROR, "GeometryBlackboard", e);
         }
     }
 

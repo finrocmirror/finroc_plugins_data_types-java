@@ -340,7 +340,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         case MCA.eDISTANCE_UNIT_M:
             return Unit.m;
         }
-        DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "DistanceData", "Invalid unit " + unit);
+        DataTypePlugin.logDomain.log(LogLevel.WARNING, "DistanceData", "Invalid unit " + unit);
         return Unit.NO_UNIT;
     }
 

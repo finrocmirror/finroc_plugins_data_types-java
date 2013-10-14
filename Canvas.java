@@ -273,7 +273,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 break;
 
             default:
-                DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "Opcode " + opcode.toString() + " not supported yet");
+                DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "Opcode " + opcode.toString() + " not supported yet");
                 return;
             }
         }
@@ -478,7 +478,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 int points = is.readShort();
                 Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points);
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -552,7 +552,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 int points = is.readShort();
                 Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points + 1);
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -576,7 +576,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 float tension = is.readFloat();
                 points = is.readShort();
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -606,7 +606,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 short degree = is.readShort();
                 points = degree + 1;
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "Degree greater than " + (v.length / 2 - 1) + " points not supported");
+                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "Degree greater than " + (v.length / 2 - 1) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -655,7 +655,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 break;
 
             default:
-                DataTypePlugin.logDomain.log(LogLevel.LL_WARNING, "Canvas", "Opcode " + opcode.toString() + " not supported yet");
+                DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "Opcode " + opcode.toString() + " not supported yet");
                 return;
             }
         }
