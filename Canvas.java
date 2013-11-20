@@ -591,14 +591,15 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             case eDRAW_STRING:             // [2D-point][null-terminated chars]
                 readValues(is, v, 2);
                 String s = is.readString();
+                // get current transformation
                 AffineTransform tmp = g.getTransform();
-                p1.setLocation(0, 0);
-                tmp.transform(p1, p1t);
+                tmp.transform(new Point2D.Double(v[0], v[1]), p1t);
+                // create a transformation without a rotation
                 AffineTransform nonRotated = new AffineTransform();
                 nonRotated.translate(p1t.x, p1t.y);
-                nonRotated.translate(scaling.x * v[0], scaling.y * -v[1]);
                 g.setTransform(nonRotated);
                 g.drawString(s, 0, 0);
+                // reset transform
                 g.setTransform(tmp);
                 break;
 
