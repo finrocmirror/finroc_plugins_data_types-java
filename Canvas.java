@@ -37,10 +37,11 @@ import java.util.Collections;
 
 import org.finroc.plugins.data_types.util.BezierSpline;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
-import org.rrlib.finroc_core_utils.log.LogLevel;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
+import org.rrlib.logging.Log;
+import org.rrlib.logging.LogLevel;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.MemoryBuffer;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
@@ -147,11 +148,11 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     private ArrayList<RenderContext> zLevels = new ArrayList<RenderContext>();
 
     /** Temporary variables for Z-Level extraction */
-    InputStreamBuffer tempInputStreamZExtraction = new InputStreamBuffer(this);
+    BinaryInputStream tempInputStreamZExtraction = new BinaryInputStream(this);
     double[] tempArrayZExtraction = new double[6];
 
     @Override
-    public void deserialize(InputStreamBuffer rv) {
+    public void deserialize(BinaryInputStream rv) {
         super.deserialize(rv);
         extractZLevels();
     }
@@ -161,7 +162,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
      */
     private void extractZLevels() {
         zLevels.clear();
-        InputStreamBuffer is = tempInputStreamZExtraction;
+        BinaryInputStream is = tempInputStreamZExtraction;
         is.reset(this);
         double[] v = tempArrayZExtraction;
         AffineTransform at = new AffineTransform();
@@ -273,7 +274,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 break;
 
             default:
-                DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "Opcode " + opcode.toString() + " not supported yet");
+                Log.log(LogLevel.WARNING, this, "Opcode " + opcode.toString() + " not supported yet");
                 return;
             }
         }
@@ -282,7 +283,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
     @Override
     public void paint(Graphics2D g) {
-        InputStreamBuffer is = new InputStreamBuffer(this);
+        BinaryInputStream is = new BinaryInputStream(this);
         Graphics2D g2d = (g instanceof BoundsExtractingGraphics2D) ? g : (Graphics2D)g.create();
         g2d.scale(1000, 1000);
         AffineTransform defaultTransform = g2d.getTransform();
@@ -327,7 +328,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         return result;
     }
 
-    public void paintGeometry(Graphics2D g, RenderContext lvl, InputStreamBuffer is, AffineTransform defaultTransform) {
+    public void paintGeometry(Graphics2D g, RenderContext lvl, BinaryInputStream is, AffineTransform defaultTransform) {
         double[] v = new double[1000];
         boolean fill = lvl.fill;
         Color edgeColor = lvl.edgeColor;
@@ -478,7 +479,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 int points = is.readShort();
                 Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points);
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    Log.log(LogLevel.WARNING, this, "More than " + (v.length / 2) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -552,7 +553,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 int points = is.readShort();
                 Path2D.Double path = new Path2D.Double(Path2D.WIND_NON_ZERO, points + 1);
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    Log.log(LogLevel.WARNING, this, "More than " + (v.length / 2) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -576,7 +577,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 float tension = is.readFloat();
                 points = is.readShort();
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "More than " + (v.length / 2) + " points not supported");
+                    Log.log(LogLevel.WARNING, this, "More than " + (v.length / 2) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -606,7 +607,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 short degree = is.readShort();
                 points = degree + 1;
                 if (points * 2 > v.length) {
-                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "Degree greater than " + (v.length / 2 - 1) + " points not supported");
+                    Log.log(LogLevel.WARNING, this, "Degree greater than " + (v.length / 2 - 1) + " points not supported");
                     return;
                 }
                 readValues(is, v, points * 2);
@@ -655,19 +656,19 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 break;
 
             default:
-                DataTypePlugin.logDomain.log(LogLevel.WARNING, "Canvas", "Opcode " + opcode.toString() + " not supported yet");
+                Log.log(LogLevel.WARNING, this, "Opcode " + opcode.toString() + " not supported yet");
                 return;
             }
         }
     }
 
-    private void skipValues(InputStreamBuffer is, int valueCount) {
+    private void skipValues(BinaryInputStream is, int valueCount) {
         NumberTypeEnum t = is.readEnum(NumberTypeEnum.class);
         int bytes = numberTypeBytes[t.ordinal()];
         is.skip(bytes * valueCount);
     }
 
-    private double[] readValues(InputStreamBuffer is, double[] buffer, int valueCount) {
+    private double[] readValues(BinaryInputStream is, double[] buffer, int valueCount) {
         NumberTypeEnum t = is.readEnum(NumberTypeEnum.class);
         switch (t) {
         case eFLOAT:

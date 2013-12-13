@@ -24,18 +24,17 @@ package org.finroc.plugins.data_types;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * Marks objects that are paintable through Graphics interface
  */
-public interface PaintablePortData extends Paintable, RRLibSerializable {
+public interface PaintablePortData extends Paintable, BinarySerializable {
 
     public final static DataType<PaintablePortData> TYPE = new DataType<PaintablePortData>(PaintablePortData.class);
 
@@ -44,7 +43,7 @@ public interface PaintablePortData extends Paintable, RRLibSerializable {
     /**
      * Empty Paintable
      */
-    public class Empty extends RRLibSerializableImpl implements PaintablePortData {
+    public class Empty implements PaintablePortData {
 
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "DummyPaintable");
 
@@ -52,11 +51,11 @@ public interface PaintablePortData extends Paintable, RRLibSerializable {
         public void paint(Graphics2D g) {}
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
         }
 
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
         }
 
         @Override

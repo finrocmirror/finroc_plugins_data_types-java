@@ -26,13 +26,13 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.rrlib.logging.Log;
+import org.rrlib.logging.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.data_types.ContainsStrings;
-import org.finroc.plugins.data_types.DataTypePlugin;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.FixedBuffer;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt
@@ -75,7 +75,7 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) throws Exception {
         super.deserialize(is);
 
         // deserialize
@@ -116,7 +116,7 @@ public class LogStreamBlackboardBuffer extends MCABlackboardBuffer implements Co
         } catch (EOFException e) {
             // normal when buffer was wrapped around
         } catch (Exception e) {
-            DataTypePlugin.logDomain.log(LogLevel.ERROR, "LogStreamBlackboard", e);
+            Log.log(LogLevel.ERROR, this, e);
         }
     }
 

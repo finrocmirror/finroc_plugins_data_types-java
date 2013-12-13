@@ -23,7 +23,7 @@ package org.finroc.plugins.data_types.mca;
 
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.data_types.ContainsStrings;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt

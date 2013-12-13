@@ -28,10 +28,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
 import org.finroc.core.datatype.Unit;
-import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.finroc.plugins.data_types.Canvas;
-import org.finroc.plugins.data_types.DataTypePlugin;
 import org.finroc.plugins.data_types.Dimension;
 import org.finroc.plugins.data_types.Paintable;
 import org.finroc.plugins.data_types.PaintablePortData;
@@ -39,20 +37,21 @@ import org.finroc.plugins.data_types.PointList;
 import org.finroc.plugins.data_types.Pose3D;
 import org.finroc.plugins.data_types.Time;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.logging.Log;
+import org.rrlib.logging.LogLevel;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.MemoryBuffer;
+import org.rrlib.serialization.PortDataListImpl;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt
  *
  * tDistanceData Java equivalent
  */
-public class DistanceData extends RRLibSerializableImpl implements PaintablePortData, PointList {
+public class DistanceData implements PaintablePortData, PointList {
 
     public static class DistanceDataList extends PortDataListImpl<DistanceData> implements Paintable, PointList {
 
@@ -274,7 +273,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
     private final double[] bounds = new double[6];
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeByte(format);
         os.writeInt(capacity);
         os.writeInt(dimension);
@@ -295,7 +294,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         byte tmp = is.readByte();
         boolean formatChanged = tmp != format;
         format = tmp;
@@ -340,7 +339,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         case MCA.eDISTANCE_UNIT_M:
             return Unit.m;
         }
-        DataTypePlugin.logDomain.log(LogLevel.WARNING, "DistanceData", "Invalid unit " + unit);
+        Log.log(LogLevel.WARNING, this, "Invalid unit " + unit);
         return Unit.NO_UNIT;
     }
 

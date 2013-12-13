@@ -21,19 +21,20 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.MemoryBuffer;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * Float list (as used in finroc blackboards)
  */
-public class FloatList extends MemoryBuffer implements ContainsStrings {
+public class FloatList extends MemoryBuffer implements ContainsStrings, StringSerializable {
 
     public final static DataType<FloatList> TYPE = new DataType<FloatList>(FloatList.class, "List<float>", false);
 
@@ -60,7 +61,7 @@ public class FloatList extends MemoryBuffer implements ContainsStrings {
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         int size = is.readInt();
         boolean constType = is.readBoolean();
         assert(constType);
@@ -69,7 +70,7 @@ public class FloatList extends MemoryBuffer implements ContainsStrings {
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeInt(size());
         os.writeBoolean(true);
         os.write(super.getBuffer(), 0, super.curSize);

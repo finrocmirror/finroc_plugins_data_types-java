@@ -21,20 +21,19 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * Class that contains Strings
  */
-public interface ContainsStrings extends RRLibSerializable {
+public interface ContainsStrings extends BinarySerializable {
 
     public final static DataType<ContainsStrings> TYPE = new DataType<ContainsStrings>(ContainsStrings.class);
 
@@ -63,7 +62,7 @@ public interface ContainsStrings extends RRLibSerializable {
     /**
      * Empty String List
      */
-    public class Empty extends RRLibSerializableImpl implements ContainsStrings {
+    public class Empty implements ContainsStrings {
 
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyStrings");
 
@@ -82,11 +81,11 @@ public interface ContainsStrings extends RRLibSerializable {
         }
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
         }
 
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
         }
 
         @Override

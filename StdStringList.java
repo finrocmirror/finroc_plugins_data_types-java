@@ -23,18 +23,18 @@ package org.finroc.plugins.data_types;
 
 import java.util.ArrayList;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.xml.XMLNode;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.XMLSerializable;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.xml.XMLNode;
 
 /**
  * @author Max Reichardt
  *
  * Class to interpret C++ std::string lists
  */
-public class StdStringList extends RRLibSerializableImpl implements ContainsStrings {
+public class StdStringList implements ContainsStrings, XMLSerializable {
 
     public final static DataType<StdStringList> TYPE = new DataType<StdStringList>(StdStringList.class, "List<String>");
 
@@ -65,7 +65,7 @@ public class StdStringList extends RRLibSerializableImpl implements ContainsStri
 
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeInt(wrapped.size());
         os.writeBoolean(true);
         for (int i = 0; i < wrapped.size(); i++) {
@@ -74,7 +74,7 @@ public class StdStringList extends RRLibSerializableImpl implements ContainsStri
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         int size = is.readInt();
         boolean constType = is.readBoolean();
         assert(constType);

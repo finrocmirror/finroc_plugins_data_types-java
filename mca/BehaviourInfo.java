@@ -22,18 +22,18 @@
 package org.finroc.plugins.data_types.mca;
 
 import org.finroc.plugins.blackboard.BlackboardPlugin;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt
  *
  * MCA Style behaviour info - see tBehaviourInfo.h
  */
-public class BehaviourInfo extends RRLibSerializableImpl {
+public class BehaviourInfo implements BinarySerializable {
 
     public final static DataType<BehaviourInfo> TYPE = new DataType<BehaviourInfo>(BehaviourInfo.class);
     public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
@@ -49,7 +49,7 @@ public class BehaviourInfo extends RRLibSerializableImpl {
     public boolean enabled;
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeShort(beh_id);
         os.writeFloat(activity);
         os.writeFloat(target_rating);
@@ -59,7 +59,7 @@ public class BehaviourInfo extends RRLibSerializableImpl {
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         beh_id = is.readShort();
         activity = is.readFloat();
         target_rating = is.readFloat();

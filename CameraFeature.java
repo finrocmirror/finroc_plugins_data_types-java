@@ -21,20 +21,22 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.log.LogLevel;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.Serialization;
-import org.rrlib.finroc_core_utils.xml.XMLNode;
+import org.rrlib.logging.Log;
+import org.rrlib.logging.LogLevel;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.Serialization;
+import org.rrlib.serialization.XMLSerializable;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.xml.XMLNode;
 
 /**
  * @author Max Reichardt
  *
  * Java equivalent for tCameraFeature in rrlib_coviroa
  */
-public class CameraFeature extends RRLibSerializableImpl {
+public class CameraFeature implements BinarySerializable {
 
     public final static DataType<CameraFeature> TYPE = new DataType<CameraFeature>(CameraFeature.class);
     public final static DataType<CameraFeature.Set> SET_TYPE = new DataType<CameraFeature.Set>(CameraFeature.Set.class, "CameraFeatureSet");
@@ -78,7 +80,7 @@ public class CameraFeature extends RRLibSerializableImpl {
     /**
      * Java equivalent for tCameraFeatureCapability in rrlib_coviroa
      */
-    public class Capability extends RRLibSerializableImpl {
+    public class Capability implements BinarySerializable {
 
         /** Indicates whether this feature capability is available or not. */
         public boolean available;
@@ -87,12 +89,12 @@ public class CameraFeature extends RRLibSerializableImpl {
         public boolean active;
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
             os.writeBoolean(available);
             os.writeBoolean(active);
         }
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
             available = is.readBoolean();
             active = is.readBoolean();
         }
@@ -106,13 +108,13 @@ public class CameraFeature extends RRLibSerializableImpl {
         public float min, max;
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
             super.serialize(os);
             os.writeFloat(min);
             os.writeFloat(max);
         }
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
             super.deserialize(is);
             min = is.readFloat();
             max = is.readFloat();
@@ -122,7 +124,7 @@ public class CameraFeature extends RRLibSerializableImpl {
     /**
      * Java equivalent for CameraFeatureSet in rrlib_coviroa
      */
-    public static class Set extends RRLibSerializableImpl {
+    public static class Set implements BinarySerializable, XMLSerializable {
 
         /** Name and vendor of camera */
         public String name, vendor;
@@ -138,7 +140,7 @@ public class CameraFeature extends RRLibSerializableImpl {
         }
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
             os.writeString(name);
             os.writeString(vendor);
             for (int i = 0; i < features.length; i++) {
@@ -147,13 +149,13 @@ public class CameraFeature extends RRLibSerializableImpl {
         }
 
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
             name = is.readString();
             vendor = is.readString();
             for (int i = 0; i < features.length; i++) {
                 features[i].deserialize(is);
                 if (features[i].featureId.ordinal() != i) {
-                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "CameraFeature", "Invalid feature id. Stream seems corrupted :-/.");
+                    Log.log(LogLevel.WARNING, this, "Invalid feature id. Stream seems corrupted :-/.");
                 }
             }
         }
@@ -187,7 +189,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                         case ONE_PUSH_AUTOMATIC:
                             break;
                         default:
-                            DataTypePlugin.logDomain.log(LogLevel.ERROR, "CameraFeature", "Not handled");
+                            Log.log(LogLevel.ERROR, this, "Not handled");
                             break;
                         }
                     }
@@ -255,7 +257,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                             case ONE_PUSH_AUTOMATIC:
                                 break;
                             default:
-                                DataTypePlugin.logDomain.log(LogLevel.ERROR, "CameraFeature", "Not handled");
+                                Log.log(LogLevel.ERROR, this, "Not handled");
                                 break;
                             case MANUAL:
                                 String[] split = it.get().getTextContent().split(",");
@@ -296,7 +298,7 @@ public class CameraFeature extends RRLibSerializableImpl {
                     }
                 }
             } catch (Exception e) {
-                DataTypePlugin.logDomain.log(LogLevel.ERROR, "CameraFeature", "Error deserializing camera feature set: " + e);
+                Log.log(LogLevel.ERROR, this, "Error deserializing camera feature set: " + e);
             }
         }
     }
@@ -390,7 +392,7 @@ public class CameraFeature extends RRLibSerializableImpl {
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeByte((byte)featureId.ordinal());
         os.writeBoolean(available);
         os.writeByte((byte)mode.ordinal());
@@ -407,7 +409,7 @@ public class CameraFeature extends RRLibSerializableImpl {
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         featureId = ID.values()[is.readByte()];
         available = is.readBoolean();
         mode = Mode.values()[is.readByte()];

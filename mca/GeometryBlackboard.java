@@ -31,15 +31,15 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
-import org.rrlib.finroc_core_utils.jc.jni.StructBase;
-import org.rrlib.finroc_core_utils.log.LogLevel;
+import org.rrlib.jni.StructBase;
+import org.rrlib.logging.Log;
+import org.rrlib.logging.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardBuffer;
-import org.finroc.plugins.data_types.DataTypePlugin;
 import org.finroc.plugins.data_types.PaintablePortData;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
 import org.finroc.plugins.data_types.vector.Vector2d;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
+import org.rrlib.serialization.FixedBuffer;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 public class GeometryBlackboard extends MCABlackboardBuffer implements PaintablePortData {
 
@@ -328,7 +328,7 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
                     break;
 
                 default:
-                    DataTypePlugin.logDomain.log(LogLevel.WARNING, "GeometryBlackboard", "warning: Unknown entry type " + type + " in Geometry blackboard... skipping the rest");
+                    Log.log(LogLevel.WARNING, this, "warning: Unknown entry type " + type + " in Geometry blackboard... skipping the rest");
                     // reset graphics object
                     g.setTransform(at);
                     return;
@@ -339,7 +339,7 @@ public class GeometryBlackboard extends MCABlackboardBuffer implements Paintable
             }
 
         } catch (Exception e) {
-            DataTypePlugin.logDomain.log(LogLevel.ERROR, "GeometryBlackboard", e);
+            Log.log(LogLevel.ERROR, this, e);
         }
     }
 

@@ -26,9 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
 
 import org.finroc.core.datatype.Unit;
 
@@ -41,7 +40,7 @@ import org.finroc.core.datatype.Unit;
  * Writing to this class is not thread-safe.
  * Reading is not thread-safe during writes.
  */
-public class PartWiseLinearFunction extends RRLibSerializableImpl implements Function {
+public class PartWiseLinearFunction implements Function {
 
     /** list with nodes... invariant: there is only one node with the same x value */
     protected final List<Node> nodes;
@@ -217,12 +216,12 @@ public class PartWiseLinearFunction extends RRLibSerializableImpl implements Fun
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         throw new RuntimeException("Currently unsupported");
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         throw new RuntimeException("Currently unsupported");
     }
 }

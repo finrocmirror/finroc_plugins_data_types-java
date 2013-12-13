@@ -21,18 +21,17 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializable;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * Data Type that in some way can be rendered to an image buffer.
  */
-public interface HasBlittable extends RRLibSerializable {
+public interface HasBlittable extends BinarySerializable {
 
     public final static DataType<HasBlittable> TYPE = new DataType<HasBlittable>(HasBlittable.class);
 
@@ -50,7 +49,7 @@ public interface HasBlittable extends RRLibSerializable {
     /**
      * Empty Blittable
      */
-    public class Empty extends RRLibSerializableImpl implements HasBlittable {
+    public class Empty implements HasBlittable {
 
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "DummyBlittable");
 
@@ -60,11 +59,11 @@ public interface HasBlittable extends RRLibSerializable {
         }
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
         }
 
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
         }
 
         @Override

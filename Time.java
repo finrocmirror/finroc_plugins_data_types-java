@@ -23,20 +23,21 @@ package org.finroc.plugins.data_types;
 
 import org.finroc.core.portdatabase.CCType;
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.rrlib.finroc_core_utils.rtti.Copyable;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.Copyable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * tTime Java equivalent
  */
-public class Time extends RRLibSerializableImpl implements Copyable<Time>, CCType {
+public class Time implements Copyable<Time>, CCType, BinarySerializable, StringSerializable {
 
     /** Data Type */
     public final static DataType<Time> TYPE = new DataType<Time>(Time.class);
@@ -52,13 +53,13 @@ public class Time extends RRLibSerializableImpl implements Copyable<Time>, CCTyp
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeLong(sec);
         os.writeLong(usec);
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         sec = (int)is.readLong();
         usec = (int)is.readLong();
     }

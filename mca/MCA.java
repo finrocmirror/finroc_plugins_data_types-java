@@ -21,10 +21,10 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types.mca;
 
-import org.rrlib.finroc_core_utils.jc.jni.JNIInfo;
-import org.rrlib.finroc_core_utils.jc.jni.Struct;
-import org.rrlib.finroc_core_utils.jc.jni.StructBase;
-import org.rrlib.finroc_core_utils.serialization.FixedBuffer;
+import org.rrlib.jni.JNIInfo;
+import org.rrlib.jni.Struct;
+import org.rrlib.jni.StructBase;
+import org.rrlib.serialization.FixedBuffer;
 
 public class MCA {
 

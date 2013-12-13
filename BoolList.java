@@ -21,19 +21,20 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * Boolean list
  */
-public class BoolList extends RRLibSerializableImpl {
+public class BoolList implements BinarySerializable, StringSerializable {
 
     public final static DataType<BoolList> TYPE = new DataType<BoolList>(BoolList.class, "List<bool>", false);
 
@@ -63,7 +64,7 @@ public class BoolList extends RRLibSerializableImpl {
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         size = is.readInt();
         if (size > buffer.length) {
             buffer = new boolean[size];
@@ -76,7 +77,7 @@ public class BoolList extends RRLibSerializableImpl {
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeInt(size());
         os.writeBoolean(true);
         for (int i = 0; i < size; i++) {

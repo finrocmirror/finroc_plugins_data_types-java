@@ -22,19 +22,20 @@
 package org.finroc.plugins.data_types.vector;
 
 import org.finroc.core.portdatabase.CCType;
-import org.rrlib.finroc_core_utils.rtti.Copyable;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.Copyable;
 
 /**
  * @author Max Reichardt
  *
  * Generic base class for Java equivalents to tVec2i, tVec3i, tVec6i, tVec2d, tVec3d, tVec6d
  */
-public class Vector extends RRLibSerializableImpl implements Copyable<Vector>, CCType {
+public class Vector implements Copyable<Vector>, CCType, BinarySerializable, StringSerializable {
 
     /** Backend that stores values */
     protected int[] ibuffer;
@@ -61,7 +62,7 @@ public class Vector extends RRLibSerializableImpl implements Copyable<Vector>, C
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         if (type == Type.INT) {
             for (int i = 0; i < components; i++) {
                 os.writeInt(ibuffer[i]);
@@ -74,7 +75,7 @@ public class Vector extends RRLibSerializableImpl implements Copyable<Vector>, C
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         if (type == Type.INT) {
             for (int i = 0; i < components; i++) {
                 ibuffer[i] = is.readInt();

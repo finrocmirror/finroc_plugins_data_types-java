@@ -26,26 +26,25 @@ import java.awt.geom.Rectangle2D;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import org.rrlib.finroc_core_utils.log.LogLevel;
 import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.finroc.plugins.data_types.Blittable;
-import org.finroc.plugins.data_types.DataTypePlugin;
 import org.finroc.plugins.data_types.HasBlittable;
 import org.finroc.plugins.data_types.PaintablePortData;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.MemoryBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.logging.Log;
+import org.rrlib.logging.LogLevel;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.MemoryBuffer;
+import org.rrlib.serialization.PortDataListImpl;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt
  *
  * Image-Blackboard
  */
-public class Image extends RRLibSerializableImpl implements HasBlittable, PaintablePortData {
+public class Image implements HasBlittable, PaintablePortData {
 
     public static class ImageList extends PortDataListImpl<Image> implements HasBlittable, PaintablePortData {
 
@@ -135,7 +134,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
 
         os.writeInt(width);
         os.writeInt(height);
@@ -155,7 +154,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
 
         width = is.readInt();
         height = is.readInt();
@@ -209,7 +208,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
             bpp = 1;
             break;
         default:
-            DataTypePlugin.logDomain.log(LogLevel.DEBUG_VERBOSE_1, "ImageBlackboard", "warning (ImageBlackboard): Image format " + format + " not supported yet");
+            Log.log(LogLevel.DEBUG_VERBOSE_1, this, "warning (ImageBlackboard): Image format " + format + " not supported yet");
             bpp = 1;
             //return Blittable.Empty.instance;
         }
@@ -266,7 +265,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
             blitter = new NV21();
             break;
         default:
-            DataTypePlugin.logDomain.log(LogLevel.WARNING, "ImageBlackboard", "Image format " + format + " not supported yet");
+            Log.log(LogLevel.WARNING, this, "Image format " + format + " not supported yet");
             blitter = new NullBlitter();
             //return Blittable.Empty.instance;
         }
@@ -643,7 +642,7 @@ public class Image extends RRLibSerializableImpl implements HasBlittable, Painta
         this.height = height;
         format = Format.BGR32;
         imageData.clear();
-        OutputStreamBuffer os = new OutputStreamBuffer(imageData);
+        BinaryOutputStream os = new BinaryOutputStream(imageData);
         for (int i = 0, n = width * height; i < n; i++) {
             os.writeInt(data[i]);
         }

@@ -21,13 +21,14 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt
@@ -35,7 +36,7 @@ import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
  * Java equivalent to rrlib::ib2c::tStatus.
  * Contains information about a behavior's status relevant for tooling.
  */
-public class BehaviorStatus extends RRLibSerializableImpl {
+public class BehaviorStatus implements BinarySerializable, StringSerializable {
 
     public final static DataTypeBase TYPE = new DataType<BehaviorStatus>(BehaviorStatus.class, "finroc.ib2c.Status");
 
@@ -53,7 +54,7 @@ public class BehaviorStatus extends RRLibSerializableImpl {
     public double activation;
 
     @Override
-    public void serialize(OutputStreamBuffer stream) {
+    public void serialize(BinaryOutputStream stream) {
         stream.writeString(name);
         stream.writeInt(moduleHandle);
         stream.writeEnum(stimulationMode);
@@ -63,7 +64,7 @@ public class BehaviorStatus extends RRLibSerializableImpl {
     }
 
     @Override
-    public void deserialize(InputStreamBuffer stream) {
+    public void deserialize(BinaryInputStream stream) {
         name = stream.readString();
         moduleHandle = stream.readInt();
         stimulationMode = stream.readEnum(StimulationMode.class);

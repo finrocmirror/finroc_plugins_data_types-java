@@ -21,10 +21,9 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.rtti.DataType;
 import org.finroc.core.datatype.Unit;
 
 /**
@@ -65,7 +64,7 @@ public interface Function extends HasFunctionRepresentation {
     /**
      * Empty Function
      */
-    public class Empty extends RRLibSerializableImpl implements Function {
+    public class Empty implements Function {
 
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "EmptyFunction");
 
@@ -102,11 +101,11 @@ public interface Function extends HasFunctionRepresentation {
         }
 
         @Override
-        public void serialize(OutputStreamBuffer os) {
+        public void serialize(BinaryOutputStream os) {
         }
 
         @Override
-        public void deserialize(InputStreamBuffer is) {
+        public void deserialize(BinaryInputStream is) {
         }
     }
 }

@@ -23,9 +23,9 @@ package org.finroc.plugins.data_types.mca;
 
 import org.finroc.plugins.blackboard.BlackboardBuffer;
 import org.finroc.plugins.blackboard.BlackboardPlugin;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.rtti.DataTypeBase;
-import org.rrlib.finroc_core_utils.serialization.PortDataListImpl;
+import org.rrlib.serialization.PortDataListImpl;
+import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.serialization.rtti.DataTypeBase;
 
 /**
  * @author Max Reichardt

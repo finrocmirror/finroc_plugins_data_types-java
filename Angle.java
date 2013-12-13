@@ -24,21 +24,21 @@ package org.finroc.plugins.data_types;
 import org.finroc.core.datatype.CoreNumber;
 import org.finroc.core.datatype.Unit;
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.rrlib.finroc_core_utils.rtti.Copyable;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.NumericRepresentation;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.NumericRepresentation;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.Copyable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * rrlib::math::tAngleRad Java equivalent
  */
-public class Angle extends RRLibSerializableImpl implements Copyable<Angle>, NumericRepresentation {
+public class Angle implements Copyable<Angle>, NumericRepresentation, StringSerializable {
 
     /** Data Type */
     public final static DataType<Angle> TYPE = new DataType<Angle>(Angle.class);
@@ -51,12 +51,12 @@ public class Angle extends RRLibSerializableImpl implements Copyable<Angle>, Num
     public double unsignedRad;
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeDouble(unsignedRad);
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         unsignedRad = is.readDouble();
     }
 

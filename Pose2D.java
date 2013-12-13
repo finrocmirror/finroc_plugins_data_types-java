@@ -25,21 +25,22 @@ import java.awt.Graphics2D;
 
 import org.finroc.core.portdatabase.CCType;
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.rrlib.finroc_core_utils.rtti.Copyable;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.RRLibSerializableImpl;
-import org.rrlib.finroc_core_utils.serialization.Serialization;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.BinarySerializable;
+import org.rrlib.serialization.Serialization;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.StringSerializable;
+import org.rrlib.serialization.rtti.Copyable;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
  *
  * tPose2D Java equivalent
  */
-public class Pose2D extends RRLibSerializableImpl implements Copyable<Pose2D>, CCType {
+public class Pose2D implements Copyable<Pose2D>, CCType, BinarySerializable, StringSerializable {
 
     /** Data Type */
     public final static DataType<Pose2D> TYPE = new DataType<Pose2D>(Pose2D.class);
@@ -52,14 +53,14 @@ public class Pose2D extends RRLibSerializableImpl implements Copyable<Pose2D>, C
     public double x, y, yaw;
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeDouble(x);
         os.writeDouble(y);
         os.writeDouble(yaw);
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         x = is.readDouble();
         y = is.readDouble();
         yaw = is.readDouble();

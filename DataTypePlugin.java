@@ -23,7 +23,6 @@ package org.finroc.plugins.data_types;
 
 import org.finroc.core.plugin.Plugin;
 import org.finroc.core.plugin.Plugins;
-import org.rrlib.finroc_core_utils.log.LogDomain;
 import org.finroc.plugins.data_types.mca.MCA;
 import org.finroc.plugins.data_types.vector.Vector2i;
 
@@ -39,7 +38,4 @@ public class DataTypePlugin implements Plugin {
         Plugins.loadAllDataTypesInPackage(MCA.class);
         Plugins.loadAllDataTypesInPackage(Vector2i.class);
     }
-
-    /** Log domain for this class */
-    public static final LogDomain logDomain = Plugins.logDomain.getSubDomain("data_types");
 }

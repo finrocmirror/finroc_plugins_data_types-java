@@ -22,12 +22,12 @@
 package org.finroc.plugins.data_types;
 
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.rrlib.finroc_core_utils.rtti.DataType;
-import org.rrlib.finroc_core_utils.serialization.InputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.OutputStreamBuffer;
-import org.rrlib.finroc_core_utils.serialization.Serialization;
-import org.rrlib.finroc_core_utils.serialization.StringInputStream;
-import org.rrlib.finroc_core_utils.serialization.StringOutputStream;
+import org.rrlib.serialization.BinaryInputStream;
+import org.rrlib.serialization.BinaryOutputStream;
+import org.rrlib.serialization.Serialization;
+import org.rrlib.serialization.StringInputStream;
+import org.rrlib.serialization.StringOutputStream;
+import org.rrlib.serialization.rtti.DataType;
 
 /**
  * @author Max Reichardt
@@ -47,7 +47,7 @@ public class Pose3D extends Pose2D {
     public double z, roll, pitch;
 
     @Override
-    public void serialize(OutputStreamBuffer os) {
+    public void serialize(BinaryOutputStream os) {
         os.writeDouble(x);
         os.writeDouble(y);
         os.writeDouble(z);
@@ -57,7 +57,7 @@ public class Pose3D extends Pose2D {
     }
 
     @Override
-    public void deserialize(InputStreamBuffer is) {
+    public void deserialize(BinaryInputStream is) {
         x = is.readDouble();
         y = is.readDouble();
         z = is.readDouble();
