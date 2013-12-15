@@ -94,8 +94,8 @@ public class StdStringList implements ContainsStrings, XMLSerializable {
     @Override
     public void deserialize(XMLNode node) throws Exception {
         wrapped.clear();
-        for (XMLNode.ConstChildIterator e = node.getChildrenBegin(); e.get() != node.getChildrenEnd(); e.next()) {
-            wrapped.add(e.get().hasTextContent() ? e.get().getTextContent() : "");
+        for (XMLNode child : node.children()) {
+            wrapped.add(child.hasTextContent() ? child.getTextContent() : "");
         }
     }
 

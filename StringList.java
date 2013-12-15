@@ -25,11 +25,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.rrlib.serialization.rtti.DataType;
+import org.rrlib.serialization.XMLSerializable;
+import org.rrlib.xml.XMLNode;
 
-public class StringList extends ArrayList<String> {
-
-    public final static DataType<StringList> TYPE = new DataType<StringList>(StringList.class);
+public class StringList extends ArrayList<String> implements XMLSerializable {
 
     /** UID */
     private static final long serialVersionUID = -8572604096904164788L;
@@ -74,5 +73,20 @@ public class StringList extends ArrayList<String> {
             sb.append(s).append("\n");
         }
         return sb.toString();
+    }
+
+    @Override
+    public void serialize(XMLNode node) throws Exception {
+        for (String s : this) {
+            node.addChildNode("element").setContent(s);
+        }
+    }
+
+    @Override
+    public void deserialize(XMLNode node) throws Exception {
+        this.clear();
+        for (XMLNode child : node.children()) {
+            this.add(child.hasTextContent() ? child.getTextContent() : "");
+        }
     }
 }
