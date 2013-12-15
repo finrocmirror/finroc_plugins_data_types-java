@@ -238,19 +238,19 @@ public class CameraFeature implements BinarySerializable {
             }
 
             try {
-                for (XMLNode.ConstChildIterator it = node.getChildrenBegin(); it.get() != node.getChildrenEnd(); it.next()) {
-                    if (it.get().getName().equals("feature")) {
-                        CameraFeature cf = features[Serialization.deserialize(it.get().getStringAttribute("id"), ID.class).ordinal()];
+                for (XMLNode it : node.children()) {
+                    if (it.getName().equals("feature")) {
+                        CameraFeature cf = features[Serialization.deserialize(it.getStringAttribute("id"), ID.class).ordinal()];
                         cf.available = true;
-                        cf.mode = Serialization.deserialize(it.get().getStringAttribute("mode"), Mode.class);
-                        if (it.get().hasAttribute("on") && (!it.get().getBoolAttribute("on"))) {
+                        cf.mode = Serialization.deserialize(it.getStringAttribute("mode"), Mode.class);
+                        if (it.hasAttribute("on") && (!it.getBoolAttribute("on"))) {
                             cf.on_off.available = true;
                             cf.on_off.active = false;
                         } else {
                             cf.on_off.active = true;
                             switch (cf.getMode()) {
                             case ABSOLUTE:
-                                cf.absoluteValue = Float.parseFloat(it.get().getTextContent());
+                                cf.absoluteValue = Float.parseFloat(it.getTextContent());
                                 break;
                             case AUTOMATIC:
                             case OFF:
@@ -260,24 +260,24 @@ public class CameraFeature implements BinarySerializable {
                                 Log.log(LogLevel.ERROR, this, "Not handled");
                                 break;
                             case MANUAL:
-                                String[] split = it.get().getTextContent().split(",");
+                                String[] split = it.getTextContent().split(",");
                                 for (int i = 0; i < cf.getNumberOfValues(); i++) {
                                     cf.values[i] = Integer.parseInt(split[i]);
                                 }
                                 break;
                             }
                         }
-                    } else if (it.get().getName().equals("info")) {
-                        vendor = it.get().getStringAttribute("vendor");
-                        name = it.get().getStringAttribute("camera");
+                    } else if (it.getName().equals("info")) {
+                        vendor = it.getStringAttribute("vendor");
+                        name = it.getStringAttribute("camera");
 
                         // feature capabilities
-                        for (XMLNode.ConstChildIterator it2 = it.get().getChildrenBegin(); it2.get() != it.get().getChildrenEnd(); it2.next()) {
-                            if (it2.get().getName().equals("feature")) {
-                                CameraFeature cf = features[Serialization.deserialize(it.get().getStringAttribute("id"), ID.class).ordinal()];
+                        for (XMLNode it2 : it.children()) {
+                            if (it2.getName().equals("feature")) {
+                                CameraFeature cf = features[Serialization.deserialize(it.getStringAttribute("id"), ID.class).ordinal()];
                                 cf.available = true;
 
-                                String s = it2.get().getStringAttribute("available");
+                                String s = it2.getStringAttribute("available");
                                 cf.absolute.available = s.charAt(0) == '1';
                                 cf.automatic.available = s.charAt(1) == '1';
                                 cf.manual.available = s.charAt(2) == '1';
@@ -286,12 +286,12 @@ public class CameraFeature implements BinarySerializable {
                                 cf.readout.available = s.charAt(5) == '1';
 
                                 if (cf.absolute.available) {
-                                    cf.absolute.min = it2.get().getFloatAttribute("abs_min");
-                                    cf.absolute.min = it2.get().getFloatAttribute("abs_max");
+                                    cf.absolute.min = it2.getFloatAttribute("abs_min");
+                                    cf.absolute.min = it2.getFloatAttribute("abs_max");
                                 }
                                 if (cf.manual.available) {
-                                    cf.manual.min = it2.get().getFloatAttribute("min");
-                                    cf.manual.min = it2.get().getFloatAttribute("max");
+                                    cf.manual.min = it2.getFloatAttribute("min");
+                                    cf.manual.min = it2.getFloatAttribute("max");
                                 }
                             }
                         }
