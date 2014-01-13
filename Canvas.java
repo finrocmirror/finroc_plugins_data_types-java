@@ -285,7 +285,6 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     public void paint(Graphics2D g) {
         BinaryInputStream is = new BinaryInputStream(this);
         Graphics2D g2d = (g instanceof BoundsExtractingGraphics2D) ? g : (Graphics2D)g.create();
-        g2d.scale(1000, 1000);
         AffineTransform defaultTransform = g2d.getTransform();
 
         for (RenderContext lvl : zLevels) {
