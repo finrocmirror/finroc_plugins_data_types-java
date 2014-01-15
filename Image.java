@@ -19,7 +19,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 //----------------------------------------------------------------------
-package org.finroc.plugins.data_types.mca;
+package org.finroc.plugins.data_types;
 
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;

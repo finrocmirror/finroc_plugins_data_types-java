@@ -19,7 +19,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 //
 //----------------------------------------------------------------------
-package org.finroc.plugins.data_types.mca;
+package org.finroc.plugins.data_types;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
@@ -159,6 +159,52 @@ public class DistanceData implements PaintablePortData, PointList {
         }
     };
 
+    /** tValueType */
+    public static final int
+    eVT_POLAR = 0,
+    eVT_CARTESIAN = 1,
+    eVT_DISTANCE_ONLY = 2,
+    eVT_DIMENSION = 3;
+
+    /** tDistanceUnit */
+    public static final int
+    eDISTANCE_UNIT_MM = 0,
+    eDISTANCE_UNIT_CM = 1,
+    eDISTANCE_UNIT_DM = 2,
+    eDISTANCE_UNIT_M = 3,
+    eDISTANCE_UNIT_DIMENSION = 4;
+
+    /** cDistanceDataFormatInfo */
+    public static final DistanceData.FormatInfo[] cDistanceDataFormatInfo = new DistanceData.FormatInfo[] {
+        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT", 2, 4, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT", 3, 4, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT", 2, 4, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT", 3, 4, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE", 2, 8, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE", 3, 8, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE", 3, 8, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_FLOAT", 2, 4, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_DOUBLE", 2, 8, false, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_FLOAT", 2, 4, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT_PLANAR", 2, 4, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT_PLANAR", 3, 4, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT_PLANAR", 2, 4, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT_PLANAR", 3, 4, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_FLOAT_PLANAR", 1, 4, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE_PLANAR", 2, 8, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE_PLANAR", 3, 8, true, eVT_POLAR),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE_PLANAR", 2, 8, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE_PLANAR", 3, 8, true, eVT_CARTESIAN),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_DOUBLE_PLANAR", 1, 8, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED8_PLANAR", 1, 1, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_INVALID", 0, 0, false, eVT_DIMENSION)
+    };
+
+
     /**
      * Utility class to access values of dimensions in data buffer
      */
@@ -169,16 +215,16 @@ public class DistanceData implements PaintablePortData, PointList {
         private String name;
 
         public DimensionImpl(int dimIndex) {
-            if (formatInfo.valueType == MCA.eVT_DISTANCE_ONLY) {
+            if (formatInfo.valueType == eVT_DISTANCE_ONLY) {
                 assert(formatInfo.numberOfValues == 1 && dimIndex == 0);
                 name = "distance";
                 offset = 0;
                 increment = formatInfo.numberOfBytesPerValue;
-            } else if (formatInfo.valueType == MCA.eVT_CARTESIAN) {
+            } else if (formatInfo.valueType == eVT_CARTESIAN) {
                 name = (dimIndex == 0) ? "x" : ((dimIndex == 1) ? "y" : "z");
                 offset = dimIndex * formatInfo.numberOfBytesPerValue;
                 increment = formatInfo.numberOfBytesPerValue * formatInfo.numberOfValues;
-            } else if (formatInfo.valueType == MCA.eVT_POLAR) {
+            } else if (formatInfo.valueType == eVT_POLAR) {
                 if (formatInfo.numberOfValues == 2) {
                     name = (dimIndex == 0) ? "alpha" : "distance";
                 } else {
@@ -233,7 +279,7 @@ public class DistanceData implements PaintablePortData, PointList {
     private int extraDataSize;
 
     /** Helper variables derived from header data */
-    private FormatInfo formatInfo = MCA.cDistanceDataFormatInfo[0];
+    private FormatInfo formatInfo = cDistanceDataFormatInfo[0];
     private DimensionImpl[] dimensions = null;
 
     /** Data Buffer */
@@ -310,7 +356,7 @@ public class DistanceData implements PaintablePortData, PointList {
 
         // Read image data
         data.clear();
-        formatInfo = MCA.cDistanceDataFormatInfo[format];
+        formatInfo = cDistanceDataFormatInfo[format];
         int size = dimension * formatInfo.numberOfBytesPerValue * formatInfo.numberOfValues;
         data.deserialize(is, size);
 
@@ -330,13 +376,13 @@ public class DistanceData implements PaintablePortData, PointList {
 
     public Unit getUnit() {
         switch (unit) {
-        case MCA.eDISTANCE_UNIT_MM:
+        case eDISTANCE_UNIT_MM:
             return Unit.mm;
-        case MCA.eDISTANCE_UNIT_DM:
+        case eDISTANCE_UNIT_DM:
             return Unit.dm;
-        case MCA.eDISTANCE_UNIT_CM:
+        case eDISTANCE_UNIT_CM:
             return Unit.cm;
-        case MCA.eDISTANCE_UNIT_M:
+        case eDISTANCE_UNIT_M:
             return Unit.m;
         }
         Log.log(LogLevel.WARNING, this, "Invalid unit " + unit);
@@ -380,7 +426,7 @@ public class DistanceData implements PaintablePortData, PointList {
 
             int cartesianIndex = 0;
 
-            if (formatInfo.valueType == MCA.eVT_DISTANCE_ONLY) {
+            if (formatInfo.valueType == eVT_DISTANCE_ONLY) {
                 // assume scan is from -180° to +180°
                 double minAngle = -Math.PI / 2;
                 double maxAngle = Math.PI / 2;
@@ -394,14 +440,14 @@ public class DistanceData implements PaintablePortData, PointList {
                     angle += increment;
                     cartesianIndex += 3;
                 }
-            } else if (formatInfo.valueType == MCA.eVT_CARTESIAN) {
+            } else if (formatInfo.valueType == eVT_CARTESIAN) {
                 for (int i = 0; i < dimension; i++) {
                     cartesianPoints[cartesianIndex] = getPointCoordinate(i, 0);
                     cartesianPoints[cartesianIndex + 1] = getPointCoordinate(i, 1);
                     cartesianPoints[cartesianIndex + 2] = formatInfo.numberOfValues < 3 ? 0 : getPointCoordinate(i, 2);
                     cartesianIndex += 3;
                 }
-            } else if (formatInfo.valueType == MCA.eVT_POLAR) {
+            } else if (formatInfo.valueType == eVT_POLAR) {
                 if (formatInfo.numberOfValues < 3) {
                     for (int i = 0; i < dimension; i++) {
                         double angle = getPointCoordinate(i, 0);

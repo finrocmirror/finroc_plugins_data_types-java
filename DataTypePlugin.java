@@ -23,7 +23,6 @@ package org.finroc.plugins.data_types;
 
 import org.finroc.core.plugin.Plugin;
 import org.finroc.core.plugin.Plugins;
-import org.finroc.plugins.data_types.mca.MCA;
 import org.finroc.plugins.data_types.vector.Vector2i;
 
 /**
@@ -35,7 +34,6 @@ public class DataTypePlugin implements Plugin {
     @Override
     public void init(/*PluginManager mgr*/) {
         Plugins.loadAllDataTypesInPackage(BehaviorStatus.class);
-        Plugins.loadAllDataTypesInPackage(MCA.class);
         Plugins.loadAllDataTypesInPackage(Vector2i.class);
     }
 }
