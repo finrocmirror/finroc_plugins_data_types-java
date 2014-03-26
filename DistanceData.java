@@ -365,7 +365,7 @@ public class DistanceData implements PaintablePortData, PointList {
         extraData.deserialize(is, extraDataSize);
 
         // calculate internal variables
-        if (formatChanged) {
+        if (formatChanged || dimensions == null) {
             dimensions = new DimensionImpl[formatInfo.numberOfValues];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new DimensionImpl(i);
