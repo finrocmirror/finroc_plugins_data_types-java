@@ -40,7 +40,14 @@ public interface Paintable {
 
     /**
      * @return Bounds of paintable object (null if nothing is drawn)
-     * (Note: y direction is downwards on screen)
      */
     public Rectangle2D getBounds();
+
+    /**
+     * Typically, the y axis in cartesian coordinate systems points upwards.
+     * However, with screen coordinates and e.g. images it points downwards.
+     *
+     * @return True if y axis is pointing downwards
+     */
+    public boolean isYAxisPointingDownwards();
 }

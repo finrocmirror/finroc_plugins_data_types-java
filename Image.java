@@ -73,6 +73,11 @@ public class Image implements HasBlittable, PaintablePortData {
         public int getNumberOfBlittables() {
             return size();
         }
+
+        @Override
+        public boolean isYAxisPointingDownwards() {
+            return true;
+        }
     }
 
     public final static DataType<Image> TYPE = new DataType<Image>(Image.class, "Image", false);
@@ -648,6 +653,11 @@ public class Image implements HasBlittable, PaintablePortData {
         }
         os.close();
         widthStep = calculateWidthStep(width, format);
+    }
+
+    @Override
+    public boolean isYAxisPointingDownwards() {
+        return true;
     }
 }
 

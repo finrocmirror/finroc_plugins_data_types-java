@@ -95,6 +95,11 @@ public class DistanceData implements PaintablePortData, PointList {
         public Rectangle2D getBounds() {
             return size() > 0 ? get(0).getBounds() : null;
         }
+
+        @Override
+        public boolean isYAxisPointingDownwards() {
+            return false;
+        }
     }
 
     public final static DataType<DistanceData> TYPE = new DataType<DistanceData>(DistanceData.class, "DistanceData", false);
@@ -577,6 +582,11 @@ public class DistanceData implements PaintablePortData, PointList {
         }
 
         return BoundsExtractingGraphics2D.getBounds(this); // TODO: could be optimized
+    }
+
+    @Override
+    public boolean isYAxisPointingDownwards() {
+        return false;
     }
 }
 

@@ -62,5 +62,10 @@ public interface PaintablePortData extends Paintable, BinarySerializable {
         public Rectangle getBounds() {
             return null;
         }
+
+        @Override
+        public boolean isYAxisPointingDownwards() {
+            return false;
+        }
     }
 }

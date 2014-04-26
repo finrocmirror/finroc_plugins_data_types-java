@@ -98,9 +98,17 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
         // Canvas, Draw & encoding mode
         eSET_Z,                         // [value]
-        eSET_EXTRUSION                  // [value]
+        eSET_EXTRUSION,                 // [value]
 
         // ####### tCanvas3D-only opcodes ########
+
+        eDRAW_COLORED_POINT_CLOUD,      // [number of values: N][6d vector1]...[6d vectorN]
+        eDRAW_POINT_CLOUD,              // [number of values: N][vector1]...[vectorN]
+
+        // ####### Opcodes added after Finroc 13.10 ########
+
+        eDEFAULT_VIEWPORT,              // 2d: [left,bottom,width,height]  3d: yet undefined (could be tPose3D)
+        eDEFAULT_VIEWPORT_OFFSET        // [int64 absolute offset]
     }
 
     enum NumberTypeEnum {
@@ -242,6 +250,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             case eDRAW_LINE_SEGMENT:       // [2D-point][2D-point]
             case eDRAW_BOX:                // [2D-point][width][height]
             case eDRAW_ELLIPSOID:          // [2D-point][width][height]
+            case eDEFAULT_VIEWPORT:        // [left,bottom,width,height]
             case ePATH_QUADRATIC_BEZIER_CURVE:
                 skipValues(is, 4);
                 break;
@@ -271,6 +280,10 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             case ePATH_START:
                 skipValues(is, 2);
                 is.readBoolean();
+                break;
+
+            case eDEFAULT_VIEWPORT_OFFSET:
+                is.readLong();
                 break;
 
             default:
@@ -654,6 +667,14 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 }
                 break;
 
+            case eDEFAULT_VIEWPORT:
+                readValues(is, v, 4);
+                break;
+
+            case eDEFAULT_VIEWPORT_OFFSET:
+                is.readLong();
+                break;
+
             default:
                 Log.log(LogLevel.WARNING, this, "Opcode " + opcode.toString() + " not supported yet");
                 return;
@@ -731,6 +752,16 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
     @Override
     public Rectangle2D getBounds() {
+        if (getSize() > 9) {
+            long offset = getBuffer().getByte(0) == Opcode.eDEFAULT_VIEWPORT_OFFSET.ordinal() ? getBuffer().getLong(1) : 0;
+            if (getBuffer().getByte((int)offset) == Opcode.eDEFAULT_VIEWPORT.ordinal()) {
+                double[] v = new double[4];
+                BinaryInputStream stream = new BinaryInputStream(this);
+                stream.skip((int)offset + 1);
+                readValues(stream, v, 4);
+                return new Rectangle2D.Double(v[0], v[1], v[2], v[3]);
+            }
+        }
         return BoundsExtractingGraphics2D.getBounds(this);
     }
 
@@ -795,5 +826,10 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     public void copyFrom(MemoryBuffer source) {
         super.copyFrom(source);
         extractZLevels();
+    }
+
+    @Override
+    public boolean isYAxisPointingDownwards() {
+        return false;
     }
 }
