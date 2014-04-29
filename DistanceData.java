@@ -23,6 +23,7 @@ package org.finroc.plugins.data_types;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
@@ -534,6 +535,8 @@ public class DistanceData implements PaintablePortData, PointList {
         calculateCartesianPoints();
 
         AffineTransform at = g.getTransform(); // backup current transformation
+        Stroke oldStroke = g.getStroke();
+
         applyTransformation(g, robotPose);
         applyTransformation(g, sensorPose);
         applyTransformation(g, sensorPoseDelta);
@@ -549,6 +552,7 @@ public class DistanceData implements PaintablePortData, PointList {
         }
 
         g.setTransform(at);
+        g.setStroke(oldStroke);
     }
 
     /**
