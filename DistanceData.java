@@ -288,8 +288,8 @@ public class DistanceData implements PaintablePortData, PointList {
     private DimensionImpl[] dimensions = null;
 
     /** Data Buffer */
-    private MemoryBuffer data = new MemoryBuffer();
-    private MemoryBuffer extraData = new MemoryBuffer();
+    private MemoryBuffer data = new MemoryBuffer(false);
+    private MemoryBuffer extraData = new MemoryBuffer(false);
 
     /**
      * Cartesian points (updated by calculateCartesianPoints() when needed for drawing)

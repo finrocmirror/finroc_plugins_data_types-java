@@ -159,6 +159,10 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     BinaryInputStream tempInputStreamZExtraction = new BinaryInputStream(this);
     double[] tempArrayZExtraction = new double[6];
 
+    public Canvas() {
+        super(false);
+    }
+
     @Override
     public void deserialize(BinaryInputStream rv) {
         super.deserialize(rv);

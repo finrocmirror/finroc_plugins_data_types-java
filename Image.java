@@ -128,7 +128,7 @@ public class Image implements HasBlittable, PaintablePortData {
     private Format format = Format.RGB24;
 
     /** Image Buffer */
-    private MemoryBuffer imageData = new MemoryBuffer();
+    private MemoryBuffer imageData = new MemoryBuffer(false);
 
     public int getWidth() {
         return width;
