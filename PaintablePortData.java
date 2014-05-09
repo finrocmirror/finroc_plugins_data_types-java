@@ -24,6 +24,7 @@ package org.finroc.plugins.data_types;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.serialization.BinaryInputStream;
 import org.rrlib.serialization.BinaryOutputStream;
 import org.rrlib.serialization.BinarySerializable;
@@ -38,8 +39,6 @@ public interface PaintablePortData extends Paintable, BinarySerializable {
 
     public final static DataType<PaintablePortData> TYPE = new DataType<PaintablePortData>(PaintablePortData.class);
 
-    public void paint(Graphics2D g);
-
     /**
      * Empty Paintable
      */
@@ -48,7 +47,7 @@ public interface PaintablePortData extends Paintable, BinarySerializable {
         public final static DataType<Empty> TYPE = new DataType<Empty>(Empty.class, "DummyPaintable");
 
         @Override
-        public void paint(Graphics2D g) {}
+        public void paint(Graphics2D g, FastBufferedImage imageBuffer) {}
 
         @Override
         public void serialize(BinaryOutputStream os) {

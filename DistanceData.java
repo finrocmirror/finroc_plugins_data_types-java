@@ -25,6 +25,7 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
@@ -37,7 +38,7 @@ import org.finroc.plugins.data_types.PaintablePortData;
 import org.finroc.plugins.data_types.PointList;
 import org.finroc.plugins.data_types.Pose3D;
 import org.finroc.plugins.data_types.Time;
-import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
+import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
 import org.rrlib.serialization.BinaryInputStream;
@@ -86,9 +87,9 @@ public class DistanceData implements PaintablePortData, PointList {
         }
 
         @Override
-        public void paint(Graphics2D g) {
+        public void paint(Graphics2D g, FastBufferedImage imageBuffer) {
             for (int i = 0; i < size(); i++) {
-                get(i).paint(g);
+                get(i).paint(g, imageBuffer);
             }
         }
 
@@ -531,8 +532,42 @@ public class DistanceData implements PaintablePortData, PointList {
 
 
     @Override
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, FastBufferedImage imageBuffer) {
+        if (dimension == 0) {
+            return;
+        }
         calculateCartesianPoints();
+
+        if (imageBuffer != null) {
+
+            boolean clipped = false;
+            if (g.getClip() != null) {
+                clipped = !g.getClip().contains(getBounds());
+            }
+            if (!clipped) {
+                // very optimized rendering is possible
+                final Point2D.Double source = new Point2D.Double();
+                final Point2D.Double destination = new Point2D.Double();
+                final AffineTransform transform = g.getTransform();
+                final int xdim = viewPlane2dDimensionIndices[0];
+                final int ydim = viewPlane2dDimensionIndices[1];
+                final int color = g.getColor().getRGB();
+
+                int index = 0;
+                for (int i = 0; i < dimension; i++, index += 3) {
+                    source.x = cartesianPoints[index + xdim];
+                    source.y = cartesianPoints[index + ydim];
+                    transform.transform(source, destination);
+                    try {
+                        imageBuffer.setPixel((int)destination.x, (int)destination.y, color);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return;
+            }
+        }
+
 
         AffineTransform at = g.getTransform(); // backup current transformation
         Stroke oldStroke = g.getStroke();
@@ -585,7 +620,11 @@ public class DistanceData implements PaintablePortData, PointList {
             return null;
         }
 
-        return BoundsExtractingGraphics2D.getBounds(this); // TODO: could be optimized
+        if (!cartesianPointsValid) {
+            calculateCartesianPoints();
+        }
+
+        return new Rectangle2D.Double(bounds[0], bounds[2], bounds[1] - bounds[0], bounds[3] - bounds[2]);
     }
 
     @Override

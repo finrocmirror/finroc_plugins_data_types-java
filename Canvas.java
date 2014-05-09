@@ -37,6 +37,7 @@ import java.util.Collections;
 
 import org.finroc.plugins.data_types.util.BezierSpline;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
+import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
 import org.rrlib.serialization.BinaryInputStream;
@@ -299,7 +300,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     }
 
     @Override
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, FastBufferedImage imageBuffer) {
         BinaryInputStream is = new BinaryInputStream(this);
         Graphics2D g2d = (g instanceof BoundsExtractingGraphics2D) ? g : (Graphics2D)g.create();
         AffineTransform defaultTransform = g2d.getTransform();
@@ -308,7 +309,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
             if (lvl.commandCount > 0) {
                 is.reset(this);
                 is.skip(lvl.bufferOffset);
-                paintGeometry(g2d, lvl, is, defaultTransform);
+                paintGeometry(g2d, imageBuffer, lvl, is, defaultTransform);
             }
         }
         is.close();
@@ -344,7 +345,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         return result;
     }
 
-    public void paintGeometry(Graphics2D g, RenderContext lvl, BinaryInputStream is, AffineTransform defaultTransform) {
+    public void paintGeometry(Graphics2D g, FastBufferedImage imageBuffer, RenderContext lvl, BinaryInputStream is, AffineTransform defaultTransform) {
         double[] v = new double[1000];
         boolean fill = lvl.fill;
         Color edgeColor = lvl.edgeColor;
@@ -442,11 +443,20 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
             case eDRAW_POINT:              // [2D-vector]
                 readValues(is, v, 2);
-                line.x1 = v[0];
-                line.x2 = v[0];
-                line.y1 = v[1];
-                line.y2 = v[1];
-                g.draw(line);
+                if (imageBuffer != null) {
+                    p1.x = v[0];
+                    p1.y = v[1];
+                    if (g.getClip() == null || g.getClip().contains(p1)) {
+                        g.getTransform().transform(p1, p2);
+                        imageBuffer.setPixel((int)p2.x, (int)p2.y, g.getColor().getRGB());
+                    }
+                } else {
+                    line.x1 = v[0];
+                    line.x2 = v[0];
+                    line.y1 = v[1];
+                    line.y2 = v[1];
+                    g.draw(line);
+                }
                 break;
 
             case eDRAW_LINE:              // [2D-point][2D-vector]

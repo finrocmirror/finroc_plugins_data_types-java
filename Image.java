@@ -30,6 +30,7 @@ import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.finroc.plugins.data_types.Blittable;
 import org.finroc.plugins.data_types.HasBlittable;
 import org.finroc.plugins.data_types.PaintablePortData;
+import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
 import org.rrlib.serialization.BinaryInputStream;
@@ -63,9 +64,9 @@ public class Image implements HasBlittable, PaintablePortData {
         }
 
         @Override
-        public void paint(Graphics2D g) {
+        public void paint(Graphics2D g, FastBufferedImage imageBuffer) {
             if (size() > 0) {
-                get(0).paint(g);
+                get(0).paint(g, imageBuffer);
             }
         }
 
@@ -630,7 +631,7 @@ public class Image implements HasBlittable, PaintablePortData {
     }
 
     @Override
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, FastBufferedImage imageBuffer) {
         getBlittable(0).standardPaintImplementation(g);
     }
 

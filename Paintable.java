@@ -24,6 +24,8 @@ package org.finroc.plugins.data_types;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 
+import org.finroc.plugins.data_types.util.FastBufferedImage;
+
 /**
  * @author Max Reichardt
  *
@@ -35,8 +37,12 @@ public interface Paintable {
      * Paint object
      *
      * @param g Graphics2D Object to blit to
+     * @param imageBuffer Image buffer that this object is painted to (optional, may be null).
+     *                    Specifying this can allow increased rendering performance by bypassing the Graphics2D object
+     *                    when rendering to an image buffer.
+     *                    If specified, it must contain a 32 bit RGB(A) integer buffer.
      */
-    public void paint(Graphics2D g);
+    public void paint(Graphics2D g, FastBufferedImage imageBuffer);
 
     /**
      * @return Bounds of paintable object (null if nothing is drawn)
