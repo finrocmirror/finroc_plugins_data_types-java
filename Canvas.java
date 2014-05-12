@@ -26,6 +26,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -33,11 +34,13 @@ import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.finroc.plugins.data_types.util.BezierSpline;
 import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
 import org.finroc.plugins.data_types.util.FastBufferedImage;
+import org.finroc.plugins.data_types.util.GraphicsUtil;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
 import org.rrlib.serialization.BinaryInputStream;
@@ -358,6 +361,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         final Line2D.Double line = new Line2D.Double();
         final Ellipse2D.Double ellipse = new Ellipse2D.Double();
         final Rectangle2D.Double rect = new Rectangle2D.Double();
+        final Rectangle awtRectangle = new Rectangle();
 
         // Helper objects for line drawing
         final Point2D.Double p1 = new Point2D.Double();
@@ -448,7 +452,11 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                     p1.y = v[1];
                     if (g.getClip() == null || g.getClip().contains(p1)) {
                         g.getTransform().transform(p1, p2);
-                        imageBuffer.setPixel((int)p2.x, (int)p2.y, g.getColor().getRGB());
+                        int x = (int)p2.x;
+                        int y = (int)p2.y;
+                        if (x >= 0 && x < imageBuffer.getWidth() && y >= 0 && y < imageBuffer.getHeight()) {
+                            imageBuffer.setPixel(x, y, g.getColor().getRGB());
+                        }
                     }
                 } else {
                     line.x1 = v[0];
@@ -549,15 +557,34 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
             case eDRAW_BOX:             // [2D-point][width][height]
                 readValues(is, v, 4);
-                rect.x = v[0];
-                rect.y = v[1];
-                rect.width = v[2];
-                rect.height = v[3];
-                g.draw(rect);
-                if (fill) {
-                    g.setColor(fillColor);
-                    g.fill(rect);
-                    g.setColor(edgeColor);
+                if (imageBuffer != null && g.getClip() == null && (!GraphicsUtil.isRotation(g.getTransform()))) {
+                    p1.x = v[0];
+                    p1.y = v[1];
+                    int width = (int)Math.round(v[2] * scaling.x) + 1; /*Math.max(1, (int)Math.round(v[2] * scaling.x))*/;
+                    int height = (int)Math.round(v[3] * scaling.y) + 1; /*Math.max(1, (int)Math.round(v[3] * scaling.y))*/;
+                    g.getTransform().transform(p1, p2);
+                    awtRectangle.x = (int)Math.round(p2.x);
+                    awtRectangle.y = ((int)Math.round(p2.y)) - height;
+                    awtRectangle.width = width;
+                    awtRectangle.height = height;
+                    Rectangle awtRectangle2 = imageBuffer.getBounds().intersection(awtRectangle);
+
+                    int destPos = awtRectangle2.y * imageBuffer.getWidth() + awtRectangle2.x;
+                    for (int y = 0; y < awtRectangle2.height; y++) {
+                        Arrays.fill(imageBuffer.getBuffer(), destPos, destPos + awtRectangle2.width, g.getColor().getRGB());
+                        destPos += imageBuffer.getWidth();
+                    }
+                } else {
+                    rect.x = v[0];
+                    rect.y = v[1];
+                    rect.width = v[2];
+                    rect.height = v[3];
+                    g.draw(rect);
+                    if (fill) {
+                        g.setColor(fillColor);
+                        g.fill(rect);
+                        g.setColor(edgeColor);
+                    }
                 }
                 break;
 

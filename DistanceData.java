@@ -558,10 +558,10 @@ public class DistanceData implements PaintablePortData, PointList {
                     source.x = cartesianPoints[index + xdim];
                     source.y = cartesianPoints[index + ydim];
                     transform.transform(source, destination);
-                    try {
+                    int x = (int)destination.x;
+                    int y = (int)destination.y;
+                    if (x >= 0 && x < imageBuffer.getWidth() && y >= 0 && y < imageBuffer.getHeight()) {
                         imageBuffer.setPixel((int)destination.x, (int)destination.y, color);
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
                 return;
