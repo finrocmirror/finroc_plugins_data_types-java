@@ -794,7 +794,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     @Override
     public Rectangle2D getBounds() {
         if (getSize() > 9) {
-            long offset = getBuffer().getByte(0) == Opcode.eDEFAULT_VIEWPORT_OFFSET.ordinal() ? getBuffer().getLong(1) : 0;
+            long offset = getBuffer().getByte(0) == Opcode.eDEFAULT_VIEWPORT_OFFSET.ordinal() ? (getBuffer().getLong(1) + 9) : 0;
             if (getBuffer().getByte((int)offset) == Opcode.eDEFAULT_VIEWPORT.ordinal()) {
                 double[] v = new double[4];
                 BinaryInputStream stream = new BinaryInputStream(this);
