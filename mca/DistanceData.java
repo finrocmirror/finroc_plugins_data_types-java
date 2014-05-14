@@ -24,6 +24,7 @@ package org.finroc.plugins.data_types.mca;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
@@ -320,7 +321,7 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         extraData.deserialize(is, extraDataSize);
 
         // calculate internal variables
-        if (formatChanged) {
+        if (formatChanged || dimensions == null) {
             dimensions = new DimensionImpl[formatInfo.numberOfValues];
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new DimensionImpl(i);
@@ -491,11 +492,12 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         float strokeWidth = ((BasicStroke)g.getStroke()).getLineWidth();
         g.setStroke(new BasicStroke(2 * strokeWidth));
 
+        Line2D.Double lineObject = new Line2D.Double();
         int index = 0;
         int xdim = viewPlane2dDimensionIndices[0];
         int ydim = viewPlane2dDimensionIndices[1];
         for (int i = 0; i < dimension; i++, index += 3) {
-            drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim]);
+            drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim], lineObject);
         }
 
         g.setTransform(at);
@@ -519,10 +521,12 @@ public class DistanceData extends RRLibSerializableImpl implements PaintablePort
         }
     }
 
-    private void drawPoint(Graphics2D g, double x, double y) {
-        //g.setColor(Color.BLACK);
-        //g.fillRect((int)x, (int)y, pointDrawSize, pointDrawSize);
-        g.drawLine((int)x, (int)y, (int)x, (int)y);
+    private void drawPoint(Graphics2D g, double x, double y, Line2D.Double lineObject) {
+        lineObject.x1 = x;
+        lineObject.x2 = x;
+        lineObject.y1 = y;
+        lineObject.y2 = y;
+        g.draw(lineObject);
     }
 
     @Override
