@@ -95,6 +95,15 @@ public class Pose2D implements Copyable<Pose2D>, CCType, BinarySerializable, Str
         yaw = o.yaw;
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Pose2D) {
+            Pose2D o = (Pose2D)other;
+            return x == o.x && y == o.y && yaw == o.yaw;
+        }
+        return false;
+    }
+
     /**
      * Apply transformation to 2D graphics
      *
@@ -105,6 +114,7 @@ public class Pose2D implements Copyable<Pose2D>, CCType, BinarySerializable, Str
         g.rotate(yaw);
     }
 
+    @Override
     public String toString() {
         return Serialization.serialize(this);
     }

@@ -108,6 +108,16 @@ public class Pose3D extends Pose2D {
         }
     }
 
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Pose3D) {
+            Pose3D o = (Pose3D)other;
+            return x == o.x && y == o.y && z == o.z && roll == o.roll && pitch == o.pitch && yaw == o.yaw;
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return Serialization.serialize(this);
     }

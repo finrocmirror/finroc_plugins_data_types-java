@@ -39,6 +39,7 @@ import org.finroc.plugins.data_types.PaintablePortData;
 import org.finroc.plugins.data_types.PointList;
 import org.finroc.plugins.data_types.Pose3D;
 import org.finroc.plugins.data_types.Time;
+import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
 import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
@@ -325,6 +326,10 @@ public class DistanceData implements PaintablePortData, PointList {
      * ...
      */
     private final double[] bounds = new double[6];
+
+    /** Zero pose */
+    private static final Pose3D ZERO_POSE = new Pose3D();
+
 
     @Override
     public void serialize(BinaryOutputStream os) {
@@ -628,7 +633,11 @@ public class DistanceData implements PaintablePortData, PointList {
             calculateCartesianPoints();
         }
 
-        return new Rectangle2D.Double(bounds[0], bounds[2], bounds[1] - bounds[0], bounds[3] - bounds[2]);
+        if (sensorPose.equals(ZERO_POSE) && robotPose.equals(ZERO_POSE) && sensorPoseDelta.equals(ZERO_POSE)) {
+            return new Rectangle2D.Double(bounds[0], bounds[2], bounds[1] - bounds[0], bounds[3] - bounds[2]);
+        } else {
+            return BoundsExtractingGraphics2D.getBounds(this);
+        }
     }
 
     @Override
