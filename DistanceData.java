@@ -25,6 +25,7 @@ import java.awt.BasicStroke;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
@@ -579,11 +580,12 @@ public class DistanceData implements PaintablePortData, PointList {
         float strokeWidth = ((BasicStroke)g.getStroke()).getLineWidth();
         g.setStroke(new BasicStroke(2 * strokeWidth));
 
+        Line2D.Double lineObject = new Line2D.Double();
         int index = 0;
         int xdim = viewPlane2dDimensionIndices[0];
         int ydim = viewPlane2dDimensionIndices[1];
         for (int i = 0; i < dimension; i++, index += 3) {
-            drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim]);
+            drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim], lineObject);
         }
 
         g.setTransform(at);
@@ -608,10 +610,12 @@ public class DistanceData implements PaintablePortData, PointList {
         }
     }
 
-    private void drawPoint(Graphics2D g, double x, double y) {
-        //g.setColor(Color.BLACK);
-        //g.fillRect((int)x, (int)y, pointDrawSize, pointDrawSize);
-        g.drawLine((int)x, (int)y, (int)x, (int)y);
+    private void drawPoint(Graphics2D g, double x, double y, Line2D.Double lineObject) {
+        lineObject.x1 = x;
+        lineObject.x2 = x;
+        lineObject.y1 = y;
+        lineObject.y2 = y;
+        g.draw(lineObject);
     }
 
     @Override
