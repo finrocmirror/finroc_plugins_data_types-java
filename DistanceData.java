@@ -23,8 +23,10 @@ package org.finroc.plugins.data_types;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -581,16 +583,27 @@ public class DistanceData implements PaintablePortData, PointList {
         applyTransformation(g, robotPose);
         applyTransformation(g, sensorPose);
         applyTransformation(g, sensorPoseDelta);
-        Canvas.calculateScalingFactorsAndUpdateStrokeWidth(g);
+        final double scalingFactor = Canvas.calculateScalingFactorsAndUpdateStrokeWidth(g).x;
         float strokeWidth = ((BasicStroke)g.getStroke()).getLineWidth();
+        final boolean drawPrettyPoints = g.getRenderingHint(RenderingHints.KEY_RENDERING) == RenderingHints.VALUE_RENDER_QUALITY;
         g.setStroke(new BasicStroke(2 * strokeWidth));
 
-        Line2D.Double lineObject = new Line2D.Double();
         int index = 0;
         int xdim = viewPlane2dDimensionIndices[0];
         int ydim = viewPlane2dDimensionIndices[1];
-        for (int i = 0; i < dimension; i++, index += 3) {
-            drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim], lineObject);
+        if (drawPrettyPoints) {
+            Ellipse2D.Double ellipseObject = new Ellipse2D.Double();
+            ellipseObject.width = 1 / scalingFactor;
+            ellipseObject.height = 1 / scalingFactor;
+            final double radius = 0.5 / scalingFactor;
+            for (int i = 0; i < dimension; i++, index += 3) {
+                drawPrettyPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim], radius, ellipseObject);
+            }
+        } else {
+            Line2D.Double lineObject = new Line2D.Double();
+            for (int i = 0; i < dimension; i++, index += 3) {
+                drawPoint(g, cartesianPoints[index + xdim], cartesianPoints[index + ydim], lineObject);
+            }
         }
 
         g.setTransform(at);
@@ -621,6 +634,12 @@ public class DistanceData implements PaintablePortData, PointList {
         lineObject.y1 = y;
         lineObject.y2 = y;
         g.draw(lineObject);
+    }
+
+    private void drawPrettyPoint(Graphics2D g, double x, double y, double radius, Ellipse2D.Double ellipseObject) {
+        ellipseObject.x = x - radius;
+        ellipseObject.y = y - radius;
+        g.draw(ellipseObject);
     }
 
     @Override

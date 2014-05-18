@@ -26,7 +26,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -318,7 +318,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
         is.close();
     }
 
-    private static class ScalingFactors {
+    public static class ScalingFactors {
         public double x;
         public double y;
     }
@@ -351,6 +351,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
     public void paintGeometry(Graphics2D g, FastBufferedImage imageBuffer, RenderContext lvl, BinaryInputStream is, AffineTransform defaultTransform) {
         double[] v = new double[1000];
         boolean fill = lvl.fill;
+        final boolean drawPrettyPoints = g.getRenderingHint(RenderingHints.KEY_RENDERING) == RenderingHints.VALUE_RENDER_QUALITY;
         Color edgeColor = lvl.edgeColor;
         Color fillColor = lvl.fillColor;
         g.setColor(edgeColor);
@@ -458,6 +459,12 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                             imageBuffer.setPixel(x, y, g.getColor().getRGB());
                         }
                     }
+                } else if (drawPrettyPoints) {
+                    ellipse.x = v[0] - 0.5 / scaling.x;
+                    ellipse.y = v[1] - 0.5 / scaling.y;
+                    ellipse.width = 1 / scaling.x;
+                    ellipse.height = 1 / scaling.y;
+                    g.fill(ellipse);
                 } else {
                     line.x1 = v[0];
                     line.x2 = v[0];
@@ -477,6 +484,23 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
                 if (!(g instanceof BoundsExtractingGraphics2D)) {
                     Rectangle r = g.getClipBounds();
+                    if (r == null && imageBuffer != null) {
+                        p1.x = 0;
+                        p1.y = 0;
+                        p2.x = imageBuffer.getWidth();
+                        p2.y = imageBuffer.getHeight();
+                        try {
+                            r = new Rectangle();
+                            at.inverseTransform(p1, p1t);
+                            at.inverseTransform(p2, p2t);
+                            r.x = (int)Math.round(Math.min(p1t.x, p2t.x)) - 1;
+                            r.y = (int)Math.round(Math.min(p1t.y, p2t.y)) - 1;
+                            r.width = (int)Math.round(Math.abs(p1t.x - p2t.x)) + 2;
+                            r.height = (int)Math.round(Math.abs(p1t.y - p2t.y)) + 2;
+                        } catch (Exception e) {
+                            Log.log(LogLevel.ERROR, e);
+                        }
+                    }
                     while (r != null) {
                         p1.x = x1 - vecx;
                         p1.y = y1 - vecy;
