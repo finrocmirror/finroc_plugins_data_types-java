@@ -477,7 +477,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
                 if (!(g instanceof BoundsExtractingGraphics2D)) {
                     Rectangle r = g.getClipBounds();
-                    while (true) {
+                    while (r != null) {
                         p1.x = x1 - vecx;
                         p1.y = y1 - vecy;
                         p2.x = x1 + vecx;
