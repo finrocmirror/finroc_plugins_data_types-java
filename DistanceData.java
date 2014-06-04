@@ -442,7 +442,7 @@ public class DistanceData implements PaintablePortData, PointList {
             int cartesianIndex = 0;
 
             if (formatInfo.valueType == eVT_DISTANCE_ONLY) {
-                // assume scan is from -180° to +180°
+                // assume scan is from -90° to +90°
                 double minAngle = -Math.PI / 2;
                 double maxAngle = Math.PI / 2;
                 double increment = (maxAngle - minAngle) / (dimension - 1);

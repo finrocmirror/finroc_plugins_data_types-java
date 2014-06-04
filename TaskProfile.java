@@ -63,6 +63,9 @@ public class TaskProfile implements BinarySerializable, Copyable<TaskProfile> {
         LIST_TYPE.getInfo().elementType = TYPE;
     }
 
+    /** Enum to specify which kind of task a task profile is associated to */
+    public enum TaskClassification { SENSE, CONTROL, OTHER };
+
     /** Last execution duration */
     public Duration lastExecutionDuration = new Duration();
 
@@ -78,11 +81,11 @@ public class TaskProfile implements BinarySerializable, Copyable<TaskProfile> {
     /** Handle of framework element associated with task */
     public int handle = 0;
 
+    /** Specifies which kind of task a task profile is associated to (used e.g. as hint for finstruct) */
+    public TaskClassification taskClassification = TaskClassification.OTHER;
+
     /** Task's Position in schedule */
     public int schedulePosition = -1;
-
-    /** Is this a task related to sensor data? (can be set by application; neither serialized nor copied) */
-    transient public boolean sensorTask = false;
 
     @Override
     public void serialize(BinaryOutputStream stream) {
@@ -91,6 +94,7 @@ public class TaskProfile implements BinarySerializable, Copyable<TaskProfile> {
         averageExecutionDuration.serialize(stream);
         totalExecutionDuration.serialize(stream);
         stream.writeInt(handle);
+        stream.writeEnum(taskClassification);
     }
 
     @Override
@@ -100,6 +104,7 @@ public class TaskProfile implements BinarySerializable, Copyable<TaskProfile> {
         averageExecutionDuration.deserialize(stream);
         totalExecutionDuration.deserialize(stream);
         handle = stream.readInt();
+        taskClassification = stream.readEnum(TaskClassification.class);
     }
 
     @Override
@@ -109,6 +114,7 @@ public class TaskProfile implements BinarySerializable, Copyable<TaskProfile> {
         averageExecutionDuration = source.averageExecutionDuration;
         totalExecutionDuration = source.totalExecutionDuration;
         handle = source.handle;
+        taskClassification = source.taskClassification;
         schedulePosition = source.schedulePosition;
     }
 }
