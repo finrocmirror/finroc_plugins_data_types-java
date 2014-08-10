@@ -32,6 +32,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 
+import org.finroc.core.datatype.SIUnit;
 import org.finroc.core.datatype.Unit;
 import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.finroc.plugins.data_types.Canvas;
@@ -392,16 +393,16 @@ public class DistanceData implements PaintablePortData, PointList {
     public Unit getUnit() {
         switch (unit) {
         case eDISTANCE_UNIT_MM:
-            return Unit.mm;
+            return SIUnit.MILLIMETER;
         case eDISTANCE_UNIT_DM:
-            return Unit.dm;
+            return SIUnit.DECIMETER;
         case eDISTANCE_UNIT_CM:
-            return Unit.cm;
+            return SIUnit.CENTIMETER;
         case eDISTANCE_UNIT_M:
-            return Unit.m;
+            return SIUnit.METER;
         }
         Log.log(LogLevel.WARNING, this, "Invalid unit " + unit);
-        return Unit.NO_UNIT;
+        return null;
     }
 
     @Override

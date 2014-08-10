@@ -69,7 +69,7 @@ public class Angle implements Copyable<Angle>, NumericRepresentation, StringSeri
     public void deserialize(StringInputStream is) throws Exception {
         CoreNumber cn = new CoreNumber();
         cn.deserialize(is);
-        Unit unit = (cn.getUnit() == Unit.NO_UNIT) ? Unit.deg : cn.getUnit();
+        Unit unit = (cn.getUnit() == null) ? Unit.deg : cn.getUnit();
         unsignedRad = unit.convertTo(cn.doubleValue(), Unit.rad);
         while (unsignedRad < 0) {
             unsignedRad += 2 * Math.PI;

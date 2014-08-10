@@ -92,12 +92,12 @@ public interface Function extends HasFunctionRepresentation {
 
         @Override
         public Unit getXUnit() {
-            return Unit.NO_UNIT;
+            return null;
         }
 
         @Override
         public Unit getYUnit() {
-            return Unit.NO_UNIT;
+            return null;
         }
 
         @Override

@@ -52,7 +52,7 @@ public class PartWiseLinearFunction implements Function {
     protected final ThreadLocal<Node> tempNode = new ThreadLocal<Node>();
 
     /** units */
-    protected Unit xUnit = Unit.NO_UNIT, yUnit = Unit.NO_UNIT;
+    protected Unit xUnit = null, yUnit = null;
 
     public PartWiseLinearFunction() {
         nodes = new ArrayList<Node>();
