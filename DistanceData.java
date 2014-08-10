@@ -109,15 +109,8 @@ public class DistanceData implements PaintablePortData, PointList {
         }
     }
 
-    public final static DataType<DistanceData> TYPE = new DataType<DistanceData>(DistanceData.class, "DistanceData", false);
-    public final static DataType<DistanceDataList> LIST_TYPE = new DataType<DistanceDataList>(DistanceDataList.class, "List<DistanceData>", false);
-    public final static DataTypeBase BB_TYPE;
-
-    static {
-        TYPE.getInfo().listType = LIST_TYPE;
-        LIST_TYPE.getInfo().elementType = TYPE;
-        BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
-    }
+    public final static DataType<DistanceData> TYPE = new DataType<DistanceData>(DistanceData.class, DistanceDataList.class, "DistanceData");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
 
     /**
      * Distance format info from tDistanceData.h

@@ -81,9 +81,8 @@ public class Image implements HasBlittable, PaintablePortData {
         }
     }
 
-    public final static DataType<Image> TYPE = new DataType<Image>(Image.class, "Image", false);
-    public final static DataType<ImageList> LIST_TYPE = new DataType<ImageList>(ImageList.class, "List<Image>", false);
-    public final static DataTypeBase BB_TYPE;
+    public final static DataType<Image> TYPE = new DataType<Image>(Image.class, ImageList.class, "Image");
+    public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);;
     public final static DataType<Format> FORMAT_TYPE = new DataType<Format>(Format.class, "ImageFormat");
 
     enum Format {
@@ -109,12 +108,6 @@ public class Image implements HasBlittable, PaintablePortData {
         HI240,
         NV21
     };
-
-    static {
-        TYPE.getInfo().listType = LIST_TYPE;
-        LIST_TYPE.getInfo().elementType = TYPE;
-        BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);
-    }
 
     /** Current object for blitting */
     private BlackboardBlitter blitter;

@@ -55,13 +55,7 @@ public class TaskProfile implements BinarySerializable, Copyable<TaskProfile> {
 
     }
 
-    public final static DataType<TaskProfile> TYPE = new DataType<TaskProfile>(TaskProfile.class, "TaskProfile", false);
-    public final static DataType<List> LIST_TYPE = new DataType<List>(List.class, "List<TaskProfile>", false);
-
-    static {
-        TYPE.getInfo().listType = LIST_TYPE;
-        LIST_TYPE.getInfo().elementType = TYPE;
-    }
+    public final static DataType<TaskProfile> TYPE = new DataType<TaskProfile>(TaskProfile.class, List.class, "TaskProfile");
 
     /** Enum to specify which kind of task a task profile is associated to */
     public enum TaskClassification { SENSE, CONTROL, OTHER };
