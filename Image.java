@@ -191,6 +191,7 @@ public class Image implements HasBlittable, PaintablePortData {
         switch (format) {
         case RGB32:
         case BGR32:
+        case MONO32_FLOAT:
             bpp = 4;
             break;
         case RGB24:
@@ -247,6 +248,9 @@ public class Image implements HasBlittable, PaintablePortData {
             break;
         case MONO16:
             blitter = new Mono16();
+            break;
+        case MONO32_FLOAT:
+            blitter = new Mono32Float();
             break;
         case RGB565:
             blitter = new RGB565();
@@ -472,6 +476,27 @@ public class Image implements HasBlittable, PaintablePortData {
                 imageData.get(); // skip
                 byte b = imageData.get();
                 destBuffer[destOffset] = toInt(b, b, b);
+                destOffset++;
+            }
+        }
+    }
+
+
+    public class Mono32Float extends BlackboardBlitter {
+
+        float maximum = 1;
+
+        @Override
+        protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int lineOffset, int width) {
+            imageData.position(lineOffset + srcX * 4);
+            for (int x = 0; x < width; x++) {
+                maximum = Math.max(maximum, imageData.getFloat());
+            }
+            imageData.position(lineOffset + srcX * 4);
+            float divisor = maximum / 255;
+            for (int x = 0; x < width; x++) {
+                byte value = (byte)(Math.max(0, imageData.getFloat()) / divisor);
+                destBuffer[destOffset] = toInt(value, value, value);
                 destOffset++;
             }
         }
