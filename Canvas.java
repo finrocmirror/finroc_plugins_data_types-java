@@ -581,7 +581,8 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
 
             case eDRAW_BOX:             // [2D-point][width][height]
                 readValues(is, v, 4);
-                if (imageBuffer != null && g.getClip() == null && (!GraphicsUtil.isRotation(g.getTransform()))) {
+                //if (imageBuffer != null && g.getClip() == null && (!GraphicsUtil.isRotation(g.getTransform()))) {  // this would be possible, however, we get double-pixel-lines in grid maps (due to rounding errors)
+                if (imageBuffer != null && g.getClip() == null && (!GraphicsUtil.isRotation(g.getTransform())) && fill && edgeColor.equals(fillColor)) {
                     p1.x = v[0];
                     p1.y = v[1];
                     int width = (int)Math.round(v[2] * scaling.x) + 1; /*Math.max(1, (int)Math.round(v[2] * scaling.x))*/;
@@ -593,22 +594,38 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                     awtRectangle.height = height;
                     Rectangle awtRectangle2 = imageBuffer.getBounds().intersection(awtRectangle);
 
-                    int destPos = awtRectangle2.y * imageBuffer.getWidth() + awtRectangle2.x;
-                    for (int y = 0; y < awtRectangle2.height; y++) {
-                        Arrays.fill(imageBuffer.getBuffer(), destPos, destPos + awtRectangle2.width, g.getColor().getRGB());
-                        destPos += imageBuffer.getWidth();
+                    // fill
+                    if (fill) {
+                        int destPos = awtRectangle2.y * imageBuffer.getWidth() + awtRectangle2.x;
+                        for (int y = 1; y < awtRectangle2.height - 1; y++) {
+                            destPos += imageBuffer.getWidth();
+                            Arrays.fill(imageBuffer.getBuffer(), destPos, destPos + awtRectangle2.width, fillColor.getRGB());
+                        }
                     }
+
+                    // draw border
+                    int rgb = g.getColor().getRGB();
+                    int destPos = awtRectangle2.y * imageBuffer.getWidth() + awtRectangle2.x;
+                    Arrays.fill(imageBuffer.getBuffer(), destPos, destPos + awtRectangle2.width, g.getColor().getRGB());
+                    for (int y = 1; y < awtRectangle2.height - 1; y++) {
+                        destPos += imageBuffer.getWidth();
+                        imageBuffer.getBuffer()[destPos] = g.getColor().getRGB();
+                        imageBuffer.getBuffer()[destPos + awtRectangle2.width] = g.getColor().getRGB();
+                    }
+                    destPos += imageBuffer.getWidth();
+                    Arrays.fill(imageBuffer.getBuffer(), destPos, destPos + awtRectangle2.width, g.getColor().getRGB());
+
                 } else {
                     rect.x = v[0];
                     rect.y = v[1];
                     rect.width = v[2];
                     rect.height = v[3];
-                    g.draw(rect);
                     if (fill) {
                         g.setColor(fillColor);
                         g.fill(rect);
                         g.setColor(edgeColor);
                     }
+                    g.draw(rect);
                 }
                 break;
 
@@ -618,12 +635,12 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 ellipse.y = v[1];
                 ellipse.width = v[2];
                 ellipse.height = v[3];
-                g.draw(ellipse);
                 if (fill) {
                     g.setColor(fillColor);
                     g.fill(ellipse);
                     g.setColor(edgeColor);
                 }
+                g.draw(ellipse);
                 break;
 
             case eDRAW_POLYGON:            // [number of values][2D-vector1]...[2D-vectorN]
@@ -641,12 +658,12 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                     }
                     path.lineTo(v[0], v[1]);
                 }
-                g.draw(path);
                 if (fill) {
                     g.setColor(fillColor);
                     g.fill(path);
                     g.setColor(edgeColor);
                 }
+                g.draw(path);
 
                 break;
 
