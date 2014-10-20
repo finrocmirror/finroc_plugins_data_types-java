@@ -398,6 +398,10 @@ public class DistanceData implements PaintablePortData, PointList {
         return null;
     }
 
+    public int getValueType() {
+        return formatInfo.valueType;
+    }
+
     @Override
     public int getDimensionCount() {
         return formatInfo.numberOfValues;
@@ -425,6 +429,14 @@ public class DistanceData implements PaintablePortData, PointList {
         for (int i = 0; i < getDimensionCount(); i++) {
             resultBuffer[i] = getPointCoordinate(pointIndex, i);
         }
+    }
+
+    public int getExtraDataSize() {
+        return extraDataSize;
+    }
+
+    public MemoryBuffer getExtraData() {
+        return extraData;
     }
 
     private synchronized void calculateCartesianPoints() {
