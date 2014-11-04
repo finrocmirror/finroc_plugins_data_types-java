@@ -60,6 +60,12 @@ public class QuantityTypeAdapter extends RemoteTypeAdapter {
                 } catch (Exception e) {
                     Log.log(LogLevel.WARNING, "Cannot find suitable SI unit for string '" + arguments[0] + "': ", e);
                 }
+            } else if (remoteType.getName().endsWith("rrlib.math.Angle<double, rrlib.math.angle.Radian, rrlib.math.angle.NoWrap>>")) { // TODO: this hard-coded string is a workaround and not really nice
+                adapterInfo.customAdapterData1 = SIUnit.RAD_PER_SECOND;
+                adapterInfo.customAdapterData2 = Double.class;
+                adapterInfo.localType = CoreNumber.class;
+                adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
+                return true;
             }
         }
         return false;
