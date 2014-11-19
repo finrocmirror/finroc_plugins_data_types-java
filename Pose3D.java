@@ -32,12 +32,12 @@ import org.rrlib.serialization.rtti.DataType;
 /**
  * @author Max Reichardt
  *
- * tPose3D Java equivalent
+ * tPose (3D) Java equivalent
  */
 public class Pose3D extends Pose2D {
 
     /** Data Type */
-    public final static DataType<Pose3D> TYPE = new DataType<Pose3D>(Pose3D.class);
+    public final static DataType<Pose3D> TYPE = new DataType<Pose3D>(Pose3D.class, "rrlib.localization.Pose3D");
 
     static {
         FinrocTypeInfo.get(TYPE).init(FinrocTypeInfo.Type.CC);

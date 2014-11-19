@@ -38,12 +38,12 @@ import org.rrlib.serialization.rtti.DataType;
 /**
  * @author Max Reichardt
  *
- * tPose2D Java equivalent
+ * tPose (2D) Java equivalent
  */
 public class Pose2D implements Copyable<Pose2D>, CCType, BinarySerializable, StringSerializable {
 
     /** Data Type */
-    public final static DataType<Pose2D> TYPE = new DataType<Pose2D>(Pose2D.class);
+    public final static DataType<Pose2D> TYPE = new DataType<Pose2D>(Pose2D.class, "rrlib.localization.Pose2D");
 
     static {
         FinrocTypeInfo.get(TYPE).init(FinrocTypeInfo.Type.CC);

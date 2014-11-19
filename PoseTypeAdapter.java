@@ -39,6 +39,8 @@ public class PoseTypeAdapter extends RemoteTypeAdapter {
 
     public static final String STANDARD_2D_POSE_TYPE_NAME = "rrlib.localization.Pose<2u, double, rrlib.si_units.SIUnit<1, 0, 0, 0, 0, 0, 0>, rrlib.si_units.SIUnit<0, 0, 0, 0, 0, 0, 0>, rrlib.math.angle.Signed>";
     public static final String STANDARD_3D_POSE_TYPE_NAME = "rrlib.localization.Pose<3u, double, rrlib.si_units.SIUnit<1, 0, 0, 0, 0, 0, 0>, rrlib.si_units.SIUnit<0, 0, 0, 0, 0, 0, 0>, rrlib.math.angle.Signed>";
+    public static final String LEGACY_2D_POSE_TYPE_NAME = "rrlib.math.Pose2D";
+    public static final String LEGACY_3D_POSE_TYPE_NAME = "rrlib.math.Pose3D";
 
     private PoseTypeAdapter() {
         super(10);
@@ -46,12 +48,12 @@ public class PoseTypeAdapter extends RemoteTypeAdapter {
 
     @Override
     public boolean handlesType(RemoteType remoteType, Info adapterInfo) {
-        if (remoteType.getName().equals(STANDARD_2D_POSE_TYPE_NAME)) {
+        if (remoteType.getName().equals(STANDARD_2D_POSE_TYPE_NAME) || remoteType.getName().equals(LEGACY_2D_POSE_TYPE_NAME)) {
             adapterInfo.localType = Pose2D.class;
             adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
             return true;
         }
-        if (remoteType.getName().equals(STANDARD_3D_POSE_TYPE_NAME)) {
+        if (remoteType.getName().equals(STANDARD_3D_POSE_TYPE_NAME) || remoteType.getName().equals(LEGACY_3D_POSE_TYPE_NAME)) {
             adapterInfo.localType = Pose3D.class;
             adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
             return true;
