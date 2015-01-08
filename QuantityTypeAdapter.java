@@ -56,6 +56,9 @@ public class QuantityTypeAdapter extends RemoteTypeAdapter {
                     adapterInfo.customAdapterData2 = (arguments[1].trim().equalsIgnoreCase("float")) ? Float.class : Double.class;
                     adapterInfo.localType = CoreNumber.class;
                     adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
+                    if (arguments[1].trim().equalsIgnoreCase("angle") && adapterInfo.customAdapterData1 == SIUnit.HERTZ) {
+                        adapterInfo.customAdapterData1 = SIUnit.RAD_PER_SECOND;
+                    }
                     return true;
                 } catch (Exception e) {
                     Log.log(LogLevel.WARNING, "Cannot find suitable SI unit for string '" + arguments[0] + "': ", e);
