@@ -21,10 +21,17 @@
 //----------------------------------------------------------------------
 package org.finroc.plugins.data_types;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+
+import javax.imageio.ImageIO;
 
 import org.finroc.plugins.blackboard.BlackboardPlugin;
 import org.finroc.plugins.data_types.Blittable;
@@ -37,6 +44,8 @@ import org.rrlib.serialization.BinaryInputStream;
 import org.rrlib.serialization.BinaryOutputStream;
 import org.rrlib.serialization.MemoryBuffer;
 import org.rrlib.serialization.PortDataListImpl;
+import org.rrlib.serialization.compression.Compressible;
+import org.rrlib.serialization.compression.DataCompressionAlgorithm;
 import org.rrlib.serialization.rtti.DataType;
 import org.rrlib.serialization.rtti.DataTypeBase;
 
@@ -45,7 +54,7 @@ import org.rrlib.serialization.rtti.DataTypeBase;
  *
  * Image-Blackboard
  */
-public class Image implements HasBlittable, PaintablePortData {
+public class Image implements HasBlittable, PaintablePortData, Compressible {
 
     public static class ImageList extends PortDataListImpl<Image> implements HasBlittable, PaintablePortData {
 
@@ -84,6 +93,11 @@ public class Image implements HasBlittable, PaintablePortData {
     public final static DataType<Image> TYPE = new DataType<Image>(Image.class, ImageList.class, "Image");
     public final static DataTypeBase BB_TYPE = BlackboardPlugin.registerBlackboardType(TYPE);;
     public final static DataType<Format> FORMAT_TYPE = new DataType<Format>(Format.class, "ImageFormat");
+
+    static {
+        DataCompressionAlgorithm.register(Image.class, "jpg", false);
+        DataCompressionAlgorithm.register(Image.class, "png", false);
+    }
 
     enum Format {
         MONO8,
@@ -124,6 +138,12 @@ public class Image implements HasBlittable, PaintablePortData {
     /** Image Buffer */
     private MemoryBuffer imageData = new MemoryBuffer(false);
 
+    /** Variables to handle compressed images */
+    private boolean compressed = false;
+    private byte[] compressedData = new byte[0];
+    private BufferedImage uncompressedImage = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
+    private ImageBlitter compressedBlitter = new ImageBlitter();
+
     public int getWidth() {
         return width;
     }
@@ -154,7 +174,7 @@ public class Image implements HasBlittable, PaintablePortData {
 
     @Override
     public void deserialize(BinaryInputStream is) {
-
+        compressed = false;
         width = is.readInt();
         height = is.readInt();
         format = is.readEnum(Format.class);
@@ -280,12 +300,12 @@ public class Image implements HasBlittable, PaintablePortData {
 
     @Override
     public Blittable getBlittable(int index) {
-        return blitter == null ? Blittable.Empty.instance : blitter;
+        return compressed ? compressedBlitter : (blitter == null ? Blittable.Empty.instance : blitter);
     }
 
     @Override
     public int getNumberOfBlittables() {
-        return blitter == null ? 0 : 1;
+        return getBlittable(0) == null ? 0 : 1;
     }
 
     public abstract class BlackboardBlitter extends Blittable {
@@ -335,6 +355,28 @@ public class Image implements HasBlittable, PaintablePortData {
             int g = _g < 0 ? 0 : (_g > 255 ? 255 : _g);
             int b = _b < 0 ? 0 : (_b > 255 ? 255 : _b);
             return toInt((byte)r, (byte)g, (byte)b);
+        }
+    }
+
+    public class ImageBlitter extends Blittable {
+
+        @Override
+        public void blitTo(Destination destination, Point dest, Rectangle sourceArea) {
+            destination.getBufferedImage().createGraphics().drawImage(uncompressedImage, dest.x, dest.y, sourceArea.width, sourceArea.height, Color.black, null);
+        }
+
+        @Override
+        protected void blitLineToRGB(int[] destBuffer, int destOffset, int srcX, int srcY, int srcOffset, int width) {
+        }
+
+        @Override
+        public int getWidth() {
+            return width;
+        }
+
+        @Override
+        public int getHeight() {
+            return height;
         }
     }
 
@@ -677,6 +719,23 @@ public class Image implements HasBlittable, PaintablePortData {
     @Override
     public boolean isYAxisPointingDownwards() {
         return true;
+    }
+
+    @Override
+    public void compressNext(BinaryOutputStream stream, String compressionType) {
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public void decompressNext(BinaryInputStream stream, String compressionType, int maxBytesToRead) throws Exception {
+        if (maxBytesToRead > compressedData.length) {
+            compressedData = new byte[(int)(maxBytesToRead * 1.2)];
+        }
+        stream.readFully(compressedData, 0, maxBytesToRead);
+        uncompressedImage = ImageIO.read(new ByteArrayInputStream(compressedData));
+        width = uncompressedImage.getWidth();
+        height = uncompressedImage.getHeight();
+        compressed = true;
     }
 }
 
