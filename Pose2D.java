@@ -118,4 +118,13 @@ public class Pose2D implements Copyable<Pose2D>, CCType, BinarySerializable, Str
     public String toString() {
         return Serialization.serialize(this);
     }
+
+    /**
+     * Resets pose to zero
+     */
+    public void reset() {
+        x = 0;
+        y = 0;
+        yaw = 0;
+    }
 }

@@ -22,6 +22,7 @@
 package org.finroc.plugins.data_types;
 
 import org.finroc.core.portdatabase.FinrocTypeInfo;
+import org.finroc.plugins.data_types.Pose3D.Component;
 import org.rrlib.serialization.BinaryInputStream;
 import org.rrlib.serialization.BinaryOutputStream;
 import org.rrlib.serialization.Serialization;
@@ -42,6 +43,8 @@ public class Pose3D extends Pose2D {
     static {
         FinrocTypeInfo.get(TYPE).init(FinrocTypeInfo.Type.CC);
     }
+
+    public enum Component { X, Y, Z, Roll, Pitch, Yaw };
 
     /** values */
     public double z, roll, pitch;
@@ -120,5 +123,41 @@ public class Pose3D extends Pose2D {
     @Override
     public String toString() {
         return Serialization.serialize(this);
+    }
+
+    @Override
+    public void reset() {
+        z = 0;
+        roll = 0;
+        pitch = 0;
+    }
+
+    /**
+     * Set specified component of pose
+     *
+     * @param component Component to set
+     * @param value New value
+     */
+    public void set(Component component, double value) {
+        switch (component) {
+        case X:
+            x = value;
+            break;
+        case Y:
+            y = value;
+            break;
+        case Z:
+            z = value;
+            break;
+        case Roll:
+            roll = value;
+            break;
+        case Pitch:
+            pitch = value;
+            break;
+        case Yaw:
+            yaw = value;
+            break;
+        }
     }
 }
