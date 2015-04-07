@@ -41,6 +41,8 @@ public class PoseTypeAdapter extends RemoteTypeAdapter {
     public static final String STANDARD_3D_POSE_TYPE_NAME = "rrlib.localization.Pose<3u, double, rrlib.si_units.SIUnit<1, 0, 0, 0, 0, 0, 0>, rrlib.si_units.SIUnit<0, 0, 0, 0, 0, 0, 0>, rrlib.math.angle.Signed>";
     public static final String LEGACY_2D_POSE_TYPE_NAME = "rrlib.math.Pose2D";
     public static final String LEGACY_3D_POSE_TYPE_NAME = "rrlib.math.Pose3D";
+    public static final String TWIST_3D_TYPE_NAME = "rrlib.localization.Twist3D";
+    public static final String UNCERTAIN_TWIST_3D_TYPE_NAME = "rrlib.localization.UncertainTwist3D";
 
     private PoseTypeAdapter() {
         super(10);
@@ -53,7 +55,7 @@ public class PoseTypeAdapter extends RemoteTypeAdapter {
             adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
             return true;
         }
-        if (remoteType.getName().equals(STANDARD_3D_POSE_TYPE_NAME) || remoteType.getName().equals(LEGACY_3D_POSE_TYPE_NAME)) {
+        if (remoteType.getName().equals(STANDARD_3D_POSE_TYPE_NAME) || remoteType.getName().equals(LEGACY_3D_POSE_TYPE_NAME) || remoteType.getName().equals(TWIST_3D_TYPE_NAME) || remoteType.getName().equals(UNCERTAIN_TWIST_3D_TYPE_NAME)) {
             adapterInfo.localType = Pose3D.class;
             adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
             return true;
