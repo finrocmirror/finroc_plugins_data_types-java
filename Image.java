@@ -95,7 +95,7 @@ public class Image implements HasBlittable, PaintablePortData, Compressible {
     public final static DataType<Format> FORMAT_TYPE = new DataType<Format>(Format.class, "ImageFormat");
 
     static {
-        DataCompressionAlgorithm.register(Image.class, "jpg", false);
+        DataCompressionAlgorithm.register(Image.class, "jpeg", false);
         DataCompressionAlgorithm.register(Image.class, "png", false);
     }
 
