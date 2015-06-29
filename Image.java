@@ -27,6 +27,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.io.ByteArrayInputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -46,6 +47,7 @@ import org.rrlib.serialization.MemoryBuffer;
 import org.rrlib.serialization.PortDataListImpl;
 import org.rrlib.serialization.compression.Compressible;
 import org.rrlib.serialization.compression.DataCompressionAlgorithm;
+import org.rrlib.serialization.rtti.Copyable;
 import org.rrlib.serialization.rtti.DataType;
 import org.rrlib.serialization.rtti.DataTypeBase;
 
@@ -54,7 +56,7 @@ import org.rrlib.serialization.rtti.DataTypeBase;
  *
  * Image-Blackboard
  */
-public class Image implements HasBlittable, PaintablePortData, Compressible {
+public class Image implements HasBlittable, PaintablePortData, Compressible, Copyable<Image> {
 
     public static class ImageList extends PortDataListImpl<Image> implements HasBlittable, PaintablePortData {
 
@@ -154,6 +156,9 @@ public class Image implements HasBlittable, PaintablePortData, Compressible {
 
     @Override
     public void serialize(BinaryOutputStream os) {
+        if (compressed) {
+            throw new RuntimeException("Compressed image cannot be serialized (not yet implemented)");
+        }
 
         os.writeInt(width);
         os.writeInt(height);
@@ -736,6 +741,31 @@ public class Image implements HasBlittable, PaintablePortData, Compressible {
         width = uncompressedImage.getWidth();
         height = uncompressedImage.getHeight();
         compressed = true;
+    }
+
+    @Override
+    public void copyFrom(Image source) {
+        compressed = source.compressed;
+        width = source.width;
+        height = source.height;
+        format = source.format;
+
+        // Read image data
+        if (compressed) {
+            if (compressedData.length != source.compressedData.length) {
+                compressedData = new byte[source.compressedData.length];
+            }
+            System.arraycopy(source.compressedData, 0, compressedData, 0, source.compressedData.length);
+            ColorModel colorModel = source.uncompressedImage.getColorModel();
+            uncompressedImage = new BufferedImage(colorModel, source.uncompressedImage.copyData(null), colorModel.isAlphaPremultiplied(), null);
+        } else {
+            imageData.copyFrom(source.imageData);
+        }
+
+        // calculate internal variables
+        widthStep = calculateWidthStep(width, format);
+        lastType = null;
+        blitter = createBlittable();
     }
 }
 
