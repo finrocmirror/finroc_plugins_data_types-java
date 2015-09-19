@@ -1,5 +1,5 @@
 <targets>
-  <finrocplugin plugin-class="org.finroc.plugins.data_types.DataTypePlugin">
+  <library plugin-class="org.finroc.plugins.data_types.DataTypePlugin">
     <sources>**.java</sources>
-  </finrocplugin>
+  </library>
 </targets>
