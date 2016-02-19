@@ -39,7 +39,7 @@ public class UncertainPose2D extends Pose2D {
     /** Data Type */
     public final static DataType<UncertainPose2D> TYPE = new DataType<UncertainPose2D>(UncertainPose2D.class);
 
-    public final Matrix matrix = new Matrix(6, 6);
+    public final Matrix matrix = new Matrix(3, 3);
 
     @Override
     public void serialize(BinaryOutputStream os) {
