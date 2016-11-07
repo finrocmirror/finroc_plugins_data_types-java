@@ -431,6 +431,7 @@ public class Canvas extends MemoryBuffer implements PaintablePortData {
                 int alpha = is.readByte() & 0xFF;
                 if (alpha != edgeColor.getAlpha()) {
                     edgeColor = new Color(edgeColor.getRed(), edgeColor.getGreen(), edgeColor.getBlue(), alpha);
+                    g.setColor(edgeColor);
                 }
                 if (alpha != fillColor.getAlpha()) {
                     fillColor = new Color(fillColor.getRed(), fillColor.getGreen(), fillColor.getBlue(), alpha);
