@@ -532,6 +532,13 @@ public class DistanceData implements PaintablePortData, PointList {
         }
     }
 
+    /**
+     * @return Cartesian points of point cloud
+     */
+    public double[] getCartesianPoints() {
+        calculateCartesianPoints();
+        return cartesianPoints;
+    }
 
     @Override
     public void paint(Graphics2D g, FastBufferedImage imageBuffer) {
