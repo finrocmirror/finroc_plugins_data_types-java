@@ -44,7 +44,7 @@ public class AngleTypeAdapter extends RemoteTypeAdapter {
     @Override
     public boolean handlesType(RemoteType remoteType, Info adapterInfo) {
         if (remoteType.getName().startsWith("rrlib.math.Angle<double,") && remoteType.getName().endsWith(">")) {
-            adapterInfo.localType = Angle.class;
+            adapterInfo.localType = Angle.TYPE;
             adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
             adapterInfo.customAdapterData1 = remoteType.getName().contains("rrlib.math.angle.Degree,");
             adapterInfo.customAdapterData2 = remoteType.getName().contains("rrlib.math.angle.Unsigned");

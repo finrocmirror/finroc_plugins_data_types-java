@@ -22,7 +22,6 @@
 package org.finroc.plugins.data_types;
 
 import org.finroc.core.portdatabase.FinrocTypeInfo;
-import org.finroc.plugins.data_types.Pose3D.Component;
 import org.rrlib.serialization.BinaryInputStream;
 import org.rrlib.serialization.BinaryOutputStream;
 import org.rrlib.serialization.Serialization;

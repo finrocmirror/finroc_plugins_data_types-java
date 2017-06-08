@@ -54,7 +54,7 @@ public class QuantityTypeAdapter extends RemoteTypeAdapter {
                 try {
                     adapterInfo.customAdapterData1 = SIUnit.getInstance(arguments[0]);
                     adapterInfo.customAdapterData2 = (arguments[1].trim().equalsIgnoreCase("float")) ? Float.class : Double.class;
-                    adapterInfo.localType = CoreNumber.class;
+                    adapterInfo.localType = CoreNumber.TYPE;
                     adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
                     if (arguments[1].trim().equalsIgnoreCase("angle") && adapterInfo.customAdapterData1 == SIUnit.HERTZ) {
                         adapterInfo.customAdapterData1 = SIUnit.RAD_PER_SECOND;
@@ -66,7 +66,7 @@ public class QuantityTypeAdapter extends RemoteTypeAdapter {
             } else if (remoteType.getName().endsWith("rrlib.math.Angle<double, rrlib.math.angle.Radian, rrlib.math.angle.NoWrap>>")) { // TODO: this hard-coded string is a workaround and not really nice
                 adapterInfo.customAdapterData1 = SIUnit.RAD_PER_SECOND;
                 adapterInfo.customAdapterData2 = Double.class;
-                adapterInfo.localType = CoreNumber.class;
+                adapterInfo.localType = CoreNumber.TYPE;
                 adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
                 return true;
             }
