@@ -82,6 +82,13 @@ public class PoseTypeAdapter extends RemoteTypeAdapter {
 
     @Override
     public void serialize(BinaryOutputStream stream, GenericObject object, RemoteType type, Info adapterInfo) {
-        object.serialize(stream, Serialization.DataEncoding.BINARY);
+        if (adapterInfo.localType == Pose2D.class && (object.getType().getJavaClass() == Pose3D.class)) {
+            Pose2D pose2d = (Pose2D)object.getData();
+            stream.writeDouble(pose2d.x);
+            stream.writeDouble(pose2d.y);
+            stream.writeDouble(pose2d.yaw);
+        } else {
+            object.serialize(stream, Serialization.DataEncoding.BINARY);
+        }
     }
 }

@@ -479,6 +479,7 @@ public class DistanceData implements PaintablePortData, PointList {
                         cartesianPoints[cartesianIndex + 1] = y;
                         cartesianPoints[cartesianIndex + 2] = 0;
                         cartesianIndex += 3;
+                        System.out.println("#" + i + " x: " + x + " y: " + y);
                     }
                 } else {
                     for (int i = 0; i < dimension; i++) {
