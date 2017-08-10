@@ -40,7 +40,7 @@ import org.rrlib.serialization.rtti.DataType;
 public class Time implements Copyable<Time>, CCType, BinarySerializable, StringSerializable {
 
     /** Data Type */
-    public final static DataType<Time> TYPE = new DataType<Time>(Time.class);
+    public final static DataType<Time> TYPE = new DataType<Time>(Time.class, "rrlib.util.Time");
 
     /** values */
     public int sec, usec;
