@@ -46,10 +46,32 @@ public class QuantityTypeAdapter extends RemoteTypeAdapter {
         super(10);
     }
 
+    private String[] LOOKUP = {
+        "Length", "m",
+        "Mass", "kg",
+        "Time", "s",
+        "ElectricCurrent", "A",
+        "Temperature", "K",
+        "AmountOfSubstance", "mol",
+        "LuminousIntensity", "cd",
+        "Frequency", "Hz",
+        "Force", "N",
+        "Pressure", "Pa",
+        "Velocity", "m/s",
+        "Acceleration", "m/s^2",
+        "AngularVelocity", "rad/s",
+        "AngularAcceleration", "rad/s^2"
+    };
+
     @Override
     public boolean handlesType(RemoteType remoteType, Info adapterInfo) {
-        if (remoteType.getName().startsWith("Quantity<") && remoteType.getName().endsWith(">")) {
-            String[] arguments = remoteType.getName().substring("Quantity<".length(), remoteType.getName().length() - 1).split(",");
+        String typeName = remoteType.getName();
+        boolean siUnitNamespace = remoteType.getName().startsWith("rrlib.si_units.");
+        if (siUnitNamespace) {
+            typeName = typeName.substring("rrlib.si_units.".length());
+        }
+        if (typeName.startsWith("Quantity<") && typeName.endsWith(">")) {
+            String[] arguments = typeName.substring("Quantity<".length(), typeName.length() - 1).split(",");
             if (arguments.length == 2) {
                 try {
                     adapterInfo.customAdapterData1 = SIUnit.getInstance(arguments[0]);
@@ -70,6 +92,22 @@ public class QuantityTypeAdapter extends RemoteTypeAdapter {
                 adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
                 return true;
             }
+        }
+        if (siUnitNamespace) {
+            for (int i = 0; i < LOOKUP.length; i += 2) {
+                if (LOOKUP[i].equals(typeName)) {
+                    try {
+                        adapterInfo.customAdapterData1 = SIUnit.getInstance(LOOKUP[i + 1]);
+                        adapterInfo.customAdapterData2 = Double.class;
+                        adapterInfo.localType = CoreNumber.TYPE;
+                        adapterInfo.networkEncoding = Serialization.DataEncoding.BINARY;
+                        return true;
+                    } catch (Exception e) {
+                        Log.log(LogLevel.WARNING, "Cannot find suitable SI unit for predefined string '" + LOOKUP[i + 1] + "': ", e);
+                    }
+                }
+            }
+            Log.log(LogLevel.WARNING, "Cannot find suitable SI unit for '" + remoteType.getName() + "': ");
         }
         return false;
     }
