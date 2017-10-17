@@ -30,6 +30,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import org.finroc.core.datatype.SIUnit;
@@ -46,6 +47,7 @@ import org.finroc.plugins.data_types.util.BoundsExtractingGraphics2D;
 import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
+import org.rrlib.serialization.ArrayBuffer;
 import org.rrlib.serialization.BinaryInputStream;
 import org.rrlib.serialization.BinaryOutputStream;
 import org.rrlib.serialization.MemoryBuffer;
@@ -58,7 +60,7 @@ import org.rrlib.serialization.rtti.DataTypeBase;
  *
  * tDistanceData Java equivalent
  */
-public class DistanceData implements PaintablePortData, PointList {
+public class DistanceData implements PaintablePortData, PointList, ArrayBuffer {
 
     public static class DistanceDataList extends PortDataListImpl<DistanceData> implements Paintable, PointList {
 
@@ -147,12 +149,18 @@ public class DistanceData implements PaintablePortData, PointList {
          */
         final int valueType;
 
-        public FormatInfo(String name, int numberOfValues, int numberOfBytesPerValue, boolean isPlanar, int valueType) {
+        /**
+         * Value Names (optional)
+         */
+        final String[] valueNames;
+
+        public FormatInfo(String name, int numberOfValues, int numberOfBytesPerValue, boolean isPlanar, int valueType, String... valueNames) {
             this.name = name;
             this.numberOfValues = numberOfValues;
             this.numberOfBytesPerValue = numberOfBytesPerValue;
             this.isPlanar = isPlanar;
             this.valueType = valueType;
+            this.valueNames = valueNames;
         }
 
         /**
@@ -181,32 +189,36 @@ public class DistanceData implements PaintablePortData, PointList {
 
     /** cDistanceDataFormatInfo */
     public static final DistanceData.FormatInfo[] cDistanceDataFormatInfo = new DistanceData.FormatInfo[] {
-        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT", 2, 4, false, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT", 3, 4, false, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT", 2, 4, false, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT", 3, 4, false, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE", 2, 8, false, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE", 3, 8, false, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE", 3, 8, false, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_FLOAT", 2, 4, false, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_DOUBLE", 2, 8, false, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_FLOAT", 2, 4, false, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT_PLANAR", 2, 4, true, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT_PLANAR", 3, 4, true, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT_PLANAR", 2, 4, true, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT_PLANAR", 3, 4, true, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_FLOAT_PLANAR", 1, 4, true, eVT_DISTANCE_ONLY),
-        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE_PLANAR", 2, 8, true, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE_PLANAR", 3, 8, true, eVT_POLAR),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE_PLANAR", 2, 8, true, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE_PLANAR", 3, 8, true, eVT_CARTESIAN),
-        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_DOUBLE_PLANAR", 1, 8, true, eVT_DISTANCE_ONLY),
-        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY),
-        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY),
-        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED8_PLANAR", 1, 1, true, eVT_DISTANCE_ONLY),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT", 2, 4, false, eVT_POLAR, "Alpha", "Distance"),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT", 3, 4, false, eVT_POLAR, "Alpha", "Azimuth", "Distance"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT", 2, 4, false, eVT_CARTESIAN, "X", "Y"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT", 3, 4, false, eVT_CARTESIAN, "X", "Y", "Z"),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE", 2, 8, false, eVT_POLAR, "Alpha", "Distance"),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE", 3, 8, false, eVT_POLAR, "Alpha", "Azimuth", "Distance"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN, "X", "Y"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE", 3, 8, false, eVT_CARTESIAN, "X", "Y", "Z"),
+        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_FLOAT", 2, 4, false, eVT_POLAR, "Alpha", "Remission"),
+        new DistanceData.FormatInfo("eDF_POLAR_REMISSION_2D_DOUBLE", 2, 8, false, eVT_POLAR, "Alpha", "Remission"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_FLOAT", 2, 4, false, eVT_CARTESIAN, "X", "Remission"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_REMISSION_2D_DOUBLE", 2, 8, false, eVT_CARTESIAN, "X", "Remission"),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_FLOAT_PLANAR", 2, 4, true, eVT_POLAR, "Alpha", "Distance"),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_FLOAT_PLANAR", 3, 4, true, eVT_POLAR, "Alpha", "Azimuth", "Distance"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_FLOAT_PLANAR", 2, 4, true, eVT_CARTESIAN, "X", "Y"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_FLOAT_PLANAR", 3, 4, true, eVT_CARTESIAN, "X", "Y", "Z"),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_FLOAT_PLANAR", 1, 4, true, eVT_DISTANCE_ONLY, "Distance"),
+        new DistanceData.FormatInfo("eDF_POLAR_2D_DOUBLE_PLANAR", 2, 8, true, eVT_POLAR, "Alpha", "Distance"),
+        new DistanceData.FormatInfo("eDF_POLAR_3D_DOUBLE_PLANAR", 3, 8, true, eVT_POLAR, "Alpha", "Azimuth", "Distance"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_2D_DOUBLE_PLANAR", 2, 8, true, eVT_CARTESIAN, "X", "Y"),
+        new DistanceData.FormatInfo("eDF_CARTESIAN_3D_DOUBLE_PLANAR", 3, 8, true, eVT_CARTESIAN, "X", "Y", "Z"),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_DOUBLE_PLANAR", 1, 8, true, eVT_DISTANCE_ONLY, "Distance"),
+        new DistanceData.FormatInfo("eDF_DISTANCE_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY, "Distance"),
+        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED16_PLANAR", 1, 2, true, eVT_DISTANCE_ONLY, "Remission"),
+        new DistanceData.FormatInfo("eDF_REMISSION_ONLY_UNSIGNED8_PLANAR", 1, 1, true, eVT_DISTANCE_ONLY, "Remission"),
         new DistanceData.FormatInfo("eDF_INVALID", 0, 0, false, eVT_DIMENSION)
+    };
+
+    private final AttributeType[] ATTRIBUTE_TYPE_FROM_BYTES_PER_VALUE = new AttributeType[] {
+        null, AttributeType.UNSIGNED_BYTE, AttributeType.UNSIGNED_SHORT, null, AttributeType.FLOAT, null, null, null, AttributeType.DOUBLE
     };
 
 
@@ -276,12 +288,14 @@ public class DistanceData implements PaintablePortData, PointList {
     private byte format;
     private int capacity;
     private int dimension;
+    private final int[] arrayBufferDimensions = new int[1];
     private byte unit;
     private Pose3D sensorPose = new Pose3D();
     private Pose3D sensorPoseDelta = new Pose3D();
     private Pose3D robotPose = new Pose3D();
     private Time timestamp = new Time();
     private int extraDataSize;
+    private Channel[] channels = new Channel[0];
 
     /** Helper variables derived from header data */
     private FormatInfo formatInfo = cDistanceDataFormatInfo[0];
@@ -355,6 +369,7 @@ public class DistanceData implements PaintablePortData, PointList {
         format = tmp;
         capacity = is.readInt();
         dimension = is.readInt();
+        arrayBufferDimensions[0] = dimension;
         unit = is.readByte();
         extraDataSize = is.readInt();
 
@@ -379,7 +394,22 @@ public class DistanceData implements PaintablePortData, PointList {
             for (int i = 0; i < dimensions.length; i++) {
                 dimensions[i] = new DimensionImpl(i);
             }
+
+            if (formatInfo.isPlanar) {
+                channels = new Channel[formatInfo.numberOfValues];
+                for (int i = 0; i < channels.length; i++) {
+                    channels[i] = new Channel(ATTRIBUTE_TYPE_FROM_BYTES_PER_VALUE[formatInfo.numberOfBytesPerValue], 0, formatInfo.numberOfBytesPerValue, formatInfo.valueNames[i]);
+                }
+            } else {
+                channels = Channel.create(ATTRIBUTE_TYPE_FROM_BYTES_PER_VALUE[formatInfo.numberOfBytesPerValue], 0, formatInfo.numberOfBytesPerValue * formatInfo.numberOfValues, formatInfo.valueNames);
+            }
         }
+        if (formatInfo.isPlanar) {
+            for (int i = 1; i < channels.length; i++) {
+                channels[i].setOffset(formatInfo.numberOfBytesPerValue * dimension);
+            }
+        }
+
         cartesianPointsValid = false;
     }
 
@@ -675,6 +705,21 @@ public class DistanceData implements PaintablePortData, PointList {
     @Override
     public boolean isYAxisPointingDownwards() {
         return false;
+    }
+
+    @Override
+    public ByteBuffer getByteBuffer() {
+        return data.getBuffer().getBuffer();
+    }
+
+    @Override
+    public Channel[] getChannels() {
+        return channels;
+    }
+
+    @Override
+    public int[] getArrayDimensions() {
+        return arrayBufferDimensions;
     }
 }
 

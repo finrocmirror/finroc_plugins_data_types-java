@@ -115,4 +115,17 @@ public class FloatList extends MemoryBuffer implements ContainsStrings, StringSe
         ContainsStrings.Util.deserialize(s, this, "[", "]", ",");
     }
 
+    @Override
+    public int[] getArrayDimensions() {
+        dimensions[0] = size();
+        return dimensions;
+    }
+
+    @Override
+    public Channel[] getChannels() {
+        return CHANNELS;
+    }
+
+    private final int[] dimensions = { 0 };
+    private static final Channel[] CHANNELS = { new Channel(AttributeType.FLOAT, 0, 4, "Data") };
 }

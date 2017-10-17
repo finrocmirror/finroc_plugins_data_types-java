@@ -41,6 +41,7 @@ import org.finroc.plugins.data_types.PaintablePortData;
 import org.finroc.plugins.data_types.util.FastBufferedImage;
 import org.rrlib.logging.Log;
 import org.rrlib.logging.LogLevel;
+import org.rrlib.serialization.ArrayBuffer;
 import org.rrlib.serialization.BinaryInputStream;
 import org.rrlib.serialization.BinaryOutputStream;
 import org.rrlib.serialization.MemoryBuffer;
@@ -56,7 +57,7 @@ import org.rrlib.serialization.rtti.DataTypeBase;
  *
  * Image-Blackboard
  */
-public class Image implements HasBlittable, PaintablePortData, Compressible, Copyable<Image> {
+public class Image implements HasBlittable, PaintablePortData, Compressible, Copyable<Image>, ArrayBuffer {
 
     public static class ImageList extends PortDataListImpl<Image> implements HasBlittable, PaintablePortData {
 
@@ -125,6 +126,30 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
         NV21
     };
 
+    public static final Channel[][] FORMAT_CHANNELS = new Channel[][] {
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 1, "Lightness"), // MONO8,
+        Channel.create(AttributeType.UNSIGNED_SHORT, 0, 2, "Lightness"), // MONO16,
+        Channel.create(AttributeType.FLOAT, 0, 4, "Lightness"), // MONO32_FLOAT,
+        Channel.create(AttributeType.UNSIGNED_SHORT, 0, 2, "RGB565"), // RGB565,
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 3, "R", "G", "B"), // RGB24,
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 3, "B", "G", "R"), // BGR24,
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 4, "R", "G", "B"), // RGB32,
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 4, "B", "G", "R"), // BGR32,
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 1, "Y"), // YUV420P, (less U and V values than Y values)
+        new Channel[0], // YUV411, (unsupported)
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 2, "Y"), // YUV422, (less U and V values than Y values)
+        new Channel[0], // UYVY422, (unsupported)
+        new Channel[0], // YUV444, (unsupported)
+        new Channel[0], // BAYER_RGGB, (unsupported)
+        new Channel[0], // BAYER_GBRG, (unsupported)
+        new Channel[0], // BAYER_GRBG, (unsupported)
+        new Channel[0], // BAYER_BGGR, (unsupported)
+        new Channel[0], // HSV, (unsupported)
+        new Channel[0], // HLS, (unsupported)
+        new Channel[0], // HI240, (unsupported)
+        Channel.create(AttributeType.UNSIGNED_BYTE, 0, 1, "Y") // NV21 (less U and V values than Y values)
+    };
+
     /** Current object for blitting */
     private BlackboardBlitter blitter;
 
@@ -134,6 +159,7 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
     /** relevant variable regarding image data */
     private int width;
     private int height;
+    private final int[] dimensions = new int[2];
     private int widthStep;
     private Format format = Format.RGB24;
 
@@ -145,6 +171,7 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
     private byte[] compressedData = new byte[0];
     private BufferedImage uncompressedImage = new BufferedImage(1, 1, BufferedImage.TYPE_3BYTE_BGR);
     private ImageBlitter compressedBlitter = new ImageBlitter();
+    private static final byte PADDING_BYTES[] = new byte[3];
 
     public int getWidth() {
         return width;
@@ -174,7 +201,16 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
         os.writeInt(0);
 
         // Write image data
-        os.write(imageData.getBuffer(), 0, imageData.getSize());
+        int originalWidthStep = calculateWidthStep(width, format, 4);
+        int padding = originalWidthStep - widthStep;
+        if (padding == 0) {
+            os.write(imageData.getBuffer(), 0, imageData.getSize());
+        } else {
+            for (int y = 0; y < height; y++) {
+                os.write(imageData.getBuffer(), y * widthStep, widthStep);
+                os.write(PADDING_BYTES, 0, padding);
+            }
+        }
     }
 
     @Override
@@ -195,23 +231,32 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
 
         // Read image data
         imageData.clear();
-        imageData.deserialize(is, imageSize);
+        int originalWidthStep = calculateWidthStep(width, format, 4);
+        widthStep = calculateWidthStep(width, format, 1);
+        int padding = originalWidthStep - widthStep;
+        if (padding == 0) {
+            imageData.deserialize(is, imageSize);
+        } else {
+            imageData.setSize(widthStep * height);
+            for (int y = 0; y < height; y++) {
+                is.readFully(imageData.getBuffer(), y * widthStep, widthStep);
+                is.skip(padding);
+            }
+        }
         is.skip(extraData);
 
         // calculate internal variables
-        widthStep = calculateWidthStep(width, format);
         blitter = createBlittable();
     }
 
     /**
-     * (see equivalent function in tImage.h
+     * (see equivalent function in tImage.h)
      */
-    private int calculateWidthStep(int w, Format f) {
+    private int calculateWidthStep(int w, Format f, int alignment) {
         if (f == Format.YUV420P || f == Format.NV21) {
             return width;
         }
 
-        final int alignment = 4;
         int bpp = -1;
         switch (format) {
         case RGB32:
@@ -239,7 +284,7 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
         }
 
         int temp = bpp * width;
-        while (temp % alignment != 0) {
+        while ((temp % alignment) != 0) {
             temp++;
         }
         return temp;
@@ -718,7 +763,7 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
             os.writeInt(data[i]);
         }
         os.close();
-        widthStep = calculateWidthStep(width, format);
+        widthStep = calculateWidthStep(width, format, 1);
     }
 
     @Override
@@ -763,9 +808,26 @@ public class Image implements HasBlittable, PaintablePortData, Compressible, Cop
         }
 
         // calculate internal variables
-        widthStep = calculateWidthStep(width, format);
+        widthStep = calculateWidthStep(width, format, 1);
         lastType = null;
         blitter = createBlittable();
+    }
+
+    @Override
+    public ByteBuffer getByteBuffer() {
+        return imageData.getBuffer().getBuffer();
+    }
+
+    @Override
+    public Channel[] getChannels() {
+        return FORMAT_CHANNELS[format.ordinal()];
+    }
+
+    @Override
+    public int[] getArrayDimensions() {
+        dimensions[0] = width;
+        dimensions[1] = height;
+        return dimensions;
     }
 }
 
