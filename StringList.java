@@ -24,6 +24,7 @@ package org.finroc.plugins.data_types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Iterator;
 
 import org.rrlib.serialization.XMLSerializable;
 import org.rrlib.xml.XMLNode;
@@ -42,6 +43,17 @@ public class StringList extends ArrayList<String> implements XMLSerializable {
 
     public StringList(String[] strings) {
         setEntries(strings);
+    }
+
+    public void removeEmptyEntries() {
+        Iterator<String> iter = this.iterator();
+        while (iter.hasNext()) {
+            String s = iter.next();
+            if ((s == null) ||
+                    (s.isEmpty())) {
+                iter.remove();
+            }
+        }
     }
 
     private void setEntries(String[] strings) {
